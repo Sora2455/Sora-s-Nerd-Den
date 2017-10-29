@@ -174,7 +174,7 @@ var sources = {
             paths: [
                 paths.scripts + 'fallback/styles.js',
                 paths.scripts + 'fallback/scripts.js',
-                paths.scripts + 'site.js'
+                paths.scripts + 'site.ts'
             ]
         }
     ]
@@ -380,11 +380,11 @@ function () {
  */
 gulp.task('build', ['build-css', 'build-fonts', 'build-js']);
 
-gulp.task('test', function () {
-    return gulp
-        .src(paths.tests + 'mocha.html')
-        .pipe(mocha());
-});
+//gulp.task('test', function () {
+//    return gulp
+//        .src(paths.tests + 'mocha.html')
+//        .pipe(mocha());
+//});
 
 /*
  * Optimizes and compresses the GIF, JPG, PNG and SVG images for the site.
@@ -431,17 +431,17 @@ gulp.task('watch-js', function () {
 /*
  * Watch the scripts and tests folder for changes to .js or .ts files. Run the JavaScript tests if something changes.
  */
-gulp.task('watch-tests', function () {
-    return gulp
-        .watch([
-            paths.scripts + '**/*.{js,ts}',     // Watch the scripts folder for file changes.
-            paths.tests + '**/*.{js,ts}'        // Watch the tests folder for file changes.
-        ],
-        ['test'])                               // Run the test task if a file changes.
-        .on('change', function (event) {        // Log the change to the console.
-            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', test task started.'));
-        });
-});
+//gulp.task('watch-tests', function () {
+//    return gulp
+//        .watch([
+//            paths.scripts + '**/*.{js,ts}',     // Watch the scripts folder for file changes.
+//            paths.tests + '**/*.{js,ts}'        // Watch the tests folder for file changes.
+//        ],
+//        ['test'])                               // Run the test task if a file changes.
+//        .on('change', function (event) {        // Log the change to the console.
+//            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', test task started.'));
+//        });
+//});
 
 /*
  * Watch the styles and scripts folders for changes. Build the CSS and JavaScript if something changes.
@@ -492,6 +492,6 @@ gulp.task(
     [
         'clean',
         'build',
-        'test',
+        //'test',
         'watch'
     ]);

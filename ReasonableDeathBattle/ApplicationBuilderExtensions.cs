@@ -227,7 +227,8 @@
                                 var customSources = new List<string>()
                                 {
                                     ContentDeliveryNetwork.Google.Domain, // Allow scripts from the following CDN's.
-                                    ContentDeliveryNetwork.Microsoft.Domain
+                                    ContentDeliveryNetwork.Microsoft.Domain,
+                                    ContentDeliveryNetwork.Polyfill.Domain
                                 };
                                 if (hostingEnvironment.IsDevelopment())   // Allow Browser Link to work correctly in Development.
                                 {

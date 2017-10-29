@@ -8,6 +8,7 @@
          control provider. Only use this in Development, it is not intended for Production use.
          See http://docs.asp.net/en/latest/security/app-secrets.html -->
     <UserSecretsId>MvcBoilerplate-fe5dc3df-2725-4ccc-9e53-0fc56fe83882</UserSecretsId>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Label="Package">
     <Version>1.0.0</Version>

@@ -28,6 +28,16 @@ textarea {
     line-height: 1.4;
   }
 }
+
+// Loading indicator
+.loading-indicator {
+  display: none; // We will show this with JavaScript, defualt to invisible for JS-disabled viewers
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  z-index: 9999;
+}
+
 // Hide captions for smaller screens.
 @media screen and (min-width: 767px) {
   .carousel-caption {

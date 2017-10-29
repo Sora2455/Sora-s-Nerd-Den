@@ -166,22 +166,25 @@
             </div>
         </div>
     </nav>
-    @* div id="main" - The main container for the page. Change this to the HTML5 main tag when it gains more browser support. *@
-    <div id="main" class="container body-content" role="main">
+    <main id="main" class="container body-content">
+        <img src="~/img/misc/ajax-loader.gif" class="loading-indicator" id="loading-indicator"/>
         <!--[if lt IE 8]>
             <div class="alert alert-warning" role="alert">
                 <p>You are using an outdated browser. Please <a class="alert-link" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
             </div>
         <![endif]-->
-        @RenderBody()
+        <div id="main-content">
+            @RenderBody()
+        </div>        
         <hr>
         <footer role="contentinfo">
             <p>&copy; @DateTime.Now.Year - @AppSettings.Value.SiteTitle</p>
         </footer>
-    </div>
+    </main>
 
 
     <environment names="@EnvironmentName.Development">
+        <script src="@ContentDeliveryNetwork.Polyfill.PolyfillDevUrl"></script>
         <script asp-append-version="true" src="~/js/jquery.js"></script>
         <script asp-append-version="true" src="~/js/jquery-validate.js"></script>
         <script asp-append-version="true" src="~/js/jquery-validate-unobtrusive.js"></script>
@@ -193,6 +196,8 @@
             See https://raygun.com/blog/2015/05/fixing-script-errors/
            asp-subresource-integrity-src - Ensures the CDN resource has not been tampered with.
             See http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core *@
+        <script crossorigin="anonymous"
+                src="@ContentDeliveryNetwork.Polyfill.PolyfillProdUrl"></script>
         <script crossorigin="anonymous"
                 src="@ContentDeliveryNetwork.Google.JQueryUrl"
                 asp-subresource-integrity-src="~/js/jquery.js"></script>

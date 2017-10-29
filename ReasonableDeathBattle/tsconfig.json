@@ -13,7 +13,9 @@
     // Use the Common JS modules.
     "module": "commonjs",
     // Compile to ECMAScript 5.
-    "target": "es5"
+    "target": "es5",
+    // The libraries TypeScript should use to validate definition files
+    "lib": ["dom", "es2015.iterable", "es5", "es6"]
   },
   // exclude - Exclude the node_modules and wwwroot folders from being scanned for TypeScript (.ts)
   // or TypeScript definition (.d.ts) files.
