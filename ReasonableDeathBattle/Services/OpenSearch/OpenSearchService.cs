@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     using System.Text;
     using System.Xml.Linq;
@@ -6,8 +6,8 @@
     using Boilerplate.AspNetCore;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using ReasonableDeathBattle.Constants;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Constants;
+    using SorasNerdDen.Settings;
 
     public sealed class OpenSearchService : IOpenSearchService
     {

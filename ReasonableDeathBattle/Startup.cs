@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle
+﻿namespace SorasNerdDen
 {
     using System;
     using System.IO.Compression;
@@ -16,7 +16,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Settings;
     using Newtonsoft.Json.Serialization;
 
     /// <summary>

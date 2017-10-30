@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     public interface IManifestService
     {

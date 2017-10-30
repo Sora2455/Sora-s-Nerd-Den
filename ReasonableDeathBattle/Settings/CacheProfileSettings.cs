@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Settings
+﻿namespace SorasNerdDen.Settings
 {
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc;

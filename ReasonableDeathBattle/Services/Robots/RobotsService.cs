@@ -1,9 +1,9 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     using System.Text;
     using Boilerplate.AspNetCore;
     using Microsoft.AspNetCore.Mvc;
-    using ReasonableDeathBattle.Constants;
+    using SorasNerdDen.Constants;
 
     public sealed class RobotsService : IRobotsService
     {

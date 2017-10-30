@@ -1,8 +1,8 @@
-﻿namespace ReasonableDeathBattle.Controllers
+﻿namespace SorasNerdDen.Controllers
 {
     using Boilerplate.AspNetCore;
     using Microsoft.AspNetCore.Mvc;
-    using ReasonableDeathBattle.Constants;
+    using SorasNerdDen.Constants;
 
     /// <summary>
     /// Provides methods that respond to HTTP requests with HTTP errors.

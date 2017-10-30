@@ -1,11 +1,11 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     using System.Text;
     using System.Xml.Linq;
     using Boilerplate;
     using Boilerplate.AspNetCore;
     using Microsoft.AspNetCore.Mvc;
-    using ReasonableDeathBattle.Constants;
+    using SorasNerdDen.Constants;
 
     public class BrowserConfigService : IBrowserConfigService
     {

@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Settings
+﻿namespace SorasNerdDen.Settings
 {
     /// <summary>
     /// The settings for the current application.

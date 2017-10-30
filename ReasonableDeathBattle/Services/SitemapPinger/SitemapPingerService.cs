@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     using System.Collections.Generic;
     using System.Globalization;
@@ -10,8 +10,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using ReasonableDeathBattle.Constants;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Constants;
+    using SorasNerdDen.Settings;
 
     public class SitemapPingerService : ISitemapPingerService
     {

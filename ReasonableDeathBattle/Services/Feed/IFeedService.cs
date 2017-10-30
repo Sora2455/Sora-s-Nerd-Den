@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
 #if NET461
     // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed

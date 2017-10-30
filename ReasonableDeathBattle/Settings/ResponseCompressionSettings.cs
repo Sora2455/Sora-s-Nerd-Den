@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Settings
+﻿namespace SorasNerdDen.Settings
 {
     public class ResponseCompressionSettings
     {

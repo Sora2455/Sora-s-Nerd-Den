@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle
+﻿namespace SorasNerdDen
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,8 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using ReasonableDeathBattle.Constants;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Constants;
+    using SorasNerdDen.Settings;
     using NWebsec.AspNetCore.Middleware;
 
     public static partial class ApplicationBuilderExtensions

@@ -1,8 +1,8 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Settings;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 

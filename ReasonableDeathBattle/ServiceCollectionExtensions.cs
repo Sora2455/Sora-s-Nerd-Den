@@ -1,9 +1,9 @@
-﻿namespace ReasonableDeathBattle
+﻿namespace SorasNerdDen
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using ReasonableDeathBattle.Services;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Services;
+    using SorasNerdDen.Settings;
 
     public static partial class ServiceCollectionExtensions
     {

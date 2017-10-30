@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
 #if NET461
     // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed
@@ -12,8 +12,8 @@
     using Boilerplate.AspNetCore;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using ReasonableDeathBattle.Constants;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Constants;
+    using SorasNerdDen.Settings;
 
     /// <summary>
     /// Builds <see cref="SyndicationFeed"/>'s containing meta data about the feed and the feed entries.

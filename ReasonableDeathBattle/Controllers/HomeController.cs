@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Controllers
+﻿namespace SorasNerdDen.Controllers
 {
     using System.Text;
     using System.Threading;
@@ -7,9 +7,9 @@
     using Boilerplate.AspNetCore.Filters;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using ReasonableDeathBattle.Constants;
-    using ReasonableDeathBattle.Services;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Constants;
+    using SorasNerdDen.Services;
+    using SorasNerdDen.Settings;
 
     public class HomeController : Controller
     {

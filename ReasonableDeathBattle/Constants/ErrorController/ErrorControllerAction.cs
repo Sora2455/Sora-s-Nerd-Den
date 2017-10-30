@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Constants
+﻿namespace SorasNerdDen.Constants
 {
     public static class ErrorControllerAction
     {

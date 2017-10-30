@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle
+﻿namespace SorasNerdDen
 {
     using System.IO;
     using System.Linq;

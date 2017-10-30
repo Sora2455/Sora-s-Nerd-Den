@@ -1,4 +1,4 @@
-﻿namespace ReasonableDeathBattle.Services
+﻿namespace SorasNerdDen.Services
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,8 @@
     using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using ReasonableDeathBattle.Constants;
-    using ReasonableDeathBattle.Settings;
+    using SorasNerdDen.Constants;
+    using SorasNerdDen.Settings;
 
     /// <summary>
     /// Generates sitemap XML for the current site.
