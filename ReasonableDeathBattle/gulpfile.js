@@ -82,29 +82,8 @@ var paths = {
     js: './' + hosting.webroot + '/js/'
 };
 
-// A TypeScript project is used to enable faster incremental compilation, rather than recompiling everything from
-// scratch each time. Each resulting compiled file has it's own project which is stored in the typeScriptProjects array.
-var typeScriptProjects = [];
-function getTypeScriptProject(name) {
-    var item;
-    typeScriptProjects.forEach(function (typeScriptProject) {
-        if (typeScriptProject.name === name) {
-            item = typeScriptProject;
-        }
-    });
-
-    if (item === undefined) {
-        // Use the tsconfig.json file to specify how TypeScript (.ts) files should be compiled to JavaScript (.js).
-        var typeScriptProject = typescript.createProject('tsconfig.json');
-        item = {
-            name: name,
-            project: typeScriptProject
-        };
-        typeScriptProjects.push(item);
-    }
-
-    return item.project;
-}
+// Use the tsconfig.json file to specify how TypeScript (.ts) files should be compiled to JavaScript (.js).
+var typeScriptProject = typescript.createProject('tsconfig.json');
 
 // Initialize the mappings between the source and output files.
 var sources = {
@@ -174,9 +153,13 @@ var sources = {
             paths: [
                 paths.scripts + 'fallback/styles.js',
                 paths.scripts + 'fallback/scripts.js',
-                paths.scripts + 'site.ts'
+                paths.scripts + 'site.js'
             ]
         }
+    ],
+    // An array containing all the TypeScript files that need compiling
+    ts: [
+        paths.scripts + 'site.ts'
     ]
 };
 
@@ -244,6 +227,17 @@ gulp.task('lint-css', function () {
 });
 
 /*
+ * Report warnings and errors in your TypeScript files (lint them) under the Scripts folder.
+ */
+gulp.task('lint-ts', function () {
+    return  gulp.src(lintSources.ts)            // Start with the source .ts files.
+            .pipe(plumber())                    // Handle any errors.
+            .pipe(tslint({                      // Get any TypeScript linting errors.
+                formatter: "verbose"            // Use a verbose output.
+            }));
+});
+
+/*
  * Report warnings and errors in your JavaScript files (lint them) under the Scripts folder.
  */
 gulp.task('lint-js', function () {
@@ -254,12 +248,6 @@ gulp.task('lint-js', function () {
             .pipe(jshint.reporter('default', {  // Report any JavaScript linting errors to the console.
                 verbose: true
             })),
-        gulp.src(lintSources.ts)                // Start with the source .ts files.
-            .pipe(plumber())                    // Handle any errors.
-            .pipe(tslint({                      // Get any TypeScript linting errors.
-                formatter: "verbose"            // Use a verbose output.
-            }))
-            .pipe(tslint.report()),             // Report any TypeScript linting errors to the console.
         gulp.src(lintSources.js)                // Start with the source .js files.
             .pipe(plumber())                    // Handle any errors.
             .pipe(jscs())                       // Get and report any JavaScript style linting errors to the console.
@@ -271,6 +259,7 @@ gulp.task('lint-js', function () {
  */
 gulp.task('lint', [
     'lint-css',
+    'lint-ts',
     'lint-js'
 ]);
 
@@ -333,6 +322,20 @@ gulp.task('build-fonts', function () {
     return merge(tasks);                        // Combine multiple streams to one and return it so the task can be chained.
 });
 
+gulp.task('build-ts', [
+    'lint-ts'
+],
+function () {
+    var tasks = sources.ts.map(function (source) { // For each set of source files in the sources.
+        return gulp
+            .src(source)                           // Start with the source paths.
+            .pipe(plumber())                       // Handle any errors.
+            .pipe(typeScriptProject())             // Compile TypeScript (.ts) to JavaScript (.js) using the specified options.
+            .pipe(gulp.dest(paths.scripts));       // Saves the new JavaScript file next to its parent
+    });
+    return merge(tasks);                           // Combine multiple streams to one and return it so the task can be chained.
+});
+
 /*
  * Builds the JavaScript files for the site.
  */
@@ -357,9 +360,6 @@ function () {
                 .pipe(gulpif(
                     environment.isDevelopment(),    // If running in the development environment.
                     sourcemaps.init()))             // Set up the generation of .map source files for the JavaScript.
-                .pipe(gulpif(                       // If the file is a TypeScript (.ts) file.
-                    '**/*.ts',
-                    getTypeScriptProject(source.name)())) // Compile TypeScript (.ts) to JavaScript (.js) using the specified options.
                 .pipe(concat(source.name))          // Concatenate JavaScript files into a single file with the specified name.
                 .pipe(sizeBefore(source.name))      // Write the size of the file to the console before minification.
                 .pipe(gulpif(
@@ -376,9 +376,9 @@ function () {
 });
 
 /*
- * Cleans and builds the CSS, Font and JavaScript files for the site.
+ * Cleans and builds the CSS, Font', TypeScript and JavaScript files for the site.
  */
-gulp.task('build', ['build-css', 'build-fonts', 'build-js']);
+gulp.task('build', ['build-css', 'build-fonts', 'build-ts', 'build-js']);
 
 //gulp.task('test', function () {
 //    return gulp
@@ -416,12 +416,25 @@ gulp.task('watch-css', function () {
 });
 
 /*
- * Watch the scripts folder for changes to .js or .ts files. Build the JavaScript if something changes.
+ * Watch the scripts folder for changes to .ts files. Build the TypeScript if something changes.
+ */
+gulp.task('watch-ts', function () {
+    return gulp
+        .watch(
+        paths.scripts + '**/*.ts',        // Watch the scripts folder for file changes.
+        ['build-ts'])                     // Run the build-ts task if a file changes.
+        .on('change', function (event) {  // Log the change to the console.
+            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', build-ts task started.'));
+        });
+});
+
+/*
+ * Watch the scripts folder for changes to .js files. Build the JavaScript if something changes.
  */
 gulp.task('watch-js', function () {
     return gulp
         .watch(
-            paths.scripts + '**/*.{js,ts}',     // Watch the scripts folder for file changes.
+            paths.scripts + '**/*.js',          // Watch the scripts folder for file changes.
             ['clean-js', 'build-js'])           // Run the build-js task if a file changes.
         .on('change', function (event) {        // Log the change to the console.
             gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', build-js task started.'));
@@ -446,7 +459,7 @@ gulp.task('watch-js', function () {
 /*
  * Watch the styles and scripts folders for changes. Build the CSS and JavaScript if something changes.
  */
-gulp.task('watch', ['watch-css', 'watch-js']);
+gulp.task('watch', ['watch-css', 'watch-ts', 'watch-js']);
 
 function pageSpeed(strategy, cb) {
     if (siteUrl === undefined) {

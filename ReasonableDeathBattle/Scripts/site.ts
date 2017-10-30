@@ -1,8 +1,10 @@
 ﻿// When the document is availible for interaction:
 $(document).ready(() => {
     "use strict";
-    // Find all the links that go places:
-    $("a[href]").on("click", tryPartialLoad);
+    if (history.pushState) {
+        // Find all the links that go places:
+        $("a[href]").on("click", tryPartialLoad);
+    }    
 });
 /**
  * Check if a link's destination can be simulated by a partial update of the page, and do so if so
@@ -35,11 +37,9 @@ function tryPartialLoad(e: JQuery.Event): void {
     }
     // Then, fetch that page and load it into the main tag
     partialLoad(newTarget);
-    // If possible, add a history entry to mention that we 'changed' pages
-    if ("history" in window && "pushState" in history) {
-        const stateObject = { target: newTarget };
-        history.pushState(stateObject, "", originalTarget);
-    }
+    // Add a history entry to mention that we 'changed' pages
+    const stateObject = { target: newTarget };
+    history.pushState(stateObject, "", originalTarget);
 }
 /**
  * Replace the main content of the page with the main content from another page
@@ -48,7 +48,7 @@ function tryPartialLoad(e: JQuery.Event): void {
 function partialLoad(destination: string) {
     "use strict";
     $("#loading-indicator").show();
-    $("#main-content").load(destination, (responseText, textStatus, jqXHR) => {
+    $("#main-content").load(destination, () => {
         $("#loading-indicator").hide();
         // Don't forget to apply the tryPartialLoad function to the links we just loaded!
         $("#main-content a[href]").on("click", tryPartialLoad);
