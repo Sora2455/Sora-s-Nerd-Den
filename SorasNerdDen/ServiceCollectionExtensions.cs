@@ -89,11 +89,7 @@
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             services.AddScoped<IBrowserConfigService, BrowserConfigService>();
-#if NET461
-            // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed
-            // type does not yet exist. See https://github.com/dotnet/wcf/issues/76.
             services.AddScoped<IFeedService, FeedService>();
-#endif
             services.AddScoped<IManifestService, ManifestService>();
             services.AddScoped<IOpenSearchService, OpenSearchService>();
             services.AddScoped<IRobotsService, RobotsService>();

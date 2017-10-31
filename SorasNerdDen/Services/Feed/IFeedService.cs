@@ -1,9 +1,6 @@
 ﻿namespace SorasNerdDen.Services
 {
-#if NET461
-    // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed
-    // type does not yet exist. See https://github.com/dotnet/wcf/issues/76.
-    using System.ServiceModel.Syndication;
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -19,7 +16,7 @@
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> signifying when the request is cancelled.</param>
         /// <returns>A <see cref="SyndicationFeed"/>.</returns>
-        Task<SyndicationFeed> GetFeed(CancellationToken cancellationToken);
+        Task<string> GetFeed(CancellationToken cancellationToken, DateTimeOffset? lastUpdated = null);
 
         /// <summary>
         /// Publishes the fact that the feed has updated to subscribers using the PubSubHubbub v0.4 protocol.
@@ -34,5 +31,4 @@
         /// </remarks>
         Task PublishUpdate();
     }
-#endif
 }

@@ -11,15 +11,11 @@
     using SorasNerdDen.Services;
     using SorasNerdDen.Settings;
 
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IBrowserConfigService browserConfigService;
-#if NET461
-        // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed
-        // type does not yet exist. See https://github.com/dotnet/wcf/issues/76.
         private readonly IFeedService feedService;
-#endif
         private readonly IManifestService manifestService;
         private readonly IOpenSearchService openSearchService;
         private readonly IRobotsService robotsService;
@@ -27,11 +23,7 @@
 
         public HomeController(
             IBrowserConfigService browserConfigService,
-#if NET461
-            // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed
-            // type does not yet exist. See https://github.com/dotnet/wcf/issues/76.
             IFeedService feedService,
-#endif
             IManifestService manifestService,
             IOpenSearchService openSearchService,
             IRobotsService robotsService,
@@ -40,11 +32,7 @@
         {
             this.appSettings = appSettings;
             this.browserConfigService = browserConfigService;
-#if NET461
-            // The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed
-            // type does not yet exist. See https://github.com/dotnet/wcf/issues/76.
             this.feedService = feedService;
-#endif
             this.manifestService = manifestService;
             this.openSearchService = openSearchService;
             this.robotsService = robotsService;
@@ -79,17 +67,10 @@
         /// <returns>The Atom 1.0 feed for the current site.</returns>
         [ResponseCache(CacheProfileName = CacheProfileName.Feed)]
         [Route("feed", Name = HomeControllerRoute.GetFeed)]
-#if NET461
         public async Task<IActionResult> Feed(CancellationToken cancellationToken)
         {
-            return new AtomActionResult(await this.feedService.GetFeed(cancellationToken));
+            return Content(await feedService.GetFeed(cancellationToken), ContentType.Atom, Encoding.Unicode);
         }
-#else
-        public IActionResult Feed(CancellationToken cancellationToken)
-        {
-            return this.Ok("The FeedService is not available for .NET Core because the System.ServiceModel.Syndication.SyndicationFeed type does not yet exist. See https://github.com/dotnet/wcf/issues/76.");
-        }
-#endif
 
         [Route("search", Name = HomeControllerRoute.GetSearch)]
         public IActionResult Search(string query)
