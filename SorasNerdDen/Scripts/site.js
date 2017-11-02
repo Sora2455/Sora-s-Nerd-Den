@@ -21,7 +21,7 @@ function tryPartialLoad(e) {
     try {
         desination = new URL(originalTarget);
     }
-    catch (e) {
+    catch (err) {
         // If this isn't a valid URL, return
         return;
     }

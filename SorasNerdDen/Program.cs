@@ -38,7 +38,8 @@
                         {
                             // Use a self-signed certificate to enable 'dotnet run' to work in development.
                             // This will give a browser security warning which you can safely ignore.
-                            options.UseHttps("DevelopmentCertificate.pfx", "password");
+                            options.Listen(System.Net.IPAddress.Any, 44378, ListenOptions =>
+                                ListenOptions.UseHttps("DevelopmentCertificate.pfx", "password"));
                         }
                     })
                 .UseAzureAppServices()
