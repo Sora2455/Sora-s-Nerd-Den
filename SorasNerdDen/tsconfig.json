@@ -10,8 +10,8 @@
     "removeComments": false,
     // Do not create source map files (Leave this to the gulp plugin).
     "sourceMap": false,
-    // Use the Common JS modules.
-    "module": "commonjs",
+    // Use the system modules.
+    "module": "system",
     // Compile to ECMAScript 5.
     "target": "es5",
     // The libraries TypeScript should use to validate definition files

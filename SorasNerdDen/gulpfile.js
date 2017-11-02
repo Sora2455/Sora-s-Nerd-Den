@@ -82,8 +82,30 @@ var paths = {
     js: './' + hosting.webroot + '/js/'
 };
 
-// Use the tsconfig.json file to specify how TypeScript (.ts) files should be compiled to JavaScript (.js).
-var typeScriptProject = typescript.createProject('tsconfig.json');
+// A TypeScript project is used to enable faster incremental compilation, rather than recompiling everything from
+// scratch each time. Each resulting compiled file has it's own project which is stored in the typeScriptProjects array.
+// (One project cannot be used multiple times at once)
+var typeScriptProjects = [];
+function getTypeScriptProject(name) {
+    var item;
+    typeScriptProjects.forEach(function (typeScriptProject) {
+        if (typeScriptProject.name === name) {
+            item = typeScriptProject;
+        }
+    });
+
+    if (item === undefined) {
+        // Use the tsconfig.json file to specify how TypeScript (.ts) files should be compiled to JavaScript (.js).
+        var typeScriptProject = typescript.createProject('tsconfig.json');
+        item = {
+            name: name,
+            project: typeScriptProject
+        };
+        typeScriptProjects.push(item);
+    }
+
+    return item.project;
+}
 
 // Initialize the mappings between the source and output files.
 var sources = {
@@ -153,13 +175,14 @@ var sources = {
             paths: [
                 paths.scripts + 'fallback/styles.js',
                 paths.scripts + 'fallback/scripts.js',
-                paths.scripts + 'site.js'
+                paths.scripts + 'partialLoad.js'
             ]
         }
     ],
     // An array containing all the TypeScript files that need compiling
     ts: [
-        paths.scripts + 'site.ts'
+        paths.scripts + 'partialLoad.ts',
+        paths.scripts + 'serviceWorker.ts'
     ]
 };
 
@@ -328,9 +351,9 @@ gulp.task('build-ts', [
 function () {
     var tasks = sources.ts.map(function (source) { // For each set of source files in the sources.
         return gulp
-            .src(source)                           // Start with the source paths.
+            .src(source)                           // Start with the source path.
             .pipe(plumber())                       // Handle any errors.
-            .pipe(typeScriptProject())             // Compile TypeScript (.ts) to JavaScript (.js) using the specified options.
+            .pipe(getTypeScriptProject(source)())  // Compile TypeScript (.ts) to JavaScript (.js) using the specified options.
             .pipe(gulp.dest(paths.scripts));       // Saves the new JavaScript file next to its parent
     });
     return merge(tasks);                           // Combine multiple streams to one and return it so the task can be chained.

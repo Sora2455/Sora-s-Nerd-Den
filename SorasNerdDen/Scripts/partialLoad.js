@@ -1,9 +1,21 @@
+// NodeList.forEach pollyfill
+if ('NodeList' in window && !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = function (callback, thisArg) {
+        "use strict";
+        thisArg = thisArg || window;
+        for (var i = 0; i < this.length; i++) {
+            callback.call(thisArg, this[i], i, this);
+        }
+    };
+}
 // When the document is availible for interaction:
 $(document).ready(function () {
     "use strict";
     if (history.pushState) {
         // Find all the links that go places:
-        $("a[href]").on("click", tryPartialLoad);
+        document.querySelectorAll("a[href]").forEach(function (link) {
+            link.addEventListener("click", tryPartialLoad);
+        });
     }
 });
 /**
@@ -13,7 +25,7 @@ $(document).ready(function () {
 function tryPartialLoad(e) {
     "use strict";
     // Not that the event target can sometimes be a child element of the link
-    var originalTarget = $(e.target).closest("a[href]").prop("href");
+    var originalTarget = e.target.closest("a[href]").href;
     if (!originalTarget) {
         return;
     }
@@ -55,11 +67,21 @@ function tryPartialLoad(e) {
  */
 function partialLoad(destination) {
     "use strict";
-    $("#loading-indicator").show();
-    $("#main-content").load(destination, function () {
-        $("#loading-indicator").hide();
-        // Don't forget to apply the tryPartialLoad function to the links we just loaded!
-        $("#main-content a[href]").on("click", tryPartialLoad);
+    document.getElementById("loading-indicator").style.display = "block";
+    fetch(destination).then(function (response) {
+        document.getElementById("loading-indicator").style.display = "none";
+        if (!response.ok)
+            return;
+        return response.text().then(function (text) {
+            document.getElementById("main-content").innerHTML = text;
+            // Don't forget to apply the tryPartialLoad function to the links we just loaded!
+            document.querySelectorAll("#main-content a[href]").forEach(function (link) {
+                link.addEventListener("click", tryPartialLoad);
+            });
+        });
+    }).catch(function (error) {
+        // Hide the loading indicator, even on error
+        document.getElementById("loading-indicator").style.display = "none";
     });
 }
 // Make sure we read the back and forward buttons correctly
