@@ -8,6 +8,8 @@
          See http://docs.asp.net/en/latest/security/app-secrets.html -->
     <UserSecretsId>MvcBoilerplate-fe5dc3df-2725-4ccc-9e53-0fc56fe83882</UserSecretsId>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <!-- Gulp is compiling Typescript for us, no need to have VS do it as well-->
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
   <PropertyGroup Label="Package">
     <Version>1.0.0</Version>

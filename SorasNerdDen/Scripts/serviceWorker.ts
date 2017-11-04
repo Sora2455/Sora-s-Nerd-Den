@@ -1,18 +1,17 @@
-﻿"use strict";
-
-const log = console.log.bind(console);
+﻿const log = console.log.bind(console);
 const err = console.error.bind(console);
 onerror = err;
 
 // Moves the contents of one named cached into another.
 function cacheCopy(source: string, destination: string) {
+    "use strict";
     return caches.delete(destination).then(function () {
         return Promise.all([
             caches.open(source),
             caches.open(destination)
         ]).then(function (results) {
-            var sourceCache = results[0];
-            var destCache = results[1];
+            const sourceCache = results[0];
+            const destCache = results[1];
 
             return sourceCache.keys().then(function (requests: RequestInfo[]) {
                 return Promise.all(requests.map(function (request) {
@@ -25,11 +24,8 @@ function cacheCopy(source: string, destination: string) {
     });
 }
 
-function fetchAndCache(request: RequestInfo, cache: Cache) {
-    if (!(request instanceof Request)) {
-        request = new Request(request);
-    }
-
+function fetchAndCache(request: Request, cache: Cache) {
+    "use strict";
     return fetch(request.clone()).then(function (response) {
         cache.put(request, response.clone());
         return response;
@@ -37,17 +33,19 @@ function fetchAndCache(request: RequestInfo, cache: Cache) {
 }
 
 addEventListener("install", function (e: ExtendableEvent) {
+    "use strict";
     // Put updated resources in a new cache, so that currently running pages
     // get the current versions.
     e.waitUntil(caches.delete("core-waiting").then(function () {
         return caches.open("core-waiting").then(function (core) {
-            var resourceUrls = [
-                "",
-                "css/site.css",
-                "css/font-awesome.css",
-                "js/jquery.js",
-                "js/bootstrap.js",
-                "js/site.js"
+            const resourceUrls = [
+                "/",
+                // TODO /offline.html
+                "/css/site.css",
+                "/css/font-awesome.css",
+                "/js/jquery.js",
+                "/js/bootstrap.js",
+                "/js/site.js"
             ];
 
             return core.addAll(resourceUrls);
@@ -57,12 +55,16 @@ addEventListener("install", function (e: ExtendableEvent) {
 
 
 addEventListener("activate", function (e: ExtendableEvent) {
+    "use strict";
     // Copy the newly installed cache to the active cache
-    e.waitUntil(cacheCopy("core-waiting", "core"));
+    e.waitUntil(cacheCopy("core-waiting", "core")
+        // Delete the waiting cache afterward to save client memory space
+        .then(() => caches.delete("core-waiting")));
 });
 
 addEventListener("fetch", function (e: FetchEvent) {
-    var request = e.request;
+    "use strict";
+    const request = e.request;
 
     // TODO filter requests
 
