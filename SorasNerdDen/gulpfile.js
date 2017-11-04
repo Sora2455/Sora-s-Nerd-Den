@@ -96,7 +96,18 @@ function getTypeScriptProject(name) {
 
     if (item === undefined) {
         // Use the tsconfig.json file to specify how TypeScript (.ts) files should be compiled to JavaScript (.js).
-        var typeScriptProject = typescript.createProject('tsconfig.json');
+        var typeScriptProject;
+        if (name.includes("serviceWorker.ts")) {
+            // The serivice worker needs the webworker context
+            typeScriptProject = typescript.createProject('tsconfig.json', {
+                lib: ["es2015.iterable", "es5", "es6", "webworker"]
+            });
+        } else {
+            // Everything else uses the dom context
+            typeScriptProject = typescript.createProject('tsconfig.json', {
+                lib: ["es2015.iterable", "es5", "es6", "dom"]
+            });
+        }
         item = {
             name: name,
             project: typeScriptProject
@@ -162,26 +173,23 @@ var sources = {
             paths: paths.nodeModules + 'jquery/dist/jquery.min.js'
         },
         {
-            name: 'jquery-validate.js',
-            copy: true,
-            paths: paths.nodeModules + 'jquery-validation/dist/jquery.validate.min.js'
-        },
-        {
-            name: 'jquery-validate-unobtrusive.js',
-            paths: paths.nodeModules + 'jquery-validation-unobtrusive/jquery.validate.unobtrusive.js'
-        },
-        {
             name: 'site.js',
             paths: [
                 paths.scripts + 'fallback/styles.js',
                 paths.scripts + 'fallback/scripts.js',
-                paths.scripts + 'partialLoad.js'
+                paths.scripts + 'partialLoad.js',
+                paths.scripts + 'addServiceWorker.js'
             ]
+        },
+        {
+            name: 'serviceWorker.js',
+            paths: paths.scripts + 'serviceWorker.js'
         }
     ],
     // An array containing all the TypeScript files that need compiling
     ts: [
         paths.scripts + 'partialLoad.ts',
+        paths.scripts + 'addServiceWorker.ts',
         paths.scripts + 'serviceWorker.ts'
     ]
 };

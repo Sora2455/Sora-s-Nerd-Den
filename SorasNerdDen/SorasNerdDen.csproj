@@ -18,6 +18,7 @@
     <Copyright>Copyright © PROJECT-AUTHOR. All rights Reserved</Copyright>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Scripts\addServiceWorker.ts" />
     <None Remove="Scripts\serviceWorker.ts" />
   </ItemGroup>
   <ItemGroup Label="Files">
@@ -74,6 +75,7 @@
     <None Include="wwwroot/.gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Scripts\addServiceWorker.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker.ts" />
   </ItemGroup>
   <!-- Execute the following commands before publishing the project. -->

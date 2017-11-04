@@ -36,5 +36,15 @@ namespace SorasNerdDen.Controllers
         {
             return StatusCode(304);
         }
+
+        /// <summary>
+        /// Return this to let the user know that the content has not been modified since they last fetched it
+        /// </summary>
+        /// <param name="value">The value to set on the Microsoft.AspNetCore.Mvc.ObjectResult.</param>
+        /// <returns>A StatusCodeResult of 304</returns>
+        protected ObjectResult ContentNotModified(object value)
+        {
+            return StatusCode(304, value);
+        }
     }
 }

@@ -9,7 +9,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
     };
 }
 // When the document is availible for interaction:
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
     "use strict";
     if (history.pushState) {
         // Find all the links that go places:
@@ -70,8 +70,6 @@ function partialLoad(destination) {
     document.getElementById("loading-indicator").style.display = "block";
     fetch(destination).then(function (response) {
         document.getElementById("loading-indicator").style.display = "none";
-        if (!response.ok)
-            return;
         return response.text().then(function (text) {
             document.getElementById("main-content").innerHTML = text;
             // Don't forget to apply the tryPartialLoad function to the links we just loaded!
@@ -79,7 +77,7 @@ function partialLoad(destination) {
                 link.addEventListener("click", tryPartialLoad);
             });
         });
-    }).catch(function (error) {
+    }).catch(function () {
         // Hide the loading indicator, even on error
         document.getElementById("loading-indicator").style.display = "none";
     });

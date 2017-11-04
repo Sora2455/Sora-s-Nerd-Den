@@ -10,8 +10,6 @@
         //        false if the script failed to load and the fallback is required.
         // src - The URL to the fallback script.
         { test: function () { return window.jQuery; }, src: "/js/jquery.js" },
-        { test: function () { return window.jQuery.validator; }, src: "/js/jquery-validate.js" },
-        { test: function () { return window.jQuery.validator.unobtrusive; }, src: "/js/jquery-validate-unobtrusive.js" },
         { test: function () { return window.jQuery.fn.modal; }, src: "/js/bootstrap.js" }
     ];
 

@@ -1,5 +1,6 @@
 ﻿namespace SorasNerdDen.Controllers
 {
+    using System;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,6 +14,9 @@
 
     public class HomeController : BaseController
     {
+        // Hardcoded for demo purposes
+        private static readonly DateTime lastModifiedDate = new DateTime(2017, 11, 4);
+
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IBrowserConfigService browserConfigService;
         private readonly IFeedService feedService;
@@ -42,19 +46,34 @@
         [HttpGet("", Name = HomeControllerRoute.GetIndex)]
         public IActionResult Index()
         {
-            return this.View(HomeControllerAction.Index);
+            if (!CheckLastModified(lastModifiedDate))
+            {
+                return ContentNotModified();
+            }
+
+            return View(HomeControllerAction.Index);
         }
 
         [HttpGet("about", Name = HomeControllerRoute.GetAbout)]
         public IActionResult About()
         {
-            return this.View(HomeControllerAction.About);
+            if (!CheckLastModified(lastModifiedDate))
+            {
+                return ContentNotModified();
+            }
+
+            return View(HomeControllerAction.About);
         }
 
         [HttpGet("contact", Name = HomeControllerRoute.GetContact)]
         public IActionResult Contact()
         {
-            return this.View(HomeControllerAction.Contact);
+            if (!CheckLastModified(lastModifiedDate))
+            {
+                return ContentNotModified();
+            }
+
+            return View(HomeControllerAction.Contact);
         }
 
         /// <summary>
