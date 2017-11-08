@@ -58,6 +58,10 @@ addEventListener("activate", function (e) {
 addEventListener("fetch", function (e) {
     "use strict";
     var request = e.request;
+    // If not a GET request, don't cache
+    if (request.method !== "GET") {
+        return fetch(request);
+    }
     // TODO filter requests
     // Basic read-through caching.
     e.respondWith(caches.open("core").then(function (core) {

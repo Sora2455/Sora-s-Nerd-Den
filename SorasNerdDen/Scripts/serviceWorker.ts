@@ -70,6 +70,8 @@ addEventListener("fetch", function (e: FetchEvent) {
     "use strict";
     const request = e.request;
 
+    // If not a GET request, don't cache
+    if (request.method !== "GET") { return fetch(request); }
     // TODO filter requests
 
     // Basic read-through caching.
