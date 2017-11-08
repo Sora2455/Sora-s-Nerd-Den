@@ -43,7 +43,8 @@ addEventListener("install", function (e) {
                 "/js/bootstrap.js",
                 "/js/site.js"
             ];
-            return core.addAll(resourceUrls);
+            return core.addAll(resourceUrls)
+                .then(function () { return self.skipWaiting(); });
         });
     }));
 });
@@ -51,6 +52,7 @@ addEventListener("activate", function (e) {
     "use strict";
     // Copy the newly installed cache to the active cache
     e.waitUntil(cacheCopy("core-waiting", "core")
+        .then(function () { return self.clients.claim(); })
         .then(function () { return caches.delete("core-waiting"); }));
 });
 addEventListener("fetch", function (e) {

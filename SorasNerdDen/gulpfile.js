@@ -165,12 +165,14 @@ var sources = {
             copy: true,
             // paths - A single or array of paths to JavaScript or TypeScript files which will be concatenated and
             // minified to create a file with the above file name.
-            paths: paths.nodeModules + 'bootstrap-sass/assets/javascripts/bootstrap.min.js'
+            paths: paths.nodeModules + 'bootstrap-sass/assets/javascripts/bootstrap.min.js',
+            dest: paths.js
         },
         {
             name: 'jquery.js',
             copy: true,
-            paths: paths.nodeModules + 'jquery/dist/jquery.min.js'
+            paths: paths.nodeModules + 'jquery/dist/jquery.min.js',
+            dest: paths.js
         },
         {
             name: 'site.js',
@@ -179,11 +181,13 @@ var sources = {
                 paths.scripts + 'fallback/scripts.js',
                 paths.scripts + 'partialLoad.js',
                 paths.scripts + 'addServiceWorker.js'
-            ]
+            ],
+            dest: paths.js
         },
         {
             name: 'serviceWorker.js',
-            paths: paths.scripts + 'serviceWorker.js'
+            paths: paths.scripts + 'serviceWorker.js',
+            dest: paths.wwwroot
         }
     ],
     // An array containing all the TypeScript files that need compiling
@@ -382,7 +386,7 @@ function () {
                     basename: source.name,
                     extname: ''
                 }))
-                .pipe(gulp.dest(paths.js));         // Saves the JavaScript file to the specified destination path.
+                .pipe(gulp.dest(source.dest));      // Saves the JavaScript file to the specified destination path.
         }
         else {
             return gulp                             // Return the stream.
@@ -400,7 +404,7 @@ function () {
                 .pipe(gulpif(
                     environment.isDevelopment(),    // If running in the development environment.
                     sourcemaps.write('.')))         // Generates source .map files for the JavaScript.
-                .pipe(gulp.dest(paths.js));         // Saves the JavaScript file to the specified destination path.
+                .pipe(gulp.dest(source.dest));      // Saves the JavaScript file to the specified destination path.
         }
     });
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.

@@ -4,6 +4,8 @@
     {
         public const string About = "About";
         public const string Contact = "Contact";
+        public const string Loading = "Loading";
+        public const string Offline = "Offline";
         public const string Feed = "Feed";
         public const string Index = "Index";
         public const string OpenSearchXml = "OpenSearchXml";

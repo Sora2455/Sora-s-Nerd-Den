@@ -48,7 +48,9 @@ addEventListener("install", function (e: ExtendableEvent) {
                 "/js/site.js"
             ];
 
-            return core.addAll(resourceUrls);
+            return core.addAll(resourceUrls)
+                // Don't wait for the client to refresh the page (as this site is designed not to refresh)
+                .then(() => (self as ServiceWorkerGlobalScope).skipWaiting());
         });
     }));
 });
@@ -58,6 +60,8 @@ addEventListener("activate", function (e: ExtendableEvent) {
     "use strict";
     // Copy the newly installed cache to the active cache
     e.waitUntil(cacheCopy("core-waiting", "core")
+        // Declare that we'll be taking over now
+        .then(() => (self as ServiceWorkerGlobalScope).clients.claim())
         // Delete the waiting cache afterward to save client memory space
         .then(() => caches.delete("core-waiting")));
 });
