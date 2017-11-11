@@ -38,6 +38,8 @@
 
             // Tell all robots to to index any of the error pages.
             stringBuilder.AppendLine("disallow: /error/");
+            stringBuilder.AppendLine("disallow: /loading/");
+            stringBuilder.AppendLine("disallow: /offline/");
 
             // Tell all robots they can visit everything under the following sub-directory, even if the parent
             // directory is disallowed.

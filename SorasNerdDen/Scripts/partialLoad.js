@@ -18,6 +18,10 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
             document.querySelectorAll("a[href]").forEach(function (link) {
                 link.addEventListener("click", tryPartialLoad);
             });
+            //TODO some check that we are in the loading page
+            var newTarget = getPartialUrl(location.toString());
+            // Then, fetch that page and load it into the main tag
+            partialLoad(newTarget);
         }
     });
     var partialLoadEvent = new CustomEvent("PartialyLoaded", { bubbles: true });
@@ -54,19 +58,24 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }
         // Otherwise prevent normal link execution
         e.preventDefault();
-        // Add a 'v=m' paramater to the URL, which tells the view model only to send the page main content
-        var newTarget = "";
-        if (originalTarget.includes("?")) {
-            newTarget = originalTarget + "&v=m";
-        }
-        else {
-            newTarget = originalTarget + "?v=m";
-        }
+        var newTarget = getPartialUrl(originalTarget);
         // Then, fetch that page and load it into the main tag
         partialLoad(newTarget);
         // Add a history entry to mention that we 'changed' pages
         var stateObject = { target: newTarget };
         history.pushState(stateObject, "", originalTarget);
+    }
+    /**
+     * Add a 'v=m' paramater to the URL, which tells the view model only to send the page main content
+     * @param originalUrl The URL that we want the partial view of
+     */
+    function getPartialUrl(originalUrl) {
+        if (originalUrl.includes("?")) {
+            return originalUrl + "&v=m";
+        }
+        else {
+            return originalUrl + "?v=m";
+        }
     }
     /**
      * Replace the main content of the page with the main content from another page

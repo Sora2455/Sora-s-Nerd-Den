@@ -24,11 +24,21 @@ function cacheCopy(source: string, destination: string) {
     });
 }
 
-function fetchAndCache(request: Request, cache: Cache) {
+function fetchAndCache(request: RequestInfo, cache: Cache) {
     "use strict";
+    if (!(request instanceof Request)) {
+        request = new Request(request);
+    }
+
     return fetch(request.clone()).then(function (response) {
+        // if the response came back not okay (like a server error) try and get from cache
+        if (!response.ok) { return cache.match(request); }
+        // otherwise store the response for future use, and return the response to the client
         cache.put(request, response.clone());
         return response;
+    }).catch(() => {
+        // if there was an error (almost certainly network touble) try and get from cache
+        return cache.match(request);
     });
 }
 
@@ -39,8 +49,10 @@ addEventListener("install", function (e: ExtendableEvent) {
     e.waitUntil(caches.delete("core-waiting").then(function () {
         return caches.open("core-waiting").then(function (core) {
             const resourceUrls = [
-                "/",
-                // TODO /offline.html
+                "/loading/",
+                // ?v=m means without the shared view (just the main content)
+                "/?v=m",
+                "/offline/?v=m",
                 "/css/site.css",
                 "/css/font-awesome.css",
                 "/js/jquery.js",
@@ -48,7 +60,11 @@ addEventListener("install", function (e: ExtendableEvent) {
                 "/js/site.js"
             ];
 
-            return core.addAll(resourceUrls)
+            return Promise.all(resourceUrls.map(function (key) {
+                // Make sure to download fresh versions of the files!
+                return fetch(key, { cache: "reload" })
+                    .then((response) => core.put(key, response));
+            }))
                 // Don't wait for the client to refresh the page (as this site is designed not to refresh)
                 .then(() => (self as ServiceWorkerGlobalScope).skipWaiting());
         });
@@ -72,11 +88,14 @@ addEventListener("fetch", function (e: FetchEvent) {
 
     // If not a GET request, don't cache
     if (request.method !== "GET") { return fetch(request); }
+    // If it's a 'main' page, use the loading page instead
+    if (request.url.endsWith("/")) { return bigPageLoad(e); }
     // TODO filter requests
 
     // Basic read-through caching.
     e.respondWith(
         caches.open("core").then(function (core) {
+
             return core.match(request).then(function (response) {
                 if (response) {
                     return response;
@@ -90,3 +109,20 @@ addEventListener("fetch", function (e: FetchEvent) {
         })
     );
 });
+
+function bigPageLoad(e: FetchEvent) {
+    "use strict";
+
+    // Add a 'v=m' paramater to the URL, which tells the view model only to send the page main content
+    let newTarget = "";
+    if (e.request.url.includes("?")) {
+        newTarget = e.request.url + "&v=m";
+    } else {
+        newTarget = e.request.url + "?v=m";
+    }
+
+    e.respondWith(caches.open("core").then(function (core) {
+        // Get the loading page
+        return fetchAndCache("/loading/", core);
+    }));
+}

@@ -18,7 +18,7 @@
                 {
                     // Rename the Anti-Forgery cookie from "__RequestVerificationToken" to "f". This adds a little
                     // security through obscurity and also saves sending a few characters over the wire.
-                    options.CookieName = "f";
+                    options.Cookie.Name = "f";
 
                     // Rename the form input name from "__RequestVerificationToken" to "f" for the same reason above
                     // e.g. <input name="__RequestVerificationToken" type="hidden" value="..." />
@@ -30,7 +30,7 @@
 
                     // If you have enabled SSL/TLS. Uncomment this line to ensure that the Anti-Forgery cookie requires
                     // SSL /TLS to be sent across the wire.
-                    options.RequireSsl = true;
+                    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
                 });
 
         /// <summary>

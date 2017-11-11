@@ -32,6 +32,7 @@
   <ItemGroup Label="Package References">
     <PackageReference Include="Boilerplate.AspNetCore" Version="3.0.0" />
     <PackageReference Include="Boilerplate.AspNetCore.TagHelpers" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.0" />
@@ -54,7 +55,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.0" />
+    <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader" Version="14.1.0" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0" />
     <PackageReference Include="NWebsec.AspNetCore.Mvc" Version="1.1.0" />
