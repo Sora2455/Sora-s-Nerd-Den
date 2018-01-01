@@ -11,7 +11,7 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),// Auto-prefix CSS (https://www.npmjs.com/package/gulp-autoprefixer)
     concat = require('gulp-concat'),            // Concatenate files (https://www.npmjs.com/package/gulp-concat/)
     csslint = require('gulp-csslint'),          // CSS linter (https://www.npmjs.com/package/gulp-csslint/)
-    cssnano = require('gulp-cssnano'),          // Minifies CSS (https://www.npmjs.com/package/gulp-cssnano/)
+    purifycss = require('gulp-purifycss'),      // Removes unused CSS rules and minifies (https://www.npmjs.com/package/gulp-purifycss)
     gulpif = require('gulp-if'),                // If statement (https://www.npmjs.com/package/gulp-if/)
     imagemin = require('gulp-imagemin'),        // Optimizes images (https://www.npmjs.com/package/gulp-imagemin/)
     jscs = require('gulp-jscs'),                // JavaScript style linter (https://www.npmjs.com/package/gulp-jscs)
@@ -186,7 +186,7 @@ var sources = {
         },
         {
             name: 'serviceWorker.js',
-            paths: paths.scripts + 'serviceWorker.js',
+            paths: paths.scripts + 'serviceWorker/serviceWorker.js',
             dest: paths.wwwroot
         }
     ],
@@ -194,7 +194,7 @@ var sources = {
     ts: [
         paths.scripts + 'partialLoad.ts',
         paths.scripts + 'addServiceWorker.ts',
-        paths.scripts + 'serviceWorker.ts'
+        paths.scripts + 'serviceWorker/serviceWorker.ts'
     ]
 };
 
@@ -330,7 +330,9 @@ gulp.task('build-css', ['lint-css'], function () {
                 .pipe(sizeBefore(source.name))      // Write the size of the file to the console before minification.
                 .pipe(gulpif(
                     !environment.isDevelopment(),   // If running in the staging or production environment.
-                    cssnano()))                     // Minifies the CSS.
+                    purifycss(["Views/**/*.cshtml"],
+                        { minify: true }),          // Minifies the CSS.
+                    purifycss(["Views/**/*.cshtml"])))
                 .pipe(sizeAfter(source.name))       // Write the size of the file to the console after minification.
                 .pipe(gulpif(
                     environment.isDevelopment(),    // If running in the development environment.

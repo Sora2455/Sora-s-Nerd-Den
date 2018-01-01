@@ -1,4 +1,4 @@
-// This file is responsible for configuring TypeScript compilation (See https://github.com/Microsoft/TypeScript/wiki/tsconfig.json).
+﻿// This file is responsible for configuring TypeScript compilation (See https://github.com/Microsoft/TypeScript/wiki/tsconfig.json).
 {
   // compilerOptions - TypeScript to JavaScript compilation options.
   "compilerOptions": {
@@ -15,12 +15,6 @@
     // Compile to ECMAScript 5.
     "target": "es5",
     // The libraries TypeScript should use to validate definition files
-    "lib": ["dom", "es2015.iterable", "es5", "es6"]
-  },
-  // exclude - Exclude the node_modules and wwwroot folders from being scanned for TypeScript (.ts)
-  // or TypeScript definition (.d.ts) files.
-  "exclude": [
-    "node_modules",
-    "wwwroot"
-  ]
+    "lib": [ "webworker", "es2015.iterable", "es5", "es6" ]
+  }
 }
