@@ -80,8 +80,9 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
     /**
      * Replace the main content of the page with the main content from another page
      * @param destination The page to load from
+     * @param isOffline True if we are trying to load the offline page
      */
-    function partialLoad(destination) {
+    function partialLoad(destination, isOffline) {
         document.getElementById("loading-indicator").style.display = "block";
         fetch(destination).then(function (response) {
             document.getElementById("loading-indicator").style.display = "none";
@@ -93,6 +94,10 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }).catch(function () {
             // Hide the loading indicator, even on error
             document.getElementById("loading-indicator").style.display = "none";
+            // if we got an error, we are most likely offline
+            if (!isOffline) {
+                return partialLoad("/offline/?v=m", true);
+            }
         });
     }
     // Make sure we read the back and forward buttons correctly

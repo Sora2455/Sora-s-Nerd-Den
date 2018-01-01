@@ -62,7 +62,7 @@ addEventListener("install", function (e: ExtendableEvent) {
 
             return Promise.all(resourceUrls.map(function (key) {
                 // Make sure to download fresh versions of the files!
-                return fetch(key, { cache: "reload" })
+                return fetch(key, { cache: "no-cache" })
                     .then((response) => core.put(key, response));
             }))
                 // Don't wait for the client to refresh the page (as this site is designed not to refresh)

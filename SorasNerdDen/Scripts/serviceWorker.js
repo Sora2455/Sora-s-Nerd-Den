@@ -58,7 +58,7 @@ addEventListener("install", function (e) {
             ];
             return Promise.all(resourceUrls.map(function (key) {
                 // Make sure to download fresh versions of the files!
-                return fetch(key, { cache: "reload" })
+                return fetch(key, { cache: "no-cache" })
                     .then(function (response) { return core.put(key, response); });
             }))
                 .then(function () { return self.skipWaiting(); });

@@ -91,5 +91,10 @@
     "yui"           : false,    // Yahoo User Interface
 
     // Custom Globals
-    "globals"       : {}        // additional predefined global variables
+    "globals": {
+      "caches": false,
+      "Promise": false,
+      "self": false,
+      "Request":  true
+    } // additional predefined global variables
 }
