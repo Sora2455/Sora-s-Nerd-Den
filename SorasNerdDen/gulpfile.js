@@ -179,9 +179,13 @@ var sources = {
             paths: [
                 paths.scripts + 'fallback/styles.js',
                 paths.scripts + 'fallback/scripts.js',
-                paths.scripts + 'partialLoad.js',
-                paths.scripts + 'addServiceWorker.js'
+                paths.scripts + 'partialLoad.js'
             ],
+            dest: paths.js
+        },
+        {
+            name: 'addServiceWorker.js',
+            paths: paths.scripts + 'addServiceWorker.js',
             dest: paths.js
         },
         {

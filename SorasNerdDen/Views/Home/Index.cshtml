@@ -128,8 +128,8 @@
             <div class="col-md-6">
                 <ul>
                     <li><a href="@Url.RouteUrl(ErrorControllerRoute.GetError, new { statusCode = 404, status = "notfound" })"><strong>@Url.RouteUrl(ErrorControllerRoute.GetError, new { statusCode = 404, status = "notfound" })</strong></a> - Error page.</li>
-                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetBrowserConfigXml).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetBrowserConfigXml).TrimEnd('/')</strong></a> - <a href="http://www.buildmypinnedsite.com">Windows 8.1/10 Icons</a>.</li>
-                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetManifestJson).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetManifestJson).TrimEnd('/')</strong></a> - <a href="https://developer.chrome.com/multidevice/android/installtohomescreen">Android/Chrome Icons</a>.</li>
+                    <li><a href="/browserconfig.xml"><strong>/browserconfig.xml</strong></a> - <a href="http://www.buildmypinnedsite.com">Windows 8.1/10 Icons</a>.</li>
+                    <li><a href="/maifest.json"><strong>/maifest.json</strong></a> - <a href="https://developer.chrome.com/multidevice/android/installtohomescreen">Android/Chrome Icons</a>.</li>
                 </ul>
             </div>
         </div>
@@ -232,4 +232,5 @@
     section can be used to enter custom scripts specific to this page. *@
 @section scripts
 {
+<script asp-append-version="true" src="~/js/addServiceWorker.js"></script>
 }

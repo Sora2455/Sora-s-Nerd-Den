@@ -88,9 +88,7 @@
         /// <param name="services">The services collection or IoC container.</param>
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
-            services.AddScoped<IBrowserConfigService, BrowserConfigService>();
             services.AddScoped<IFeedService, FeedService>();
-            services.AddScoped<IManifestService, ManifestService>();
             services.AddScoped<IOpenSearchService, OpenSearchService>();
             services.AddScoped<IRobotsService, RobotsService>();
             services.AddScoped<ISitemapService, SitemapService>();
