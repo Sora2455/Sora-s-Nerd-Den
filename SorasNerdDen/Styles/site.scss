@@ -32,9 +32,9 @@ textarea {
 // Loading indicator
 .loading-indicator {
   display: none; // We will show this with JavaScript, defualt to invisible for JS-disabled viewers
-  left: 50%;
+  left: calc(50% - 100px);
   position: absolute;
-  top: 50%;
+  top: calc(50% - 100px);
   z-index: 9999;
 }
 
