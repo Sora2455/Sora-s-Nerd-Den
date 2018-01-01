@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 100 100" id="loading">
+  <style>/*<![CDATA[*/
+    @keyframes rotation {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(359deg); }
+    }
+    #loading {
+      animation: rotation 3s infinite linear;
+    }
+  /*]]>*/</style>
+  <defs>
+    <marker id="head" orient="auto" markerWidth="2" markerHeight="4" refX="-0.1" refY="2">
+      <path d="M0,0 V4 L2,2 Z" fill="black" />
+    </marker>
+    <marker id="head2" orient="auto" markerWidth="2" markerHeight="4" refX="0.1" refY="2">
+      <path d="M0,0 V4 L2,2 Z" fill="white" />
+    </marker>
+  </defs>
+  <path fill="none" stroke="white" stroke-width="5" stroke-miterlimit="4" stroke-linecap="round" d="M 50,90 A 40,40 0 1 1 90,50" marker-end="url(#head2)" style="border: 1px solid white;" />
+  <path fill="none" stroke="black" stroke-width="4" stroke-miterlimit="4" stroke-linecap="round" d="M 50,90 A 40,40 0 1 1 90,50" marker-end="url(#head)" style="border: 1px solid white;" />
+</svg>

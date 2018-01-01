@@ -18,26 +18,20 @@
         private static readonly DateTime lastModifiedDate = new DateTime(2017, 11, 4);
 
         private readonly IOptionsSnapshot<AppSettings> appSettings;
-        private readonly IBrowserConfigService browserConfigService;
         private readonly IFeedService feedService;
-        private readonly IManifestService manifestService;
         private readonly IOpenSearchService openSearchService;
         private readonly IRobotsService robotsService;
         private readonly ISitemapService sitemapService;
 
         public HomeController(
-            IBrowserConfigService browserConfigService,
             IFeedService feedService,
-            IManifestService manifestService,
             IOpenSearchService openSearchService,
             IRobotsService robotsService,
             ISitemapService sitemapService,
             IOptionsSnapshot<AppSettings> appSettings)
         {
             this.appSettings = appSettings;
-            this.browserConfigService = browserConfigService;
             this.feedService = feedService;
-            this.manifestService = manifestService;
             this.openSearchService = openSearchService;
             this.robotsService = robotsService;
             this.sitemapService = sitemapService;
@@ -117,38 +111,6 @@
                 "https://www.google.co.uk/?q=site:{0} {1}",
                 this.Url.AbsoluteRouteUrl(HomeControllerRoute.GetIndex),
                 query));
-        }
-
-        /// <summary>
-        /// Gets the browserconfig XML for the current site. This allows you to customize the tile, when a user pins
-        /// the site to their Windows 8/10 start screen. See http://www.buildmypinnedsite.com and
-        /// https://msdn.microsoft.com/en-us/library/dn320426%28v=vs.85%29.aspx
-        /// </summary>
-        /// <returns>The browserconfig XML for the current site.</returns>
-        [NoTrailingSlash]
-        [ResponseCache(CacheProfileName = CacheProfileName.BrowserConfigXml)]
-        [Route("browserconfig.xml", Name = HomeControllerRoute.GetBrowserConfigXml)]
-        public ContentResult BrowserConfigXml()
-        {
-            string content = this.browserConfigService.GetBrowserConfigXml();
-            return this.Content(content, ContentType.Xml, Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// Gets the manifest JSON for the current site. This allows you to customize the icon and other browser
-        /// settings for Chrome/Android and FireFox (FireFox support is coming). See https://w3c.github.io/manifest/
-        /// for the official W3C specification. See http://html5doctor.com/web-manifest-specification/ for more
-        /// information. See https://developer.chrome.com/multidevice/android/installtohomescreen for Chrome's
-        /// implementation.
-        /// </summary>
-        /// <returns>The manifest JSON for the current site.</returns>
-        [NoTrailingSlash]
-        [ResponseCache(CacheProfileName = CacheProfileName.ManifestJson)]
-        [Route("manifest.json", Name = HomeControllerRoute.GetManifestJson)]
-        public ContentResult ManifestJson()
-        {
-            string content = this.manifestService.GetManifestJson();
-            return this.Content(content, ContentType.Json, Encoding.UTF8);
         }
 
         /// <summary>

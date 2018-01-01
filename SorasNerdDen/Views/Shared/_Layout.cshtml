@@ -13,54 +13,8 @@
         characters. The site name appears at the end for better SEO. *@
     <title>@ViewBag.Title - @AppSettings.Value.SiteTitle</title>
 
-
-    @* Icons & Platform Specific Settings (See http://rehansaeed.com/internet-favicon-madness/ for detailed
-        information). The order of these icons is very important. *@
-
-    @* Apple Icons - See https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Introduction.html#//apple_ref/doc/uid/30001261-SW1 *@
-    @* apple-touch-icon-57x57.png - Android Stock Browser and non-Retina iPhone and iPod Touch *@
-    <link rel="apple-touch-icon" sizes="57x57" href="~/img/icons/apple-touch-icon-57x57.png">
-    @* apple-touch-icon-60x60.png - Same as apple-touch-icon-57x57.png, for non-retina iPhone with iOS7. *@
-    <link rel="apple-touch-icon" sizes="60x60" href="~/img/icons/apple-touch-icon-60x60.png">
-    @* apple-touch-icon-72x72.png - iPad mini and the first- and second-generation iPad (1× display) on iOS ≤ 6 *@
-    <link rel="apple-touch-icon" sizes="72x72" href="~/img/icons/apple-touch-icon-72x72.png">
-    @* apple-touch-icon-76x76.png - iPad mini and the first- and second-generation iPad (1× display) on iOS ≥ 7 *@
-    <link rel="apple-touch-icon" sizes="76x76" href="~/img/icons/apple-touch-icon-76x76.png">
-    @* apple-touch-icon-114x114.png - iPhone (with 2× display) iOS ≤ 6 *@
-    <link rel="apple-touch-icon" sizes="114x114" href="~/img/icons/apple-touch-icon-114x114.png">
-    @* apple-touch-icon-120x120.png - iPhone (with 2× and 3 display) iOS ≥ 7 *@
-    <link rel="apple-touch-icon" sizes="120x120" href="~/img/icons/apple-touch-icon-120x120.png">
-    @* apple-touch-icon-144x144.png - iPad (with 2× display) iOS ≤ 6 *@
-    <link rel="apple-touch-icon" sizes="144x144" href="~/img/icons/apple-touch-icon-144x144.png">
-    @* apple-touch-icon-152x152.png - iPad 3+ (with 2× display) iOS ≥ 7 *@
-    <link rel="apple-touch-icon" sizes="152x152" href="~/img/icons/apple-touch-icon-152x152.png">
-    @* apple-touch-icon-180x180.png - iPad and iPad mini (with 2× display) iOS ≥ 8 *@
-    <link rel="apple-touch-icon" sizes="180x180" href="~/img/icons/apple-touch-icon-180x180.png">
-
-    @* favicon-32x32.png - For Safari on Mac OS. *@
-    <link rel="icon" type="image/png" href="~/img/icons/favicon-32x32.png" sizes="32x32">
-    @* favicon-192x192.png - For Android Chrome M36 to M38 this icon is used. M39+ uses the manifest.json file specified below. *@
-    <link rel="icon" type="image/png" href="~/img/icons/favicon-192x192.png" sizes="192x192">
-    @* favicon-96x96.png - For Google TV. *@
-    <link rel="icon" type="image/png" href="~/img/icons/favicon-96x96.png" sizes="96x96">
-    @* favicon-16x16.png - The classic favicon, displayed in the tabs. *@
-    <link rel="icon" type="image/png" href="~/img/icons/favicon-16x16.png" sizes="16x16">
-
-    @* apple-mobile-web-app-title - The name of the application if pinned to the IOS start screen. *@
-    <meta name="apple-mobile-web-app-title" content="@AppSettings.Value.SiteShortTitle">
-    @* apple-mobile-web-app-capable - Hide the browsers user interface on IOS, when the app is run in 'stand-alone'
-        mode. Any links to other pages that are clicked whilst your app is in stand-alone mode will launch the full
-        Safari browser. *@
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    @* apple-mobile-web-app-status-bar-style - default/black/black-translucent Styles the IOS status bar. Using
-        black-translucent makes it transparent and overlays it on top of your site, so make sure you have enough margin. *@
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-    @* Android/Chrome *@
-    @* manifest-json - The location of the browser configuration file. It contains locations of icon files, name of the
-        application and default device screen orientation. Note that the name field is mandatory.
-        See https://developer.mozilla.org/en-US/docs/Web/Manifest. *@
-    <link rel="manifest" href="@Url.RouteUrl(HomeControllerRoute.GetManifestJson).TrimEnd('/')">
+    @* favicons generated with https://realfavicongenerator.net *@
+    @Html.Partial("_Favicons")
 
     @* Move site.css to a content delivery network (CDN) for better performance. *@
     <link asp-append-version="true" rel="stylesheet" href="~/css/site.css" />
@@ -73,18 +27,14 @@
               asp-subresource-integrity-href="~/css/font-awesome.css" />
     </environment>
 
-
     @* Description - Used by search engines. Aim for more than 160 characters. *@
     <meta name="description" content="@ViewBag.Description">
-
 
     @* Atom 1.0 Feed - Link to the. This enables the 'Subscribe to this page' button in FireFox. *@
     <link href="@Url.RouteUrl(HomeControllerRoute.GetFeed)" rel="alternate" title="@AppSettings.Value.SiteTitle Feed" type="application/atom+xml">
 
-
     @* OpenSearch - (See http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d and http://www.opensearch.org) *@
     <link href="@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')" rel="search" title="ASP.NET Core Boilerplate Search" type="application/opensearchdescription+xml">
-
 
     @* You can use the head section to render additional meta tags. *@
     @RenderSection("head", required: false)
@@ -122,7 +72,7 @@
         </div>
     </nav>
     <main id="main" class="container body-content">
-        <img src="~/img/misc/ajax-loader.gif" class="loading-indicator" id="loading-indicator"/>
+        <img src="~/img/misc/loading.svg" class="loading-indicator" id="loading-indicator"/>
         <!--[if lte IE 9]>
             <div class="alert alert-warning" role="alert">
                 <p>You are using an outdated browser. Please <a class="alert-link" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
