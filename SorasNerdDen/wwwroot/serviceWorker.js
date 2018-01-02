@@ -58,7 +58,7 @@ addEventListener("install", function (e) {
             ];
             return Promise.all(resourceUrls.map(function (key) {
                 // Make sure to download fresh versions of the files!
-                return fetch(key, { cache: "reload" })
+                return fetch(key, { cache: "no-cache" })
                     .then(function (response) { return core.put(key, response); });
             }))
                 .then(function () { return self.skipWaiting(); });
@@ -81,7 +81,11 @@ addEventListener("fetch", function (e) {
     }
     // If it's a 'main' page, use the loading page instead
     if (request.url.endsWith("/")) {
-        return bigPageLoad(e);
+        e.respondWith(caches.open("core").then(function (core) {
+            // Get the loading page
+            return fetchAndCache("/loading/", core);
+        }));
+        return;
     }
     // TODO filter requests
     // Basic read-through caching.
@@ -92,24 +96,12 @@ addEventListener("fetch", function (e) {
             }
             // we didn't have it in the cache, so add it to the cache and return it
             log("runtime caching:", request.url);
-            return fetchAndCache(request, core);
+            // delete any previous versions that might be in the cache already
+            core.delete(request, { ignoreSearch: true });
+            // now grab the file and add it to the cache
+            return fetchAndCache(request, core); //TODO but what if user is offline on the second time? need site.js?v=1 and only have site.js...
         });
     }));
 });
-function bigPageLoad(e) {
-    "use strict";
-    // Add a 'v=m' paramater to the URL, which tells the view model only to send the page main content
-    var newTarget = "";
-    if (e.request.url.includes("?")) {
-        newTarget = e.request.url + "&v=m";
-    }
-    else {
-        newTarget = e.request.url + "?v=m";
-    }
-    e.respondWith(caches.open("core").then(function (core) {
-        // Get the loading page
-        return fetchAndCache("/loading/", core);
-    }));
-}
 
 //# sourceMappingURL=serviceWorker.js.map

@@ -190,7 +190,7 @@ var sources = {
         },
         {
             name: 'serviceWorker.js',
-            paths: paths.scripts + 'serviceWorker/serviceWorker.js',
+            paths: paths.scripts + 'serviceWorker.js',
             dest: paths.wwwroot
         }
     ],
