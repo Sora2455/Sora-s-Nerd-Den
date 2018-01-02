@@ -2,8 +2,8 @@
 // appSettings configuration section contained in the web.config file in ASP.NET 4.6.
 {
   "AppSettings": {
-    "SiteShortTitle": "Boilerplate", // The short name of the site.
-    "SiteTitle": "ASP.NET Core Boilerplate" // The name of the site.
+    "SiteShortTitle": "SND", // The short name of the site.
+    "SiteTitle": "Sora's Nerd Den" // The name of the site.
   },
   "Logging": {
     "IncludeScopes": false,

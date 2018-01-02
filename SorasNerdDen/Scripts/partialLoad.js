@@ -90,6 +90,10 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
                 var mainContent = document.getElementById("main-content");
                 mainContent.innerHTML = text;
                 mainContent.dispatchEvent(partialLoadEvent);
+                var mainHeaders = mainContent.getElementsByTagName("h1");
+                if (mainHeaders.length > 0) {
+                    document.title = mainHeaders[0].textContent + " - Sora's Nerd Den";
+                }
             });
         }).catch(function () {
             // Hide the loading indicator, even on error
