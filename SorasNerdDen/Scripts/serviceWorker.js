@@ -21,7 +21,7 @@ function cacheCopy(source, destination) {
         });
     });
 }
-function fetchAndCache(request, cache) {
+function fetchAndCache(request, cache, versioned) {
     "use strict";
     if (!(request instanceof Request)) {
         request = new Request(request);
@@ -29,14 +29,27 @@ function fetchAndCache(request, cache) {
     return fetch(request.clone()).then(function (response) {
         // if the response came back not okay (like a server error) try and get from cache
         if (!response.ok) {
-            return cache.match(request);
+            return findInCache(request, cache, versioned);
         }
-        // otherwise store the response for future use, and return the response to the client
+        // otherwise delete any previous versions that might be in the cache already (if a versioned file),
+        if (versioned) {
+            cache.delete(request, { ignoreSearch: true });
+        }
+        // then store the response for future use, and return the response to the client
         cache.put(request, response.clone());
         return response;
     }).catch(function () {
         // if there was an error (almost certainly network touble) try and get from cache
-        return cache.match(request);
+        return findInCache(request, cache, versioned);
+    });
+}
+function findInCache(request, cache, versioned) {
+    "use strict";
+    return cache.match(request).then(function (result) {
+        if (result || !versioned) {
+            return result;
+        }
+        return cache.match(request, { ignoreSearch: true });
     });
 }
 addEventListener("install", function (e) {
@@ -83,7 +96,7 @@ addEventListener("fetch", function (e) {
     if (request.url.endsWith("/")) {
         e.respondWith(caches.open("core").then(function (core) {
             // Get the loading page
-            return fetchAndCache("/loading/", core);
+            return fetchAndCache("/loading/", core, false);
         }));
         return;
     }
@@ -96,10 +109,8 @@ addEventListener("fetch", function (e) {
             }
             // we didn't have it in the cache, so add it to the cache and return it
             log("runtime caching:", request.url);
-            // delete any previous versions that might be in the cache already
-            core.delete(request, { ignoreSearch: true });
             // now grab the file and add it to the cache
-            return fetchAndCache(request, core); //TODO but what if user is offline on the second time? need site.js?v=1 and only have site.js...
+            return fetchAndCache(request, core, true);
         });
     }));
 });

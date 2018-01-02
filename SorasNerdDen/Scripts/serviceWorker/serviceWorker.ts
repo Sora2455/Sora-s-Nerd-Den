@@ -24,7 +24,7 @@ function cacheCopy(source: string, destination: string) {
     });
 }
 
-function fetchAndCache(request: RequestInfo, cache: Cache) {
+function fetchAndCache(request: RequestInfo, cache: Cache, versioned: boolean) {
     "use strict";
     if (!(request instanceof Request)) {
         request = new Request(request);
@@ -32,13 +32,23 @@ function fetchAndCache(request: RequestInfo, cache: Cache) {
 
     return fetch(request.clone()).then((response) => {
         // if the response came back not okay (like a server error) try and get from cache
-        if (!response.ok) { return cache.match(request); }
-        // otherwise store the response for future use, and return the response to the client
+        if (!response.ok) { return findInCache(request, cache, versioned); }
+        // otherwise delete any previous versions that might be in the cache already (if a versioned file),
+        if (versioned) { cache.delete(request, { ignoreSearch: true }); }
+        // then store the response for future use, and return the response to the client
         cache.put(request, response.clone());
         return response;
     }).catch(() => {
         // if there was an error (almost certainly network touble) try and get from cache
-        return cache.match(request);
+        return findInCache(request, cache, versioned);
+    });
+}
+
+function findInCache(request: RequestInfo, cache: Cache, versioned: boolean) {
+    "use strict";
+    return cache.match(request).then((result) => {
+        if (result || !versioned) { return result; }
+        return cache.match(request, { ignoreSearch: true });
     });
 }
 
@@ -92,7 +102,7 @@ addEventListener("fetch", (e: FetchEvent) => {
     if (request.url.endsWith("/")) {
         e.respondWith(caches.open("core").then((core) => {
             // Get the loading page
-            return fetchAndCache("/loading/", core);
+            return fetchAndCache("/loading/", core, false);
         }));
         return;
     }
@@ -101,15 +111,12 @@ addEventListener("fetch", (e: FetchEvent) => {
     // Basic read-through caching.
     e.respondWith(
         caches.open("core").then((core) => {
-
             return core.match(request).then((response) => {
                 if (response) { return response; }
                 // we didn't have it in the cache, so add it to the cache and return it
                 log("runtime caching:", request.url);
-                // delete any previous versions that might be in the cache already
-                core.delete(request, { ignoreSearch: true });
                 // now grab the file and add it to the cache
-                return fetchAndCache(request, core);//TODO but what if user is offline on the second time? need site.js?v=1 and only have site.js...
+                return fetchAndCache(request, core, true);
             });
         })
     );
