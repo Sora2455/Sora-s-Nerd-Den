@@ -5,17 +5,17 @@ onerror = err;
 // Moves the contents of one named cached into another.
 function cacheCopy(source: string, destination: string) {
     "use strict";
-    return caches.delete(destination).then(function () {
+    return caches.delete(destination).then(() => {
         return Promise.all([
             caches.open(source),
             caches.open(destination)
-        ]).then(function (results) {
+        ]).then((results) => {
             const sourceCache = results[0];
             const destCache = results[1];
 
-            return sourceCache.keys().then(function (requests: RequestInfo[]) {
-                return Promise.all(requests.map(function (request) {
-                    return sourceCache.match(request).then(function (response) {
+            return sourceCache.keys().then((requests: RequestInfo[]) => {
+                return Promise.all(requests.map((request) => {
+                    return sourceCache.match(request).then((response) => {
                         return destCache.put(request, response);
                     });
                 }));
@@ -30,7 +30,7 @@ function fetchAndCache(request: RequestInfo, cache: Cache) {
         request = new Request(request);
     }
 
-    return fetch(request.clone()).then(function (response) {
+    return fetch(request.clone()).then((response) => {
         // if the response came back not okay (like a server error) try and get from cache
         if (!response.ok) { return cache.match(request); }
         // otherwise store the response for future use, and return the response to the client
@@ -42,12 +42,12 @@ function fetchAndCache(request: RequestInfo, cache: Cache) {
     });
 }
 
-addEventListener("install", function (e: ExtendableEvent) {
+addEventListener("install", (e: ExtendableEvent) => {
     "use strict";
     // Put updated resources in a new cache, so that currently running pages
     // get the current versions.
-    e.waitUntil(caches.delete("core-waiting").then(function () {
-        return caches.open("core-waiting").then(function (core) {
+    e.waitUntil(caches.delete("core-waiting").then(() => {
+        return caches.open("core-waiting").then((core) => {
             const resourceUrls = [
                 "/loading/",
                 // ?v=m means without the shared view (just the main content)
@@ -60,7 +60,7 @@ addEventListener("install", function (e: ExtendableEvent) {
                 "/js/site.js"
             ];
 
-            return Promise.all(resourceUrls.map(function (key) {
+            return Promise.all(resourceUrls.map((key) => {
                 // Make sure to download fresh versions of the files!
                 return fetch(key, { cache: "no-cache" })
                     .then((response) => core.put(key, response));
@@ -72,7 +72,7 @@ addEventListener("install", function (e: ExtendableEvent) {
 });
 
 
-addEventListener("activate", function (e: ExtendableEvent) {
+addEventListener("activate", (e: ExtendableEvent) => {
     "use strict";
     // Copy the newly installed cache to the active cache
     e.waitUntil(cacheCopy("core-waiting", "core")
@@ -82,7 +82,7 @@ addEventListener("activate", function (e: ExtendableEvent) {
         .then(() => caches.delete("core-waiting")));
 });
 
-addEventListener("fetch", function (e: FetchEvent) {
+addEventListener("fetch", (e: FetchEvent) => {
     "use strict";
     const request = e.request;
 
@@ -90,7 +90,7 @@ addEventListener("fetch", function (e: FetchEvent) {
     if (request.method !== "GET") { return fetch(request); }
     // If it's a 'main' page, use the loading page instead
     if (request.url.endsWith("/")) {
-        e.respondWith(caches.open("core").then(function (core) {
+        e.respondWith(caches.open("core").then((core) => {
             // Get the loading page
             return fetchAndCache("/loading/", core);
         }));
@@ -100,9 +100,9 @@ addEventListener("fetch", function (e: FetchEvent) {
 
     // Basic read-through caching.
     e.respondWith(
-        caches.open("core").then(function (core) {
+        caches.open("core").then((core) => {
 
-            return core.match(request).then(function (response) {
+            return core.match(request).then((response) => {
                 if (response) { return response; }
                 // we didn't have it in the cache, so add it to the cache and return it
                 log("runtime caching:", request.url);
