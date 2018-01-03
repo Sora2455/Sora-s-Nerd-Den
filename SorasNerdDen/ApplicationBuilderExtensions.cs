@@ -117,7 +117,7 @@
                     options
                         // Enables logging of CSP violations. Register with the https://report-uri.io/ service to get a
                         // URL where you can send your CSP violation reports and view them.
-                        .ReportUris(x => x.Uris("http://example.com/csp-report"))
+                        .ReportUris(x => x.Uris("https://sorasnerdden.report-uri.com/r/d/csp/enforce"))
                         // upgrade-insecure-requests - This directive is only relevant if you are using HTTPS. Any
                         // objects on the page using HTTP are automatically upgraded to HTTPS.
                         // See https://scotthelme.co.uk/migrating-from-http-to-https-ease-the-pain-with-csp-and-hsts/
