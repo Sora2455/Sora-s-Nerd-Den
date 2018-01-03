@@ -9,21 +9,11 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
     using SorasNerdDen.Constants;
     using SorasNerdDen.Settings;
-    using NWebsec.AspNetCore.Middleware;
 
     public static partial class ApplicationBuilderExtensions
     {
-        /// <summary>
-        /// Configure tools used to help with debugging the application.
-        /// </summary>
-        public static IApplicationBuilder UseDebugging(this IApplicationBuilder application) =>
-            // Allow updates to your files in Visual Studio to be shown in the browser. You can use the Refresh
-            // browser link button in the Visual Studio toolbar or Ctrl+Alt+Enter to refresh the browser.
-            application.UseBrowserLink();
-
         /// <summary>
         /// Configure default cookie settings for the application which are more secure by default.
         /// </summary>
@@ -104,31 +94,6 @@
             application.UseHsts(options => options.MaxAge(days: 18 * 7).IncludeSubdomains().Preload());
 
         /// <summary>
-        /// Adds the Public-Key-Pins HTTP header to responses. This HTTP header is only relevant if you are using TLS.
-        /// It stops man-in-the-middle attacks by telling browsers exactly which TLS certificate you expect.
-        /// Note: The current specification requires including a second pin for a backup key which isn't yet used in
-        /// production. This allows for changing the server's public key without breaking accessibility for clients
-        /// that have already noted the pins. This is important for example when the former key gets compromised.
-        /// Note: You can use the ReportUri option to provide browsers a URL to post JSON violations of the HPKP
-        /// policy. Note that the report URI must not be this site as a violation would mean that the site is blocked.
-        /// You must use a separate domain using HTTPS to report to. Consider using this service:
-        /// https://report-uri.io/ for this purpose.
-        /// See https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning and
-        /// https://scotthelme.co.uk/hpkp-http-public-key-pinning/
-        /// </summary>
-        public static IApplicationBuilder UsePublicKeyPinsHttpHeader(this IApplicationBuilder application) =>
-            // application.UseHpkp(options => options
-            //     .Sha256Pins(
-            //         "Base64 encoded SHA-256 hash of your first certificate e.g. cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs=",
-            //         "Base64 encoded SHA-256 hash of your second backup certificate e.g. M8HztCzM3elUxkcjR2S5P4hhyBNf6lHkmjAHKhpGPWE=")
-            //     .MaxAge(days: 18 * 7)
-            //     .IncludeSubdomains());
-            // OR
-            // Use UseHpkpReportOnly instead to stop browsers blocking anything but continue reporting any violations.
-            // application.UseHpkpReportOnly(...)
-            application;
-
-        /// <summary>
         /// Adds the Content-Security-Policy (CSP) and/or Content-Security-Policy-Report-Only HTTP headers. This
         /// creates a white-list from where various content in a web page can be loaded from. See
         /// http://rehansaeed.com/content-security-policy-for-asp-net-mvc/,
@@ -174,16 +139,6 @@
                             x =>
                             {
                                 x.Self();                                 // Allow all AJAX and Web Sockets calls from the same domain.
-
-                                if (hostingEnvironment.IsDevelopment())   // Allow Browser Link to work correctly in Development.
-                                {
-                                    x.CustomSources(new string[]
-                                    {
-                                        // "*.example.com",               // Allow AJAX and Web Sockets to example.com.
-                                        "localhost:*",
-                                        "ws://localhost:*"
-                                    });
-                                }
                             })
                         // font-src - This directive restricts from where the protected resource can load fonts.
                         .FontSources(
@@ -209,13 +164,6 @@
                             x =>
                             {
                                 x.Self();                                 // Allow the current domain.
-                                if (hostingEnvironment.IsDevelopment())   // Allow Browser Link to work correctly in Development.
-                                {
-                                    x.CustomSources(new string[]
-                                    {
-                                        "data:"
-                                    });
-                                }
                             })
                         // script-src - This directive restricts which scripts the protected resource can execute.
                         //              The directive also controls other resources, such as XSLT style sheets, which
@@ -226,14 +174,8 @@
                                 x.Self();                                 // Allow all scripts from the same domain.
                                 var customSources = new List<string>()
                                 {
-                                    ContentDeliveryNetwork.Google.Domain, // Allow scripts from the following CDN's.
-                                    ContentDeliveryNetwork.Microsoft.Domain,
-                                    ContentDeliveryNetwork.Polyfill.Domain
+                                    ContentDeliveryNetwork.Polyfill.Domain // Allow scripts from the following CDN's.
                                 };
-                                if (hostingEnvironment.IsDevelopment())   // Allow Browser Link to work correctly in Development.
-                                {
-                                    customSources.Add("localhost:*");
-                                }
                                 x.CustomSources(customSources.ToArray());
                             })
                         // media-src - This directive restricts from where the protected resource can load video and audio.

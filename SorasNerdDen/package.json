@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "bootstrap-sass": "3.3.7",
-    "font-awesome": "4.7.0",
-    "jquery": "3.1.1"
+    "font-awesome": "4.7.0"
   },
   "devDependencies": {
     "mocha": "3.2.0",

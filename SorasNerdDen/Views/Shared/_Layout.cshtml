@@ -90,8 +90,6 @@
 
     <environment names="@EnvironmentName.Development">
         <script src="@ContentDeliveryNetwork.Polyfill.PolyfillDevUrl"></script>
-        <script src="~/js/jquery.js"></script>
-        <script src="~/js/bootstrap.js"></script>
         <script asp-append-version="true" src="~/js/site.js"></script>
     </environment>
     <environment names="@EnvironmentName.Staging,@EnvironmentName.Production">
@@ -101,12 +99,9 @@
             See http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core *@
         <script crossorigin="anonymous"
                 src="@ContentDeliveryNetwork.Polyfill.PolyfillProdUrl"></script>
-        <script crossorigin="anonymous"
+        @*<script crossorigin="anonymous"
                 src="@ContentDeliveryNetwork.Google.JQueryUrl"
-                asp-subresource-integrity-src="~/js/jquery.js"></script>
-        <script crossorigin="anonymous"
-                src="@ContentDeliveryNetwork.Microsoft.BootstrapUrl"
-                asp-subresource-integrity-src="~/js/bootstrap.js"></script>
+                asp-subresource-integrity-src="~/js/jquery.js"></script>*@
         @* Move site.js to a content delivery network (CDN) for better performance. *@
         <script asp-append-version="true" src="~/js/site.js"></script>
     </environment>

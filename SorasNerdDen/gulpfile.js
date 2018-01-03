@@ -159,26 +159,9 @@ var sources = {
     // An array containing objects required to build a single JavaScript file.
     js: [
         {
-            // name - The name of the final JavaScript file to build.
-            name: 'bootstrap.js',
-            // copy - Just copy the file and don't run it through the minification pipeline.
-            copy: true,
-            // paths - A single or array of paths to JavaScript or TypeScript files which will be concatenated and
-            // minified to create a file with the above file name.
-            paths: paths.nodeModules + 'bootstrap-sass/assets/javascripts/bootstrap.min.js',
-            dest: paths.js
-        },
-        {
-            name: 'jquery.js',
-            copy: true,
-            paths: paths.nodeModules + 'jquery/dist/jquery.min.js',
-            dest: paths.js
-        },
-        {
             name: 'site.js',
             paths: [
                 paths.scripts + 'fallback/styles.js',
-                paths.scripts + 'fallback/scripts.js',
                 paths.scripts + 'partialLoad.js'
             ],
             dest: paths.js

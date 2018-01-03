@@ -196,11 +196,9 @@
                 .UseIfElse(
                     this.hostingEnvironment.IsDevelopment(),
                     x => x
-                        .UseDebugging()
                         .UseDeveloperErrorPages(),
                     x => x.UseErrorPages())
                 .UseStrictTransportSecurityHttpHeader()
-                .UsePublicKeyPinsHttpHeader()
                 .UseContentSecurityPolicyHttpHeader(this.sslPort, this.hostingEnvironment)
                 .UseSecurityHttpHeaders()
                 // Add MVC to the request pipeline.
