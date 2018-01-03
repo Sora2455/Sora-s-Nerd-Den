@@ -22,6 +22,7 @@
   <ItemGroup>
     <None Remove="Scripts\addServiceWorker.ts" />
     <None Remove="Scripts\serviceWorker.ts" />
+    <None Remove="Scripts\timeLocaliser.ts" />
   </ItemGroup>
   <ItemGroup Label="Files">
     <!-- Remove the .gitignore file from the published output. -->
@@ -84,6 +85,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\addServiceWorker.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker\serviceWorker.ts" />
+    <TypeScriptCompile Include="Scripts\timeLocaliser.ts" />
   </ItemGroup>
   <!-- Execute the following commands before publishing the project. -->
   <Target Label="Scripts" Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">

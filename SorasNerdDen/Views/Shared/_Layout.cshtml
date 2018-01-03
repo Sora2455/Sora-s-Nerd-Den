@@ -84,6 +84,7 @@
         <hr>
         <footer role="contentinfo">
             <p>&copy; @DateTime.Now.Year - @AppSettings.Value.SiteTitle</p>
+            <p>Page generated <time datetime="@DateTime.UtcNow.ToString("s")">@DateTime.Now.ToString("F")</time></p>
         </footer>
     </main>
 
