@@ -38,5 +38,20 @@
 
             return result;
         }
+
+        /// <summary>
+        /// Logs a JavaScript error for later debugging
+        /// </summary>
+        [HttpPost("scripterror", Name = ErrorControllerRoute.ScriptError)]
+        public IActionResult ScriptError()
+        {
+            string page = Request.Form["Page"];
+            string message = Request.Form["Message"];
+            string line = Request.Form["Line"];
+            string column = Request.Form["Column"];
+            string stackTrace = Request.Form["StackTrace"];
+            //TODO - log this information somewhere!
+            return new EmptyResult();
+        }
     }
 }
