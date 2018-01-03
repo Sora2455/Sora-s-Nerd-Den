@@ -6,8 +6,8 @@
     "noImplicitAny": true,
     // Stop processing on error.
     "noEmitOnError": true,
-    // Do not remove comments.
-    "removeComments": false,
+    // Remove comments.
+    "removeComments": true,
     // Do not create source map files (Leave this to the gulp plugin).
     "sourceMap": false,
     // Use the system modules.
