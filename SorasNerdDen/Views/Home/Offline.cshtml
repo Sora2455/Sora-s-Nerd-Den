@@ -7,9 +7,11 @@
     ViewBag.Description = "A page that notifies a user that they are offline, and directs them to the pages they have cached.";
 }
 
+<header class="page-header">
+    <h1><span aria-hidden="true" class="fa fa-plug"></span> @ViewBag.Title</h1>
+</header>
 <div class="row">
     <article class="col-md-8">
-        <h1>Offline</h1>
         <p>You are currently offline, and do not have a cached version of this page availible.</p>
         <p>Here are the pages you <em>do</em> have cached:</p>
         <nav>

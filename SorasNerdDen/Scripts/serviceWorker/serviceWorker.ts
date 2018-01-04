@@ -29,10 +29,10 @@ function fetchAndCache(request: RequestInfo, cache: Cache, versioned: boolean) {
     if (!(request instanceof Request)) {
         request = new Request(request);
     }
-
-    return fetch(request.clone()).then((response) => {
-        // if the response came back not okay (like a server error) try and get from cache
-        if (!response.ok) { return findInCache(request, cache, versioned); }
+    //TODO handle 404s intelligently
+    return fetch(request.clone(), {mode: "cors"}).then((response) => {
+        // if the response came back as a server error try and get from cache
+        if (response.status === 500) { return findInCache(request, cache, versioned); }
         // otherwise delete any previous versions that might be in the cache already (if a versioned file),
         if (versioned) { cache.delete(request, { ignoreSearch: true }); }
         // then store the response for future use, and return the response to the client

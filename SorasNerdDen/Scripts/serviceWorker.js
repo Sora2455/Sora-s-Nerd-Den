@@ -26,9 +26,10 @@ function fetchAndCache(request, cache, versioned) {
     if (!(request instanceof Request)) {
         request = new Request(request);
     }
-    return fetch(request.clone()).then(function (response) {
-        // if the response came back not okay (like a server error) try and get from cache
-        if (!response.ok) {
+    //TODO handle 404s intelligently
+    return fetch(request.clone(), { mode: "cors" }).then(function (response) {
+        // if the response came back as a server error try and get from cache
+        if (response.status === 500) {
             return findInCache(request, cache, versioned);
         }
         // otherwise delete any previous versions that might be in the cache already (if a versioned file),
