@@ -1,3 +1,4 @@
+///<reference path="definitions/definitions.d.ts" />
 // NodeList.forEach pollyfill
 if ('NodeList' in window && !NodeList.prototype.forEach) {
     NodeList.prototype.forEach = function (callback, thisArg) {
@@ -24,9 +25,9 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
             partialLoad(newTarget);
         }
     });
-    var partialLoadEvent = new CustomEvent("PartialyLoaded", { bubbles: true });
-    document.addEventListener("PartialyLoaded", function (ev) {
-        ev.target.querySelectorAll("a[href]").forEach(function (link) {
+    var mainContent = document.getElementById("main-content");
+    mainContent.addEventListener("PartialyLoaded", function () {
+        mainContent.querySelectorAll("a[href]").forEach(function (link) {
             link.addEventListener("click", tryPartialLoad);
         });
     });
@@ -84,12 +85,18 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
      */
     function partialLoad(destination, isOffline) {
         document.getElementById("loading-indicator").style.display = "block";
+        var start = Date.now();
         fetch(destination).then(function (response) {
             document.getElementById("loading-indicator").style.display = "none";
             return response.text().then(function (text) {
-                var mainContent = document.getElementById("main-content");
                 mainContent.innerHTML = text;
-                mainContent.dispatchEvent(partialLoadEvent);
+                //Dispatch a custom event so that other functions know the page has updated
+                var partialLoadDetails = {
+                    loadTime: Date.now() - start, destination: destination
+                };
+                mainContent.dispatchEvent(new CustomEvent("PartialyLoaded", {
+                    detail: partialLoadDetails
+                }));
                 var mainHeaders = mainContent.getElementsByTagName("h1");
                 if (mainHeaders.length > 0) {
                     document.title = mainHeaders[0].textContent + " - Sora's Nerd Den";

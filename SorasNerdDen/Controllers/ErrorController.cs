@@ -53,5 +53,19 @@
             //TODO - log this information somewhere!
             return new EmptyResult();
         }
+
+        /// <summary>
+        /// Logs a slow-loading page for later improvement
+        /// </summary>
+        [HttpPost("longloadingtime", Name = ErrorControllerRoute.LongLoadingTime)]
+        public IActionResult LongLoadingTime()
+        {
+            decimal.TryParse(Request.Form["Interactive"], out decimal interactive);
+            decimal.TryParse(Request.Form["Total"], out decimal total);
+            string to = Request.Form["To"];
+            bool.TryParse(Request.Form["ServiceWorkerAvailible"], out bool serviceWorkerAvailible);
+            //TODO - log this information somewhere!
+            return new EmptyResult();
+        }
     }
 }

@@ -4,5 +4,6 @@
     {
         public const string GetError = ControllerName.Error + "GetError";
         public const string ScriptError = ControllerName.Error + "ScriptError";
+        public const string LongLoadingTime = ControllerName.Error + "LongLoadingTime";
     }
 }

@@ -44,10 +44,10 @@
         const times = document.getElementsByTagName("time");
         localiseTimes(times);
     });
-    const mainTag = document.getElementsByTagName("main")[0];
-    mainTag.addEventListener("PartialyLoaded", () => {
+    const mainContent = document.getElementById("main-content");
+    mainContent.addEventListener("PartialyLoaded", () => {
         //Get the newly loaded time tags
-        const times = mainTag.getElementsByTagName("time");
+        const times = mainContent.getElementsByTagName("time");
         localiseTimes(times);
     });
     function setDatePart(dateString: string, dateObj: Date) {

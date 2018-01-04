@@ -65,8 +65,6 @@ addEventListener("install", function (e) {
                 "/offline/?v=m",
                 "/css/site.css",
                 "/css/font-awesome.css",
-                "/js/jquery.js",
-                "/js/bootstrap.js",
                 "/js/site.js"
             ];
             return Promise.all(resourceUrls.map(function (key) {

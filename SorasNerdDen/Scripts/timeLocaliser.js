@@ -46,10 +46,10 @@
         var times = document.getElementsByTagName("time");
         localiseTimes(times);
     });
-    var mainTag = document.getElementsByTagName("main")[0];
-    mainTag.addEventListener("PartialyLoaded", function () {
+    var mainContent = document.getElementById("main-content");
+    mainContent.addEventListener("PartialyLoaded", function () {
         //Get the newly loaded time tags
-        var times = mainTag.getElementsByTagName("time");
+        var times = mainContent.getElementsByTagName("time");
         localiseTimes(times);
     });
     function setDatePart(dateString, dateObj) {

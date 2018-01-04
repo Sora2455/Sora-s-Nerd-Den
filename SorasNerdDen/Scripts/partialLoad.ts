@@ -1,4 +1,5 @@
-﻿interface NodeList {
+﻿///<reference path="definitions/definitions.d.ts" />
+interface NodeList {
     forEach: (callback: (node: Node, i: number, nodeList: NodeList) => void, thisArg?: any) => void;
 }
 // NodeList.forEach pollyfill
@@ -27,9 +28,9 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
             partialLoad(newTarget);
         }
     });
-    const partialLoadEvent = new CustomEvent("PartialyLoaded", {bubbles: true});
-    document.addEventListener("PartialyLoaded", (ev: Event) => {
-        (ev.target as Element).querySelectorAll("a[href]").forEach((link) => {
+    const mainContent = document.getElementById("main-content");
+    mainContent.addEventListener("PartialyLoaded", () => {
+        mainContent.querySelectorAll("a[href]").forEach((link) => {
             link.addEventListener("click", tryPartialLoad);
         });
     });
@@ -79,13 +80,19 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
      */
     function partialLoad(destination: string, isOffline?: boolean) {
         document.getElementById("loading-indicator").style.display = "block";
+        const start = Date.now();
         fetch(destination).then(function (response) {
             document.getElementById("loading-indicator").style.display = "none";
 
             return response.text().then(function (text) {
-                const mainContent = document.getElementById("main-content");
                 mainContent.innerHTML = text;
-                mainContent.dispatchEvent(partialLoadEvent);
+                //Dispatch a custom event so that other functions know the page has updated
+                const partialLoadDetails: PartialLoadDetails = {
+                    loadTime: Date.now() - start, destination: destination
+                }; 
+                mainContent.dispatchEvent(new CustomEvent("PartialyLoaded", {
+                    detail: partialLoadDetails
+                }));
                 const mainHeaders = mainContent.getElementsByTagName("h1");
                 if (mainHeaders.length > 0) {
                     document.title = `${mainHeaders[0].textContent} - Sora's Nerd Den`;
