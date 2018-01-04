@@ -89,13 +89,13 @@
                 // logo (Optional) - Identifies a larger image which provides visual identification for the feed.
                 //                   Images should be twice as wide as they are tall.
                 await writer.Write(new SyndicationImage(
-                    new Uri(urlHelper.AbsoluteContent("~/img/icons/atom-logo-96x48.png")),
+                    new Uri(urlHelper.AbsoluteContent("favicon-wide.svg")),
                     "logo"));
 
                 // icon (Optional) - Identifies a small image which provides iconic visual identification for the feed.
                 //                   Icons should be square.
                 await writer.Write(new SyndicationImage(
-                    new Uri(urlHelper.AbsoluteContent("~/img/icons/atom-icon-48x48.png")),
+                    new Uri(urlHelper.AbsoluteContent("favicon.svg")),
                     "icon"));
 
                 // rights (Optional) - Conveys information about rights, e.g. copyrights, held in and over the feed.

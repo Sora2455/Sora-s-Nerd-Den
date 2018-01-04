@@ -96,6 +96,8 @@ addEventListener("fetch", (e: FetchEvent) => {
 
     // If not a GET request, don't cache
     if (request.method !== "GET") { return fetch(request); }
+    // If its the Atom feed, don't cache
+    if (request.url.includes("/feed/")) { return fetch(request); }
     // If it's a 'main' page, use the loading page instead
     if (request.url.endsWith("/")) {
         e.respondWith(caches.open("core").then((core) => {

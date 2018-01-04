@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="48" viewBox="0 0 200 100">
+  <title>Sora's Nerd Den</title>
+  <rect x="50" y="50" width="100" height="50"/>
+  <circle cx="100" cy="50" r="50"/>
+  <rect x="80" y="30" width="40" height="60" fill="white"/>
+  <circle cx="100" cy="30" r="20" fill="white"/>
+  <text x="51" y="70" font-family="Verdana" font-size="40" fill="white">S</text>
+  <text x="85" y="70" font-family="Verdana" font-size="40">N</text>
+  <text x="120" y="70" font-family="Verdana" font-size="40" fill="white">D</text>
+</svg>
