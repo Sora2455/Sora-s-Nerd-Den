@@ -27,7 +27,7 @@ function fetchAndCache(request, cache, versioned) {
         request = new Request(request);
     }
     //TODO handle 404s intelligently
-    return fetch(request.clone(), { mode: "cors" }).then(function (response) {
+    return fetch(request.clone(), { mode: "no-cors" }).then(function (response) {
         // if the response came back as a server error try and get from cache
         if (response.status === 500) {
             return findInCache(request, cache, versioned);
