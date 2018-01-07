@@ -30,7 +30,7 @@ var gulp = require('gulp'),
     sasslint = require('gulp-sass-lint'),       // SASS linter (https://www.npmjs.com/package/gulp-sass-lint/)
     tslint = require('gulp-tslint'),            // TypeScript linter (https://www.npmjs.com/package/gulp-tslint/)
     typescript = require('gulp-typescript'),    // TypeScript compiler (https://www.npmjs.com/package/gulp-typescript/)
-    svgfallback = require('gulp-svgfallback'),  // SVG to PNG converter (https://www.npmjs.com/package/gulp-svgfallback)
+    svgtopng = require('gulp-svg2png'),         // SVG to PNG converter (https://www.npmjs.com/package/gulp-svg2png)
     _ = require('autostrip-json-comments'),     // Strips JSON comments so the next two lines work (https://www.npmjs.com/package/autostrip-json-comments)
     config = require('./config.json'),          // Read the config.json file into the config variable.
     hosting = require('./hosting.json'),        // Read the hosting.json file into the hosting variable.
@@ -433,7 +433,7 @@ gulp.task('build-svg-fallbacks',
 function () {
     return gulp.src(sources.svg)
         .pipe(plumber())                            // Handle any errors.
-        .pipe(svgfallback())                        // Convert the SVG files to PNGs of the same size
+        .pipe(svgtopng())                           // Convert the SVG files to PNGs of the same size
         .pipe(gulp.dest(paths.imgFallback));        // Write PNG files to the fallback folder
     });
 gulp.task('build-img', ['copy-svgs', 'build-svg-fallbacks']);
