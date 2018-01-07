@@ -22,7 +22,7 @@ var gulp = require('gulp'),
     size = require('gulp-size'),                // Prints size of files to console (https://www.npmjs.com/package/gulp-size/)
     sourcemaps = require('gulp-sourcemaps'),    // Creates source map files (https://www.npmjs.com/package/gulp-sourcemaps/)
     uglify = require('gulp-uglify'),            // Minifies JavaScript (https://www.npmjs.com/package/gulp-uglify/)
-    gutil = require('gulp-util'),               // Gulp utilities (https://www.npmjs.com/package/gulp-util/)
+    log = require('fancy-log'),                 // Log things (https://www.npmjs.com/package/fancy-log)
     merge = require('merge-stream'),            // Merges one or more gulp streams into one (https://www.npmjs.com/package/merge-stream/)
     psi = require('psi'),                       // Google PageSpeed performance tester (https://www.npmjs.com/package/psi/)
     rimraf = require('rimraf'),                 // Deletes files and folders (https://www.npmjs.com/package/rimraf/)
@@ -62,7 +62,6 @@ var environment = {
         return this.current() === this.production;
     }
 };
-gutil.log('Current Environment: ' + environment.current());
 
 // The URL to your deployed site e.g. 'http://example.com'. This is used by the Google PageSpeed tasks.
 var siteUrl = undefined;
@@ -475,7 +474,7 @@ gulp.task('watch-css', function () {
             paths.styles + '**/*.{css,scss}',   // Watch the styles folder for file changes.
             ['clean-css', 'build-css'])         // Run the build-css task if a file changes.
         .on('change', function (event) {        // Log the change to the console.
-            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', build-css task started.'));
+            log.info('File ' + event.path + ' was ' + event.type + ', build-css task started.');
         });
 });
 
@@ -488,7 +487,7 @@ gulp.task('watch-ts', function () {
         paths.scripts + '**/*.ts',        // Watch the scripts folder for file changes.
         ['build-ts'])                     // Run the build-ts task if a file changes.
         .on('change', function (event) {  // Log the change to the console.
-            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', build-ts task started.'));
+            log.info('File ' + event.path + ' was ' + event.type + ', build-ts task started.');
         });
 });
 
@@ -501,7 +500,7 @@ gulp.task('watch-js', function () {
             paths.scripts + '**/*.js',          // Watch the scripts folder for file changes.
             ['clean-js', 'build-js'])           // Run the build-js task if a file changes.
         .on('change', function (event) {        // Log the change to the console.
-            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', build-js task started.'));
+            log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');
         });
 });
 
@@ -514,7 +513,7 @@ gulp.task('watch-img', function () {
             sources.svg,                        // Watch the images folder for file changes
             ['clean-img', 'build-img'])         // Run the build-img task if a file changes
         .on('change', function (event) {        // Log the change to the console.
-            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', build-js task started.'));
+            log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');
         });
 });
 
@@ -529,7 +528,7 @@ gulp.task('watch-img', function () {
 //        ],
 //        ['test'])                               // Run the test task if a file changes.
 //        .on('change', function (event) {        // Log the change to the console.
-//            gutil.log(gutil.colors.blue('File ' + event.path + ' was ' + event.type + ', test task started.'));
+//            log.info('File ' + event.path + ' was ' + event.type + ', test task started.');
 //        });
 //});
 

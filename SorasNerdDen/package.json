@@ -8,6 +8,7 @@
   "devDependencies": {
     "autostrip-json-comments": "0.0.4",
     "chai": "3.5.0",
+    "fancy-log": "^1.3.2",
     "gulp": "3.9.1",
     "gulp-autoprefixer": "3.1.1",
     "gulp-concat": "2.6.1",
@@ -28,7 +29,6 @@
     "gulp-tslint": "7.1.0",
     "gulp-typescript": "^3.2.3",
     "gulp-uglify": "2.1.0",
-    "gulp-util": "3.0.8",
     "jshint": "^2.9.5",
     "merge-stream": "1.0.1",
     "mocha": "3.2.0",
