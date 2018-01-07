@@ -28,6 +28,9 @@
     <None Remove="Scripts\serviceWorker.ts" />
     <None Remove="Scripts\timeLocaliser.ts" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\loading.svg" />
+  </ItemGroup>
   <ItemGroup Label="Files">
     <!-- Remove the .gitignore file from the published output. -->
     <Content Update="wwwroot\.gitignore">
@@ -94,6 +97,10 @@
     <TypeScriptCompile Include="Scripts\logLongLoadingTimes.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker\serviceWorker.ts" />
     <TypeScriptCompile Include="Scripts\timeLocaliser.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\img\fallback\" />
+    <Folder Include="wwwroot\img\svg\" />
   </ItemGroup>
   <!-- Execute the following commands before publishing the project. -->
   <Target Label="Scripts" Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">

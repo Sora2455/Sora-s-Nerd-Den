@@ -3,6 +3,8 @@
 
 css/
 fonts/
+img/svg/
+img/fallback/
 js/
 serviceWorker.js
 serviceWorker.js.map
