@@ -501,7 +501,7 @@ gulp.task('watch-js', function () {
 });
 
 /*
- * Watch the images folder for changes to .svg files. Rebuild the fallbacks if anything changes.
+ * Watch the images folder for changes to image files. Rebuild the fallbacks if anything changes.
  */
 gulp.task('watch-img', function () {
     return gulp
