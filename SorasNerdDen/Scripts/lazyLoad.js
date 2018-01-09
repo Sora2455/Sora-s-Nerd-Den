@@ -21,7 +21,7 @@
             //Store our ACTUAL source for later
             lazyImg.setAttribute("data-lazy-src", lazyImg.getAttribute("src"));
             //Set the item to point to a temporary replacement (a 1x1 pixel gif)
-            lazyImg.setAttribute("src", "/img/misc/spacer.gif");
+            lazyImg.setAttribute("src", "/img/spacer.gif");
             //Now observe the item so that we can start loading when it gets close to the viewport
             observer.observe(lazyImg);
         }
@@ -29,7 +29,7 @@
         for (var i2 = lazyPictures.length; i2--;) {
             var lazyPicture = lazyPictures[i2];
             var newSource = document.createElement("source");
-            newSource.setAttribute("srcset", "/img/misc/spacer.gif");
+            newSource.setAttribute("srcset", "/img/spacer.gif");
             newSource.setAttribute("data-lazy-remove", "true");
             //adding this source tag at the start of the picture tag means the browser will load it first
             lazyPicture.insertBefore(newSource, lazyPicture.firstChild);

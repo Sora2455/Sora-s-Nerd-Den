@@ -28,8 +28,8 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string lazyPost = lazy ? @"</noscript>" : null;
             return new HtmlString(
                     $"{lazyPre}<picture>" +
-                        $"<source type=\"image/svg+xml\" srcset=\"/img/svg/{imageName}.svg\">" +
-                        $"<img src=\"/img/fallback/{imageName}.png\" alt=\"{imageAltText}\"" +
+                        $"<source type=\"image/svg+xml\" srcset=\"/img/{imageName}.svg\">" +
+                        $"<img src=\"/img/{imageName}.png\" alt=\"{imageAltText}\"" +
                             $"height=\"{height}\" width=\"{width}\"{classString}{idString}>" +
                     $"</picture>{lazyPost}");
         }

@@ -80,8 +80,6 @@ var paths = {
     css: './' + hosting.webroot + '/css/',
     fonts: './' + hosting.webroot + '/fonts/',
     img: './' + hosting.webroot + '/img/',
-    imgSvg: './' + hosting.webroot + '/img/svg/',
-    imgFallback: './' + hosting.webroot + '/img/fallback/',
     js: './' + hosting.webroot + '/js/'
 };
 
@@ -162,6 +160,10 @@ var sources = {
     // An array of SVG files that need PNG fallbacks
     svg: [
         paths.imagesSource + '**/*.svg'
+    ],
+    // An array of image files that need to be copied to the wwwroot img folder
+    imgCopy: [
+        paths.imagesSource + '**/*.{png,jpg,jpeg,gif,svg}'
     ],
     // An array containing objects required to build a single JavaScript file.
     js: [
@@ -244,13 +246,9 @@ gulp.task('clean-js', function (cb) {
 /*
  * Delete the generated files inside the img directory
  */
-gulp.task('clean-imgFallback', function (cb) {
-    return rimraf(paths.imgFallback, cb);
+gulp.task('clean-img', function (cb) {
+    return rimraf(paths.img, cb);
 });
-gulp.task('clean-imgSvg', function (cb) {
-    return rimraf(paths.imgSvg, cb);
-});
-gulp.task('clean-img', ['clean-imgSvg', 'clean-imgFallback']);
 
 /*
  * Deletes all files and folders within the css, fonts and js directories.
@@ -425,18 +423,16 @@ function () {
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.
 });
 
-gulp.task('copy-svgs',
-function () {
-    gulp.src(sources.svg).pipe(gulp.dest(paths.imgSvg));
+gulp.task('build-img', function () {
+    return merge([                                  // Combine multiple streams to one and return it so the task can be chained.
+        gulp.src(sources.imgCopy)                   // Copy all images to the wwwroot img folder
+            .pipe(gulp.dest(paths.img)),
+        gulp.src(sources.svg)                       // Give the svg files in particular png fallbacks
+            .pipe(plumber())                        // Handle any errors.
+            .pipe(svgtopng())                       // Convert the SVG files to PNGs of the same size
+            .pipe(gulp.dest(paths.img))             // Write PNG files to the wwwroot img folder
+    ]);
 });
-gulp.task('build-svg-fallbacks',
-function () {
-    return gulp.src(sources.svg)
-        .pipe(plumber())                            // Handle any errors.
-        .pipe(svgtopng())                           // Convert the SVG files to PNGs of the same size
-        .pipe(gulp.dest(paths.imgFallback));        // Write PNG files to the fallback folder
-    });
-gulp.task('build-img', ['copy-svgs', 'build-svg-fallbacks']);
 
 /*
  * Cleans and builds the CSS, Font, Image, TypeScript and JavaScript files for the site.
@@ -510,7 +506,7 @@ gulp.task('watch-js', function () {
 gulp.task('watch-img', function () {
     return gulp
         .watch(
-            sources.svg,                        // Watch the images folder for file changes
+            sources.imgCopy,                    // Watch the images folder for file changes
             ['clean-img', 'build-img'])         // Run the build-img task if a file changes
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');

@@ -21,6 +21,15 @@ textarea {
   resize: vertical;
 }
 
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
 // Loading indicator
 .loading-indicator {
   display: none; // We will show this with JavaScript, defualt to invisible for JS-disabled viewers
@@ -28,4 +37,5 @@ textarea {
   position: absolute;
   top: calc(50% - 100px);
   z-index: 9999;
+  animation: rotation 3s infinite linear;
 }
