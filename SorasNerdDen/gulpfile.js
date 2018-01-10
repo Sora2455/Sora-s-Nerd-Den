@@ -426,11 +426,24 @@ function () {
 gulp.task('build-img', function () {
     return merge([                                  // Combine multiple streams to one and return it so the task can be chained.
         gulp.src(sources.imgCopy)                   // Copy all images to the wwwroot img folder
-            .pipe(gulp.dest(paths.img)),
+            .pipe(plumber())                        // Handle any errors.
+            .pipe(sizeBefore())                     // Write the size of the file to the console before minification.
+            .pipe(imagemin({                        // Optimize the images.
+                multipass: true,                    // Optimize SVG multiple times until it's fully optimized.
+                optimizationLevel: 7                // The level of optimization (0 to 7) to make, the higher the slower it is.
+            }))
+            .pipe(gulp.dest(paths.img))
+            .pipe(sizeAfter()),                     // Write the size of the file to the console after minification.,
         gulp.src(sources.svg)                       // Give the svg files in particular png fallbacks
             .pipe(plumber())                        // Handle any errors.
+            .pipe(sizeBefore())                     // Write the size of the file to the console before minification.
+            .pipe(imagemin({                        // Optimize the images.
+                multipass: true,                    // Optimize SVG multiple times until it's fully optimized.
+                optimizationLevel: 7                // The level of optimization (0 to 7) to make, the higher the slower it is.
+            }))
             .pipe(svgtopng())                       // Convert the SVG files to PNGs of the same size
             .pipe(gulp.dest(paths.img))             // Write PNG files to the wwwroot img folder
+            .pipe(sizeAfter())
     ]);
 });
 
@@ -444,22 +457,6 @@ gulp.task('build', ['build-css', 'build-fonts', 'build-img', 'build-ts', 'build-
 //        .src(paths.tests + 'mocha.html')
 //        .pipe(mocha());
 //});
-
-/*
- * Optimizes and compresses the GIF, JPG, PNG and SVG images for the site.
- */
-gulp.task('optimize-images', function () {
-    return gulp
-        .src(sources.img)                   // Start with the source paths.
-        .pipe(plumber())                    // Handle any errors.
-        .pipe(sizeBefore())                 // Write the size of the file to the console before minification.
-        .pipe(imagemin({                    // Optimize the images.
-            multipass: true,                // Optimize SVG multiple times until it's fully optimized.
-            optimizationLevel: 7            // The level of optimization (0 to 7) to make, the higher the slower it is.
-        }))
-        .pipe(gulp.dest(paths.img))         // Saves the image files to the specified destination path.
-        .pipe(sizeAfter());                 // Write the size of the file to the console after minification.
-});
 
 /*
  * Watch the styles folder for changes to .css, or .scss files. Build the CSS if something changes.
