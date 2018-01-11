@@ -2,12 +2,6 @@
 {
     public static class ContentDeliveryNetwork
     {
-        public static class MaxCdn
-        {
-            public const string Domain = "maxcdn.bootstrapcdn.com";
-            public const string FontAwesomeUrl = "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
-        }
-
         public static class Polyfill
         {
             public const string Domain = "cdn.polyfill.io";

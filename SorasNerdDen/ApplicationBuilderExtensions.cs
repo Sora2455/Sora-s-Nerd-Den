@@ -141,16 +141,15 @@
                                 x.Self();                                 // Allow all AJAX and Web Sockets calls from the same domain.
                             })
                         // font-src - This directive restricts from where the protected resource can load fonts.
-                        .FontSources(
-                            x =>
-                            {
-                                x.Self();                                 // Allow all fonts from the same domain.
-                                x.CustomSources(new string[]              // Allow fonts from the following sources.
-                                {
-                                    // "*.example.com",                   // Allow AJAX and Web Sockets to example.com.
-                                    ContentDeliveryNetwork.MaxCdn.Domain  // Allow fonts from maxcdn.bootstrapcdn.com.
-                                });
-                            })
+                        //.FontSources(
+                        //    x =>
+                        //    {
+                        //        x.Self();                                 // Allow all fonts from the same domain.
+                        //        x.CustomSources(new string[]              // Allow fonts from the following sources.
+                        //        {
+                        //            // "*.example.com",                   // Allow AJAX and Web Sockets to example.com.
+                        //        });
+                        //    })
                         // form-action - This directive restricts which URLs can be used as the action of HTML form elements.
                         .FormActions(x => x.Self())              // Allow the current domain.
                         // frame-src - This directive restricts from where the protected resource can embed frames.
@@ -191,10 +190,6 @@
                             x =>
                             {
                                 x.Self();                                // Allow all stylesheets from the same domain.
-                                x.CustomSources(new string[]
-                                {
-                                    ContentDeliveryNetwork.MaxCdn.Domain // Allow stylesheets from the following CDN's.
-                                });
                             });
                 });
 

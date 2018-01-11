@@ -78,7 +78,6 @@ var paths = {
     // Destination Directory Paths
     wwwroot: './' + hosting.webroot + '/',
     css: './' + hosting.webroot + '/css/',
-    fonts: './' + hosting.webroot + '/fonts/',
     img: './' + hosting.webroot + '/img/',
     js: './' + hosting.webroot + '/js/'
 };
@@ -124,33 +123,12 @@ var sources = {
     // An array containing objects required to build a single CSS file.
     css: [
         {
-            // name - The name of the final CSS file to build.
-            name: 'font-awesome.css',
-            // copy - Just copy the file and don't run it through the minification pipeline.
-            copy: true,
-            // paths - The path to the file to copy.
-            paths: paths.nodeModules + 'font-awesome/css/font-awesome.min.css'
-        },
-        {
             name: 'site.css',
             // paths - An array of paths to CSS or SASS files which will be compiled to CSS, concatenated and minified
             // to create a file with the above file name.
             paths: [
                 paths.styles + 'site.scss'
             ]
-        }
-    ],
-    // An array containing objects required to copy font files.
-    fonts: [
-        {
-            // The name of the folder the fonts will be output to.
-            name: 'bootstrap',
-            // The source directory to get the font files from. Note that we support all font file types.
-            path: paths.nodeModules + 'bootstrap-sass/**/*.{ttf,svg,woff,woff2,otf,eot}'
-        },
-        {
-            name: 'font-awesome',
-            path: paths.nodeModules + 'font-awesome/**/*.{ttf,svg,woff,woff2,otf,eot}'
         }
     ],
     // An array of paths to images to be optimized.
@@ -171,7 +149,6 @@ var sources = {
             name: 'site.js',
             paths: [
                 paths.scripts + 'captureErrors.js',
-                paths.scripts + 'fallback/styles.js',
                 paths.scripts + 'lazyLoad.js',
                 paths.scripts + 'partialLoad.js',
                 paths.scripts + 'timeLocaliser.js',
@@ -230,13 +207,6 @@ gulp.task('clean-css', function (cb) {
 });
 
 /*
- * Deletes all files and folders within the fonts directory.
- */
-gulp.task('clean-fonts', function (cb) {
-    return rimraf(paths.fonts, cb);
-});
-
-/*
  * Deletes all files and folders within the js directory.
  */
 gulp.task('clean-js', function (cb) {
@@ -251,9 +221,9 @@ gulp.task('clean-img', function (cb) {
 });
 
 /*
- * Deletes all files and folders within the css, fonts and js directories.
+ * Deletes all files and folders within the css, img and js directories.
  */
-gulp.task('clean', ['clean-css', 'clean-fonts', 'clean-js', 'clean-img']);
+gulp.task('clean', ['clean-css', 'clean-js', 'clean-img']);
 
 /*
  * Report warnings and errors in your CSS and SCSS files (lint them) under the Styles folder.
@@ -354,22 +324,6 @@ gulp.task('build-css', ['lint-css'], function () {
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.
 });
 
-/*
- * Builds the font files for the site.
- */
-gulp.task('build-fonts', function () {
-    var tasks = sources.fonts.map(function (source) { // For each set of source files in the sources.
-        return gulp                             // Return the stream.
-            .src(source.path)                   // Start with the source paths.
-            .pipe(plumber())                    // Handle any errors.
-            .pipe(rename(function (path) {      // Rename the path to remove an unnecessary directory.
-                path.dirname = '';
-            }))
-            .pipe(gulp.dest(paths.fonts));      // Saves the font files to the specified destination path.
-    });
-    return merge(tasks);                        // Combine multiple streams to one and return it so the task can be chained.
-});
-
 gulp.task('build-ts', [
     'lint-ts'
 ],
@@ -448,9 +402,9 @@ gulp.task('build-img', function () {
 });
 
 /*
- * Cleans and builds the CSS, Font, Image, TypeScript and JavaScript files for the site.
+ * Cleans and builds the CSS, Image, TypeScript and JavaScript files for the site.
  */
-gulp.task('build', ['build-css', 'build-fonts', 'build-img', 'build-ts', 'build-js']);
+gulp.task('build', ['build-css', 'build-img', 'build-ts', 'build-js']);
 
 //gulp.task('test', function () {
 //    return gulp

@@ -20,7 +20,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
                 link.addEventListener("click", tryPartialLoad);
             });
             var mainHeading = document.querySelector("#main-content h1");
-            if (mainHeading && mainHeading.textContent === " Loading") {
+            if (mainHeading && mainHeading.textContent === "Loading") {
                 //This is the loading page that the Service Worker returns - we need
                 //to partial load the page so that the main area matches the location bar
                 var newTarget = getPartialUrl(location.toString());

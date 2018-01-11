@@ -2,8 +2,7 @@
   "name": "sorasnerdden",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap-sass": "3.3.7",
-    "font-awesome": "4.7.0"
+    "bootstrap-sass": "3.3.7"
   },
   "devDependencies": {
     "autostrip-json-comments": "0.0.4",
