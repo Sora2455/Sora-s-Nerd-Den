@@ -39,17 +39,12 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span aria-hidden="true" class="icon-bar"></span>
-                    <span aria-hidden="true" class="icon-bar"></span>
-                    <span aria-hidden="true" class="icon-bar"></span>
-                </button>
-                <a asp-route="@HomeControllerRoute.GetIndex" class="navbar-brand" role="banner">&#9734; @AppSettings.Value.SiteTitle</a>
+                <a asp-route="@HomeControllerRoute.GetIndex" class="navbar-brand" role="banner">@Html.Emoji(Emoji.WhiteStar) @AppSettings.Value.SiteTitle</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-route="@HomeControllerRoute.GetAbout">&#128129; About</a></li>
-                    <li><a asp-route="@HomeControllerRoute.GetContact">&#128222; Contact</a></li>
+                    <li><a asp-route="@HomeControllerRoute.GetAbout">@Html.Emoji(Emoji.InformationDeskPerson) About</a></li>
+                    <li><a asp-route="@HomeControllerRoute.GetContact">@Html.Emoji(Emoji.Telephone) Contact</a></li>
                     <li><a asp-route="@HomeControllerRoute.GetFeed">RSS</a></li>
                 </ul>
                 <form action="@Url.RouteUrl(HomeControllerRoute.GetSearch)" class="navbar-form navbar-right" method="get" role="search">

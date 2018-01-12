@@ -29,7 +29,7 @@
 
 <div class="jumbotron text-center">
     <header>
-        <h1>&#9888; @ViewBag.Title</h1>
+        <h1>@Html.Emoji(Emoji.WarningSign) @ViewBag.Title</h1>
     </header>
     <p>@ViewBag.Description</p>
     <a class="btn btn-primary btn-lg" href="@Url.RouteUrl(HomeControllerRoute.GetIndex)">&#127968 Take me home</a>

@@ -1,8 +1,79 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SorasNerdDen.Services.HtmlHelpers
 {
+    /// <summary>
+    /// An incomplete list of the emoji characters availible in the Unicode standard
+    /// </summary>
+    public enum Emoji : uint
+    {
+        /// <summary>⌛</summary>
+        Hourglass = 8987,
+        /// <summary>⏳</summary>
+        HourglassWithFlowingSand = 9203,
+        /// <summary>☆</summary>
+        WhiteStar = 9734,
+        /// <summary>☕</summary>
+        HotBeverage = 9749,
+        /// <summary>☠</summary>
+        SkullAndCrossbones = 9760,
+        /// <summary>☢</summary>
+        RadioactiveSymbol = 9762,
+        /// <summary>☣</summary>
+        BiohazardSymbol = 9763,
+        /// <summary>☤</summary>
+        Caduceus = 9764,
+        /// <summary>☮</summary>
+        PeaceSymbol = 9774,
+        /// <summary>⚠</summary>
+        WarningSign = 9888,
+        /// <summary>✝</summary>
+        LatinCross = 10013,
+        /// <summary>🍺</summary>
+        BeerMug = 127866,
+        /// <summary>🍻</summary>
+        ClinkingBeerMugs = 127867,
+        /// <summary>🏘</summary>
+        Houses = 127960,
+        /// <summary>🏠</summary>
+        House = 127968,
+        /// <summary>💁</summary>
+        InformationDeskPerson = 128129,
+        /// <summary>💡</summary>
+        LightBulb = 128161,
+        /// <summary>📁</summary>
+        FileFolder = 128193,
+        /// <summary>📂</summary>
+        OpenFileFolder = 128194,
+        /// <summary>📜</summary>
+        Scroll = 128220,
+        /// <summary>📞</summary>
+        Telephone = 128222,
+        /// <summary>📰</summary>
+        Newspaper = 128240,
+        /// <summary>📱</summary>
+        MobilePhone = 128241,
+        /// <summary>🔌</summary>
+        ElectricPlug = 128268,
+        /// <summary>🔒</summary>
+        Lock = 128274,
+        /// <summary>🔓</summary>
+        OpenLock = 128275,
+        /// <summary>🔗</summary>
+        LinkSymbol = 128279,
+        /// <summary>🔦</summary>
+        ElectricTorch = 128294,
+        /// <summary>🗄</summary>
+        FileCabinet = 128452,
+        /// <summary>🗋</summary>
+        BlankDocument = 128459,
+        /// <summary>🗺</summary>
+        WorldMap = 128506
+    }
+
     public static class HtmlHelperExtensions
     {
         /// <summary>
@@ -32,6 +103,42 @@ namespace SorasNerdDen.Services.HtmlHelpers
                         $"<img src=\"/img/{imageName}.png\" alt=\"{imageAltText}\"" +
                             $"height=\"{height}\" width=\"{width}\"{classString}{idString}>" +
                     $"</picture>{lazyPost}");
+        }
+
+        /// <summary>
+        /// Takes a CamelCase string and converts it into the form 'Camel case'
+        /// </summary>
+        /// <param name="camelCase">The CamelCase string to convert</param>
+        /// <returns>A human-readable string</returns>
+        private static string DisplayCamelCaseString(string camelCase)
+        {
+            List<char> chars = new List<char> {camelCase[0]};
+            foreach (char c in camelCase.Skip(1))
+            {
+                if (char.IsUpper(c))
+                {
+                    chars.Add(' ');
+                    chars.Add(char.ToLower(c));
+                }
+                else chars.Add(c);
+            }
+            return new string(chars.ToArray());
+        }
+
+        /// <summary>
+        /// Render an emoji character that is readable to both human sight and screen readers
+        /// </summary>
+        /// <param name="helper">The HTML helper being used to render the text</param>
+        /// <param name="emoji">The <see cref="HtmlHelpers.Emoji"/> to render</param>
+        /// <returns>A HtmlString of an emoji character wrapped in a span tag containing a description
+        /// for screen-readers</returns>
+        public static IHtmlContent Emoji(this IHtmlHelper helper, Emoji emoji)
+        {
+            string emojiName = DisplayCamelCaseString(emoji.ToString());
+            return new HtmlString(
+                $"<span role=\"img\" aria-label=\"{emojiName}\" tabindex=\"0\" class=\"emoji\">" +
+                $"&#{(uint)emoji};</span>"
+            );
         }
     }
 }

@@ -31,6 +31,61 @@ textarea {
   }
 }
 
+$white: rgba(255, 255, 255, 1);
+$transparent-white: rgba(255, 255, 255, 0);
+$black: rgba(0, 0, 0, 1);
+$semi-transparent-black: rgba(0, 0, 0, .85);
+
+@keyframes TOOLTIP {
+  from {
+    background-color: transparent;
+    border: .05em solid $transparent-white;
+    box-shadow: 0 0 0 $black;
+    color: $transparent-white;
+    top: .5em;
+  }
+
+  to {
+    background-color: $semi-transparent-black;
+    border: .05em solid $white;
+    box-shadow: .15em .15em .5em $black;
+    color: $white;
+    top: 1.5em;
+  }
+}
+
+// Emoji accessability styles - based on http://adrianroselli.com/2016/12/accessible-emoji-tweaked.html
+.emoji {
+  position: relative;
+  //font-family: Segoe UI Symbol;
+
+  &:focus,
+  &:hover {
+    &::after {
+      animation: TOOLTIP .1s ease-out 1;
+      background-color: $semi-transparent-black;
+      border: .05em solid $white;
+      border-radius: .2em;
+      box-shadow: .15em .15em .5em $black;
+      color: $white;
+      content: attr(aria-label);
+      display: block;
+      font-size: 80%;
+      left: 0;
+      padding: .5em .75em;
+      position: absolute;
+      top: 1.5em;
+      z-index: 1;
+    }
+  }
+
+  @media print {
+    &::after {
+      content: ' (' attr(aria-label) ') ';
+    }
+  }
+}
+
 // Loading indicator
 .loading-indicator {
   animation: rotation 3s infinite linear;
