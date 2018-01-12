@@ -137,7 +137,7 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string emojiName = DisplayCamelCaseString(emoji.ToString());
             return new HtmlString(
                 $"<span role=\"img\" aria-label=\"{emojiName}\" tabindex=\"0\" class=\"emoji\">" +
-                $"&#{(uint)emoji};</span>"
+                $"&#{(uint)emoji};&#xFE0E;</span>"
             );
         }
     }
