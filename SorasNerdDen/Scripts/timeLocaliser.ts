@@ -4,17 +4,17 @@
     if (!("Intl" in window)) {
         return;
     }
+    //Try and use native language formatting, falling back to Australian, then American english
+    const locales = [navigator.language, "en-AU", "en-US"];
+    //Set up the formatters for time, dates, and date-times
+    const timeFormatter = new Intl.DateTimeFormat(locales, { hour: "numeric", minute: "numeric" });
+    const dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const dateTimeFormatter = new Intl.DateTimeFormat(locales, { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" });
     /**
      * Localise <time> tags to their native language, format and timezone
      * @param timeTags The time tags to localise
      */
     function localiseTimes(timeTags: NodeListOf<HTMLTimeElement>) {
-        //Try and use native language formatting, falling back to Australian, then American english
-        const locales = [navigator.language, "en-AU", "en-US"];
-        //Set up the formatters for time, dates, and date-times
-        const timeFormatter = new Intl.DateTimeFormat(locales, { hour: "numeric", minute: "numeric" });
-        const dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-        const dateTimeFormatter = new Intl.DateTimeFormat(locales, { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" });
         //Now format each of the time tags
         for (let i = timeTags.length; i--;) {
             const time = timeTags[i];

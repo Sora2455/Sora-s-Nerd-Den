@@ -4,17 +4,17 @@
     if (!("Intl" in window)) {
         return;
     }
+    //Try and use native language formatting, falling back to Australian, then American english
+    var locales = [navigator.language, "en-AU", "en-US"];
+    //Set up the formatters for time, dates, and date-times
+    var timeFormatter = new Intl.DateTimeFormat(locales, { hour: "numeric", minute: "numeric" });
+    var dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    var dateTimeFormatter = new Intl.DateTimeFormat(locales, { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" });
     /**
      * Localise <time> tags to their native language, format and timezone
      * @param timeTags The time tags to localise
      */
     function localiseTimes(timeTags) {
-        //Try and use native language formatting, falling back to Australian, then American english
-        var locales = [navigator.language, "en-AU", "en-US"];
-        //Set up the formatters for time, dates, and date-times
-        var timeFormatter = new Intl.DateTimeFormat(locales, { hour: "numeric", minute: "numeric" });
-        var dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-        var dateTimeFormatter = new Intl.DateTimeFormat(locales, { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" });
         //Now format each of the time tags
         for (var i = timeTags.length; i--;) {
             var time = timeTags[i];

@@ -79,13 +79,10 @@
             var lazyArea = document.createElement("div");
             lazyArea.innerHTML = lazyAreaHtml;
             //Only delay loading if we can use the IntersectionObserver to check for visibility
-            if (!observer) {
-                noScriptTag.parentNode.replaceChild(lazyArea, noScriptTag);
-            }
-            else {
+            if (observer) {
                 prepareLazyContents(lazyArea);
-                noScriptTag.parentNode.replaceChild(lazyArea, noScriptTag);
             }
+            noScriptTag.parentNode.replaceChild(lazyArea, noScriptTag);
         }
     }
     //Use requestAnimationFrame as this will propably cause repaints
