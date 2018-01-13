@@ -11,22 +11,23 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 }
 (function () {
     "use strict";
+    // We require pushState, or else this isn't going to work
+    if (!history.pushState) {
+        return;
+    }
     // When the document is availible for interaction:
     document.addEventListener("DOMContentLoaded", function () {
-        // We require pushState, or else this isn't going to work
-        if (history.pushState) {
-            // Find all the links that go places:
-            document.querySelectorAll("a[href]").forEach(function (link) {
-                link.addEventListener("click", tryPartialLoad);
-            });
-            var mainHeading = document.querySelector("#main-content h1");
-            if (mainHeading && mainHeading.textContent === "Loading") {
-                //This is the loading page that the Service Worker returns - we need
-                //to partial load the page so that the main area matches the location bar
-                var newTarget = getPartialUrl(location.toString());
-                // Then, fetch that page and load it into the main tag
-                partialLoad(newTarget);
-            }
+        // Find all the links that go places:
+        document.querySelectorAll("a[href]").forEach(function (link) {
+            link.addEventListener("click", tryPartialLoad);
+        });
+        var mainHeading = document.querySelector("#main-content h1");
+        if (mainHeading && mainHeading.textContent === "Loading") {
+            //This is the loading page that the Service Worker returns - we need
+            //to partial load the page so that the main area matches the location bar
+            var newTarget = getPartialUrl(location.toString());
+            // Then, fetch that page and load it into the main tag
+            partialLoad(newTarget);
         }
     });
     var mainContent = document.getElementById("main-content");
