@@ -32,10 +32,13 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }
     });
     const mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("PartialyLoaded", () => {
+    mainContent.addEventListener("ContentModified", () => {
         mainContent.querySelectorAll("a[href]").forEach((link) => {
             link.addEventListener("click", tryPartialLoad);
         });
+    });
+    document.addEventListener("LinkAdded", (e: CustomEvent) => {
+        e.target.addEventListener("click", tryPartialLoad);
     });
     /**
      * Check if a link's destination can be simulated by a partial update of the page, and do so if so
@@ -93,7 +96,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
                 const partialLoadDetails: PartialLoadDetails = {
                     loadTime: Date.now() - start, destination: destination
                 }; 
-                mainContent.dispatchEvent(new CustomEvent("PartialyLoaded", {
+                mainContent.dispatchEvent(new CustomEvent("ContentModified", {
                     detail: partialLoadDetails
                 }));
                 const mainHeaders = mainContent.getElementsByTagName("h1");
@@ -116,8 +119,8 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
     window.addEventListener("popstate", (ev) => {
         // ev.state.target was were we stored the reference to the 'real' page
         let target: string = ev.state && ev.state.target;
-        // if it doesn't exist, defualt to the home page
-        if (!target) { target = location.origin; }
+        // if it doesn't exist, defualt to the URL
+        if (!target) { target = getPartialUrl(location.toString()); }
         partialLoad(target);
     });
 })();

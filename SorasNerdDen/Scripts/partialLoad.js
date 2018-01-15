@@ -31,10 +31,13 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }
     });
     var mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("PartialyLoaded", function () {
+    mainContent.addEventListener("ContentModified", function () {
         mainContent.querySelectorAll("a[href]").forEach(function (link) {
             link.addEventListener("click", tryPartialLoad);
         });
+    });
+    document.addEventListener("LinkAdded", function (e) {
+        e.target.addEventListener("click", tryPartialLoad);
     });
     /**
      * Check if a link's destination can be simulated by a partial update of the page, and do so if so
@@ -99,7 +102,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
                 var partialLoadDetails = {
                     loadTime: Date.now() - start, destination: destination
                 };
-                mainContent.dispatchEvent(new CustomEvent("PartialyLoaded", {
+                mainContent.dispatchEvent(new CustomEvent("ContentModified", {
                     detail: partialLoadDetails
                 }));
                 var mainHeaders = mainContent.getElementsByTagName("h1");
@@ -124,9 +127,9 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
     window.addEventListener("popstate", function (ev) {
         // ev.state.target was were we stored the reference to the 'real' page
         var target = ev.state && ev.state.target;
-        // if it doesn't exist, defualt to the home page
+        // if it doesn't exist, defualt to the URL
         if (!target) {
-            target = location.origin;
+            target = getPartialUrl(location.toString());
         }
         partialLoad(target);
     });

@@ -14,10 +14,13 @@
     <article class="col-md-8">
         <p>You are currently offline, and do not have a cached version of this page availible.</p>
         <p>Here are the pages you <em>do</em> have cached:</p>
-        <nav id="offline-nav-items">
-            <ul>
-                <li>TODO</li>
-            </ul>
+        <noscript>
+            <div class="alert alert-warning" role="alert">
+                <p>Unfortunately, JavaScript caching is not available with JavaScript disabled. Please <a class="alert-link" href="https://enable-javascript.com/">enable JavaScript</a> to cache pages for future offline use.</p>
+            </div>
+        </noscript>
+        <nav>
+            <ul id="offline-nav-items"></ul>
         </nav>
     </article>
 </div>

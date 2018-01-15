@@ -79,4 +79,5 @@
     }
     //Use requestAnimationFrame as this will propably cause repaints
     document.addEventListener("DOMContentLoaded", () => { requestAnimationFrame(setUp); });
+    document.getElementById("main-content").addEventListener("ContentModified", () => { requestAnimationFrame(setUp); });
 })();

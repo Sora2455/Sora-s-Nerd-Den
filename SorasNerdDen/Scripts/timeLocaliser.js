@@ -47,7 +47,7 @@
         localiseTimes(times);
     });
     var mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("PartialyLoaded", function () {
+    mainContent.addEventListener("ContentModified", function () {
         //Get the newly loaded time tags
         var times = mainContent.getElementsByTagName("time");
         localiseTimes(times);

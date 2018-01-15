@@ -152,6 +152,7 @@ var sources = {
                 paths.scripts + 'lazyLoad.js',
                 paths.scripts + 'partialLoad.js',
                 paths.scripts + 'timeLocaliser.js',
+                paths.scripts + 'loadOfflinePages.js',
                 paths.scripts + 'logLongLoadingTimes.js'
             ],
             dest: paths.js
@@ -174,6 +175,7 @@ var sources = {
         paths.scripts + 'partialLoad.ts',
         paths.scripts + 'timeLocaliser.ts',
         paths.scripts + 'logLongLoadingTimes.ts',
+        paths.scripts + 'loadOfflinePages.ts',
         paths.scripts + 'addServiceWorker.ts',
         paths.scripts + 'serviceWorker/serviceWorker.ts'
     ]

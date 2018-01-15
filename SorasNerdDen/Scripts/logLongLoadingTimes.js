@@ -15,11 +15,11 @@
     }
     /**
      * Report any partial page loads that took any longer than the goal time
-     * @param partialLoadEvent The ParialLoad custom event
+     * @param partialLoadEvent The ContentModified custom event
      */
     function timePartialPageLoad(partialLoadEvent) {
         var loadDetails = partialLoadEvent.detail;
-        if (loadDetails.loadTime > 1000) {
+        if (loadDetails && loadDetails.loadTime > 1000) {
             reportTiming(loadDetails.loadTime / 1000, loadDetails.loadTime / 1000, loadDetails.destination);
         }
     }
@@ -40,11 +40,6 @@
             body: formData
         });
     }
-    if (document.readyState === "complete") {
-        setTimeout(timeFullPageLoad, 1);
-    }
-    else {
-        window.addEventListener("load", function () { return setTimeout(timeFullPageLoad, 1); });
-    }
-    document.getElementById("main-content").addEventListener("PartialyLoaded", timePartialPageLoad);
+    window.addEventListener("load", function () { return setTimeout(timeFullPageLoad, 1); });
+    document.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);
 })();

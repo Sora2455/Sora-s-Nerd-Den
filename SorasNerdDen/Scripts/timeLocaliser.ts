@@ -45,7 +45,7 @@
         localiseTimes(times);
     });
     const mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("PartialyLoaded", () => {
+    mainContent.addEventListener("ContentModified", () => {
         //Get the newly loaded time tags
         const times = mainContent.getElementsByTagName("time");
         localiseTimes(times);

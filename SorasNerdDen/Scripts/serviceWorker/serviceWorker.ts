@@ -64,7 +64,6 @@ addEventListener("install", (e: ExtendableEvent) => {
                 "/?v=m",
                 "/offline/?v=m",
                 "/css/site.css",
-                "/css/font-awesome.css",
                 "/js/site.js"
             ];
 
