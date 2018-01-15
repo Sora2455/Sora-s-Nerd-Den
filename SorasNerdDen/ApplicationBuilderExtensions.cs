@@ -129,10 +129,6 @@
                         // base-uri - This directive restricts the document base URL
                         //            See http://www.w3.org/TR/html5/infrastructure.html#document-base-url.
                         // .BaseUris(x => ...)
-                        // child-src - This directive restricts from where the protected resource can load web workers
-                        //             or embed frames. This was introduced in CSP 2.0 to replace frame-src. frame-src
-                        //             should still be used for older browsers.
-                        .ChildSources(x => x.Self())
                         // connect-src - This directive restricts which URIs the protected resource can load using
                         //               script interfaces (Ajax Calls and Web Sockets).
                         .ConnectSources(
@@ -157,7 +153,7 @@
                         // .FrameSources(x => ...)
                         // frame-ancestors - This directive restricts from where the protected resource can embed
                         //                   frame, iframe, object, embed or applet's.
-                        // .FrameAncestors(x => ...)
+                        .FrameAncestors(x => x.None())
                         // img-src - This directive restricts from where the protected resource can load images.
                         .ImageSources(
                             x =>
