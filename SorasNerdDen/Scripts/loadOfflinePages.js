@@ -31,8 +31,8 @@
                         //TODO other filtering logic
                         var listItem = document.createElement("li");
                         var link = document.createElement("a");
-                        link.href = request.url.replace("?v=m", "");
                         var linkDestination = request.url.replace("?v=m", "").replace(location.protocol + "//" + location.host, "");
+                        link.setAttribute("href", linkDestination);
                         if (linkDestination === "/") {
                             linkDestination = "Home";
                         }

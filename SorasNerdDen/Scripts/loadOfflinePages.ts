@@ -28,8 +28,8 @@
                         //TODO other filtering logic
                         const listItem = document.createElement("li");
                         const link = document.createElement("a");
-                        link.href = request.url.replace("?v=m", "");
                         let linkDestination = request.url.replace("?v=m", "").replace(`${location.protocol}//${location.host}`, "");
+                        link.setAttribute("href", linkDestination);
                         if (linkDestination === "/") { linkDestination = "Home"; }
                         else if (linkDestination === "/offline/") { return; }
                         link.textContent = linkDestination;

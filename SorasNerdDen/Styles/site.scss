@@ -85,6 +85,16 @@ $semi-transparent-black: rgba(0, 0, 0, .85);
   }
 }
 
+// Mark external links with an arrow symbol
+a {
+  &[href^='http'] {
+    &::after {
+      content: url('/img/External.svg');
+      margin-left: 5px;
+    }
+  }
+}
+
 // Loading indicator
 .loading-indicator {
   animation: rotation 3s infinite linear;
