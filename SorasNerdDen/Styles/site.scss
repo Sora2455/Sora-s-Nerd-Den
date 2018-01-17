@@ -90,7 +90,6 @@ a {
   &[href^='http'] {
     &::after {
       content: url('/img/External.svg');
-      margin-left: 5px;
     }
   }
 }
