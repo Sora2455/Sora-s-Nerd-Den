@@ -87,22 +87,18 @@ namespace SorasNerdDen.Services.HtmlHelpers
         /// <param name="width">The width of the image in pixels</param>
         /// <param name="cssClass">The css class to apply to the pitcure (null if not applicable)</param>
         /// <param name="cssId">The css id to apply to the picture (null if not applicable)</param>
-        /// <param name="lazy">True if the image is to be lazy loaded, false otherwise</param>
         /// <returns>A HtmlString of a picture tag of the nominated SVG with PNG fallback</returns>
         public static IHtmlContent SvgPicture(this IHtmlHelper helper, string imageName,
-            string imageAltText, int height, int width, string cssClass = null, string cssId = null,
-            bool lazy = true)
+            string imageAltText, int height, int width, string cssClass = null, string cssId = null)
         {
             string classString = cssClass != null ? $" class=\"{cssClass}\"" : null;
             string idString = cssId != null ? $" id=\"{cssId}\"" : null;
-            string lazyPre = lazy ? @"<noscript data-lazy-load>" : null;
-            string lazyPost = lazy ? @"</noscript>" : null;
             return new HtmlString(
-                    $"{lazyPre}<picture>" +
+                    $"<picture>" +
                         $"<source type=\"image/svg+xml\" srcset=\"/img/{imageName}.svg\">" +
                         $"<img src=\"/img/{imageName}.png\" alt=\"{imageAltText}\"" +
                             $"height=\"{height}\" width=\"{width}\"{classString}{idString}>" +
-                    $"</picture>{lazyPost}");
+                    $"</picture>");
         }
 
         /// <summary>
@@ -137,6 +133,8 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string emojiName = DisplayCamelCaseString(emoji.ToString());
             return new HtmlString(
                 $"<span role=\"img\" aria-label=\"{emojiName}\" tabindex=\"0\" class=\"emoji\">" +
+                //The first HTML entity is the symbol we want to display
+                // the second one tells the browser to render the symbol as text, not an image
                 $"&#{(uint)emoji};&#xFE0E;</span>"
             );
         }

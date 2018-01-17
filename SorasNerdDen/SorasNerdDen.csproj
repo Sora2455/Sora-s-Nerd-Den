@@ -23,7 +23,6 @@
     <None Remove="Scripts\addServiceWorker.ts" />
     <None Remove="Scripts\captureErrors.ts" />
     <None Remove="Scripts\definitions\definitions.d.ts" />
-    <None Remove="Scripts\lazyLoad.ts" />
     <None Remove="Scripts\loadOfflinePages.ts" />
     <None Remove="Scripts\logLongLoadingTimes.ts" />
     <None Remove="Scripts\serviceWorker.ts" />
@@ -95,7 +94,6 @@
     <TypeScriptCompile Include="Scripts\addServiceWorker.ts" />
     <TypeScriptCompile Include="Scripts\captureErrors.ts" />
     <TypeScriptCompile Include="Scripts\definitions\definitions.d.ts" />
-    <TypeScriptCompile Include="Scripts\lazyLoad.ts" />
     <TypeScriptCompile Include="Scripts\loadOfflinePages.ts" />
     <TypeScriptCompile Include="Scripts\logLongLoadingTimes.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker\serviceWorker.ts" />
