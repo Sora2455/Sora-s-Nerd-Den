@@ -4,16 +4,11 @@
      * Show the user which offline pages they have saved locally
      */
     function setUp(partialLoadEvent) {
-        //If we triggered this event ourselves, don't run again
-        if (!partialLoadEvent.detail) {
-            return;
-        }
-        var mainHeading = document.querySelector("#main-content h1");
-        //If this isn't the offline page, don't show the cached content
-        if (!mainHeading || mainHeading.textContent !== "\uD83D\uDD0C\uFE0E Offline") {
-            return;
-        }
         var offlineList = document.getElementById("offline-nav-items");
+        //If this isn't the offline page, don't show the cached content
+        if (!offlineList) {
+            return;
+        }
         if (!("caches" in window)) {
             offlineList.parentElement.innerHTML = "<div class=\"alert alert-warning\" role=\"alert\">" +
                 "<p>Unfortunately, JavaScript caching is not available in your browser. " +
