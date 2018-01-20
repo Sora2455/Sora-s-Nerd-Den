@@ -30,15 +30,14 @@
      * @param to The page being navigated to
      */
     function reportTiming(interactive, total, to) {
-        var formData = new FormData();
-        formData.append("Interactive", interactive.toFixed(2));
-        formData.append("Total", total.toFixed(2));
-        formData.append("To", to);
-        formData.append("ServiceWorkerAvailible", ("serviceWorker" in navigator).toString());
-        fetch("/error/longloadingtime/", {
-            method: 'POST',
-            body: formData
-        });
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/error/longloadingtime/", true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        xhr.send(JSON.stringify({
+            "Interactive": interactive.toFixed(2),
+            "Total": total.toFixed(2),
+            "To": to
+        }));
     }
     window.addEventListener("load", function () { return setTimeout(timeFullPageLoad, 1); });
     document.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);

@@ -62,15 +62,30 @@
         }
 
         /// <summary>
+        /// The C# model of JSON data posted whenever there is a page load client side that takes longer than our goal time
+        /// </summary>
+        public class PageLoadTimeModel
+        {
+            /// <summary>
+            /// The time it took to download and parse the HTML of this page
+            /// </summary>
+            public decimal Interactive;
+            /// <summary>
+            /// The total loading time of the page (scripts and images)
+            /// </summary>
+            public decimal Total;
+            /// <summary>
+            /// The URL of the page the navigation was to
+            /// </summary>
+            public string To;
+        }
+
+        /// <summary>
         /// Logs a slow-loading page for later improvement
         /// </summary>
         [HttpPost("longloadingtime", Name = ErrorControllerRoute.LongLoadingTime)]
-        public IActionResult LongLoadingTime()
+        public IActionResult LongLoadingTime([FromBody] PageLoadTimeModel loadTime)
         {
-            decimal.TryParse(Request.Form["Interactive"], out decimal interactive);
-            decimal.TryParse(Request.Form["Total"], out decimal total);
-            string to = Request.Form["To"];
-            bool.TryParse(Request.Form["ServiceWorkerAvailible"], out bool serviceWorkerAvailible);
             //TODO - log this information somewhere!
             return new EmptyResult();
         }
