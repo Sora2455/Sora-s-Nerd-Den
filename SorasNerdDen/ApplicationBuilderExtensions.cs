@@ -125,17 +125,13 @@
                         .UpgradeInsecureRequests(sslPort ?? 443)
                         // default-src - Sets a default source list for a number of directives. If the other directives
                         // below are not used then this is the default setting.
-                        .DefaultSources(x => x.None())                    // We disallow everything by default.
+                        .DefaultSources(x => x.Self())                    // We allow only ourselves by defualt
                         // base-uri - This directive restricts the document base URL
                         //            See http://www.w3.org/TR/html5/infrastructure.html#document-base-url.
                         // .BaseUris(x => ...)
                         // connect-src - This directive restricts which URIs the protected resource can load using
                         //               script interfaces (Ajax Calls and Web Sockets).
-                        .ConnectSources(
-                            x =>
-                            {
-                                x.Self();                                 // Allow all AJAX and Web Sockets calls from the same domain.
-                            })
+                        //.ConnectSources(x => x.Self())         // Allow all AJAX and Web Sockets calls from the same domain.
                         // font-src - This directive restricts from where the protected resource can load fonts.
                         //.FontSources(
                         //    x =>
@@ -155,11 +151,7 @@
                         //                   frame, iframe, object, embed or applet's.
                         .FrameAncestors(x => x.None())
                         // img-src - This directive restricts from where the protected resource can load images.
-                        .ImageSources(
-                            x =>
-                            {
-                                x.Self();                                 // Allow the current domain.
-                            })
+                        //.ImageSources(x => x.Self())           // Allow the current domain.
                         // script-src - This directive restricts which scripts the protected resource can execute.
                         //              The directive also controls other resources, such as XSLT style sheets, which
                         //              can cause the user agent to execute script.
@@ -172,7 +164,7 @@
                                     ContentDeliveryNetwork.Polyfill.Domain // Allow scripts from the following CDN's.
                                 };
                                 x.CustomSources(customSources.ToArray());
-                            })
+                            });
                         // media-src - This directive restricts from where the protected resource can load video and audio.
                         // .MediaSources(x => ...)
                         // object-src - This directive restricts from where the protected resource can load plug-ins.
@@ -182,11 +174,7 @@
                         //                attribute. The HTML helper will add the media type to the CSP header.
                         // .PluginTypes(x => x.MediaTypes("application/x-shockwave-flash", "application/xaml+xml"))
                         // style-src - This directive restricts which styles the user applies to the protected resource.
-                        .StyleSources(
-                            x =>
-                            {
-                                x.Self();                                // Allow all stylesheets from the same domain.
-                            });
+                        //.StyleSources(x => x.Self());                  // Allow all stylesheets from the same domain.
                 });
 
         /// <summary>
