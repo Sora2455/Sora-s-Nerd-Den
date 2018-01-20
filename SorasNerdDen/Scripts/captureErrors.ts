@@ -1,17 +1,16 @@
 ﻿window.onerror = function (errorMsg, url, lineNumber, col, errorObj) {
     "use strict";
     try {
-        if (errorMsg.indexOf('Script error.') > -1) { return; }
-        const formData = new FormData();
-        formData.append("Page", url);
-        formData.append("Message", errorMsg);
-        formData.append("Line", (lineNumber || 0).toString());
-        formData.append("Column", (col || 0).toString());
-        formData.append("StackTrace", errorObj && errorObj.stack ? errorObj.stack : "");
-        fetch("/error/scripterror/", {
-            method: 'POST',
-            body: formData
-        });
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/error/scripterror/", true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        xhr.send(JSON.stringify({
+            "Page": url,
+            "Message": errorMsg,
+            "Line": lineNumber,
+            "Column": col,
+            "StackTrace": (errorObj && errorObj.stack ? errorObj.stack : null)
+        }));
     }
     catch (e) {
         console.error(e);

@@ -40,16 +40,23 @@
         }
 
         /// <summary>
+        /// The C# model of JSON data posted whenever there is an error in the client-side code
+        /// </summary>
+        public class JavaScriptErrorModel
+        {
+            public string Page;
+            public string Message;
+            public int? Line;
+            public int? Column;
+            public string StackTrace;
+        }
+
+        /// <summary>
         /// Logs a JavaScript error for later debugging
         /// </summary>
         [HttpPost("scripterror", Name = ErrorControllerRoute.ScriptError)]
-        public IActionResult ScriptError()
+        public IActionResult ScriptError([FromBody] JavaScriptErrorModel error)
         {
-            string page = Request.Form["Page"];
-            string message = Request.Form["Message"];
-            string line = Request.Form["Line"];
-            string column = Request.Form["Column"];
-            string stackTrace = Request.Form["StackTrace"];
             //TODO - log this information somewhere!
             return new EmptyResult();
         }
