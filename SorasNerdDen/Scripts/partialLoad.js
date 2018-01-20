@@ -11,8 +11,8 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 }
 (function () {
     "use strict";
-    // We require pushState, or else this isn't going to work
-    if (!history.pushState) {
+    // We require pushState and CustomEvents, or else this isn't going to work
+    if (!history.pushState || typeof CustomEvent !== 'function') {
         return;
     }
     // When the document is availible for interaction:

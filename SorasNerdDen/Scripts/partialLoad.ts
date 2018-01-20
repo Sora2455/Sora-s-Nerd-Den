@@ -14,8 +14,8 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 }
 (() => {
     "use strict";
-    // We require pushState, or else this isn't going to work
-    if (!history.pushState) { return; }
+    // We require pushState and CustomEvents, or else this isn't going to work
+    if (!history.pushState || typeof CustomEvent !== 'function') { return; }
     // When the document is availible for interaction:
     document.addEventListener("DOMContentLoaded", () => {
         // Find all the links that go places:
