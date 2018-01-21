@@ -1,17 +1,4 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-interface NodeList {
-    forEach: (callback: (node: Node, i: number, nodeList: NodeList) => void, thisArg?: any) => void;
-}
-// NodeList.forEach pollyfill
-if ('NodeList' in window && !NodeList.prototype.forEach) {
-    NodeList.prototype.forEach = function (callback: Function, thisArg: any) {
-        "use strict";
-        thisArg = thisArg || window;
-        for (let i = 0; i < this.length; i++) {
-            callback.call(thisArg, this[i], i, this);
-        }
-    };
-}
 ((w) => {
     "use strict";
     // We require pushState and CustomEvents, or else this isn't going to work

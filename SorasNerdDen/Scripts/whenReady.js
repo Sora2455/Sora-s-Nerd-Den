@@ -1,5 +1,6 @@
 ///<reference path="definitions/definitions.d.ts" />
 (function (w) {
+    "use strict";
     var readyCallbacks = [];
     var isReady = false;
     w.whenReady = function (callback) {

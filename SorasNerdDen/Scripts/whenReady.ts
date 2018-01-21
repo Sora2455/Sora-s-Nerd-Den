@@ -1,5 +1,6 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
 (function (w) {
+    "use strict";
     const readyCallbacks = [] as Function[];
     let isReady = false;
 

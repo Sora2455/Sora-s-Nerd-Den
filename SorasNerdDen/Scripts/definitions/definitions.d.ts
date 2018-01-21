@@ -1,4 +1,7 @@
-﻿interface PartialLoadDetails {
+﻿interface NodeList {
+    forEach: (callback: (node: Node, i: number, nodeList: NodeList) => void, thisArg?: any) => void;
+}
+interface PartialLoadDetails {
     loadTime: number;
     destination: string;
 }
