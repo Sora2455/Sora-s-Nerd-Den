@@ -12,12 +12,12 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }
     };
 }
-(() => {
+((w) => {
     "use strict";
     // We require pushState and CustomEvents, or else this isn't going to work
     if (!history.pushState || typeof CustomEvent !== 'function') { return; }
     // When the document is availible for interaction:
-    document.addEventListener("DOMContentLoaded", () => {
+    w.whenReady(() => {
         // Find all the links that go places:
         document.querySelectorAll("a[href]").forEach((link) => {
             link.addEventListener("click", tryPartialLoad);
@@ -30,11 +30,11 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
             // Then, fetch that page and load it into the main tag
             partialLoad(newTarget);
         }
-    });
-    const mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("ContentModified", () => {
-        mainContent.querySelectorAll("a[href]").forEach((link) => {
-            link.addEventListener("click", tryPartialLoad);
+        const mainContent = document.getElementById("main-content");
+        mainContent.addEventListener("ContentModified", () => {
+            mainContent.querySelectorAll("a[href]").forEach((link) => {
+                link.addEventListener("click", tryPartialLoad);
+            });
         });
     });
     document.addEventListener("LinkAdded", (e: CustomEvent) => {
@@ -91,6 +91,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
             document.getElementById("loading-indicator").style.display = "none";
 
             return response.text().then(function (text) {
+                const mainContent = document.getElementById("main-content");
                 mainContent.innerHTML = text;
                 //Dispatch a custom event so that other functions know the page has updated
                 const partialLoadDetails: PartialLoadDetails = {
@@ -116,11 +117,11 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         });
     }
     // Make sure we read the back and forward buttons correctly
-    window.addEventListener("popstate", (ev) => {
+    w.addEventListener("popstate", (ev) => {
         // ev.state.target was were we stored the reference to the 'real' page
         let target: string = ev.state && ev.state.target;
         // if it doesn't exist, defualt to the URL
         if (!target) { target = getPartialUrl(location.toString()); }
         partialLoad(target);
     });
-})();
+})(window);

@@ -1,7 +1,7 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-(function () {
+(function (w) {
     "use strict";
-    if (!("performance" in window && "timing" in performance)) { return; }
+    if (!("performance" in w && "timing" in performance)) { return; }
     /**
      * Time the inital page load, and report any loading times longer than the goal time
      */
@@ -45,6 +45,12 @@
             "To": to
         }));
     }
-    window.addEventListener("load", () => setTimeout(timeFullPageLoad, 1));
-    document.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);
-})();
+    if (document.readyState === "completed") {
+        setTimeout(timeFullPageLoad, 1);
+    } else {
+        w.addEventListener("load", () => setTimeout(timeFullPageLoad, 1));
+    }
+    w.whenReady(() => {
+        document.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);
+    });
+})(window);

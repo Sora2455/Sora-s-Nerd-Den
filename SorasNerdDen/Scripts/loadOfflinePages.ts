@@ -1,16 +1,17 @@
-﻿(() => {
+﻿///<reference path="definitions/definitions.d.ts" />
+((w) => {
     "use strict";
 
     /**
      * Show the user which offline pages they have saved locally
      */
-    function setUp(partialLoadEvent: CustomEvent) {
+    function setUp() {
         const offlineList = document.getElementById("offline-nav-items") as HTMLUListElement;
 
         //If this isn't the offline page, don't show the cached content
         if (!offlineList) { return; }
 
-        if (!("caches" in window)) {
+        if (!("caches" in w)) {
             offlineList.parentElement.innerHTML = "<div class=\"alert alert-warning\" role=\"alert\">" +
                 "<p>Unfortunately, JavaScript caching is not available in your browser. " +
                 "Please <a class=\"alert-link\" href=\"https://browsehappy.com/\">upgrade your browser</a> " +
@@ -37,7 +38,8 @@
             });
         }
     }
-
-    document.addEventListener("DOMContentLoaded", setUp);
-    document.getElementById("main-content").addEventListener("ContentModified", setUp);
-})();
+    w.whenReady(() => {
+        document.getElementById("main-content").addEventListener("ContentModified", setUp);
+        setUp();
+    });
+})(window);

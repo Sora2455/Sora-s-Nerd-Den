@@ -27,6 +27,7 @@
     <None Remove="Scripts\logLongLoadingTimes.ts" />
     <None Remove="Scripts\serviceWorker.ts" />
     <None Remove="Scripts\timeLocaliser.ts" />
+    <None Remove="Scripts\whenReady.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\loading.svg" />
@@ -98,6 +99,7 @@
     <TypeScriptCompile Include="Scripts\logLongLoadingTimes.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker\serviceWorker.ts" />
     <TypeScriptCompile Include="Scripts\timeLocaliser.ts" />
+    <TypeScriptCompile Include="Scripts\whenReady.ts" />
   </ItemGroup>
   <!-- Execute the following commands before publishing the project. -->
   <Target Label="Scripts" Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">

@@ -1,7 +1,8 @@
-﻿(() => {
+﻿///<reference path="definitions/definitions.d.ts" />
+((w) => {
     "use strict";
     //If the Internationalisation API is not supported, don't try to localise
-    if (!("Intl" in window)) {
+    if (!("Intl" in w)) {
         return;
     }
     //Try and use native language formatting, falling back to Australian, then American english
@@ -39,16 +40,16 @@
             }
         }
     }
-    document.addEventListener("DOMContentLoaded", () => {
+    w.whenReady(() => {
         //Get all the time tags
         const times = document.getElementsByTagName("time");
         localiseTimes(times);
-    });
-    const mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("ContentModified", () => {
-        //Get the newly loaded time tags
-        const times = mainContent.getElementsByTagName("time");
-        localiseTimes(times);
+        const mainContent = document.getElementById("main-content");
+        mainContent.addEventListener("ContentModified", () => {
+            //Get the newly loaded time tags
+            const times = mainContent.getElementsByTagName("time");
+            localiseTimes(times);
+        });
     });
     function setDatePart(dateString: string, dateObj: Date) {
         const [year, month, day] = dateString.split("-");
@@ -60,4 +61,4 @@
         dateObj.setUTCHours(parseInt(hours,10));
         dateObj.setUTCMinutes(parseInt(minutes, 10));
     }
-})();
+})(window);

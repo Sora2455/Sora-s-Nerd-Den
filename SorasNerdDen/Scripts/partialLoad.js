@@ -9,14 +9,14 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }
     };
 }
-(function () {
+(function (w) {
     "use strict";
     // We require pushState and CustomEvents, or else this isn't going to work
     if (!history.pushState || typeof CustomEvent !== 'function') {
         return;
     }
     // When the document is availible for interaction:
-    document.addEventListener("DOMContentLoaded", function () {
+    w.whenReady(function () {
         // Find all the links that go places:
         document.querySelectorAll("a[href]").forEach(function (link) {
             link.addEventListener("click", tryPartialLoad);
@@ -29,11 +29,11 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
             // Then, fetch that page and load it into the main tag
             partialLoad(newTarget);
         }
-    });
-    var mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("ContentModified", function () {
-        mainContent.querySelectorAll("a[href]").forEach(function (link) {
-            link.addEventListener("click", tryPartialLoad);
+        var mainContent = document.getElementById("main-content");
+        mainContent.addEventListener("ContentModified", function () {
+            mainContent.querySelectorAll("a[href]").forEach(function (link) {
+                link.addEventListener("click", tryPartialLoad);
+            });
         });
     });
     document.addEventListener("LinkAdded", function (e) {
@@ -97,6 +97,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         fetch(destination).then(function (response) {
             document.getElementById("loading-indicator").style.display = "none";
             return response.text().then(function (text) {
+                var mainContent = document.getElementById("main-content");
                 mainContent.innerHTML = text;
                 //Dispatch a custom event so that other functions know the page has updated
                 var partialLoadDetails = {
@@ -124,7 +125,7 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         });
     }
     // Make sure we read the back and forward buttons correctly
-    window.addEventListener("popstate", function (ev) {
+    w.addEventListener("popstate", function (ev) {
         // ev.state.target was were we stored the reference to the 'real' page
         var target = ev.state && ev.state.target;
         // if it doesn't exist, defualt to the URL
@@ -133,4 +134,4 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
         }
         partialLoad(target);
     });
-})();
+})(window);

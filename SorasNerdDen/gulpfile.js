@@ -149,6 +149,7 @@ var sources = {
             name: 'site.js',
             paths: [
                 paths.scripts + 'captureErrors.js',
+                paths.scripts + 'whenReady.js',
                 paths.scripts + 'partialLoad.js',
                 paths.scripts + 'timeLocaliser.js',
                 paths.scripts + 'loadOfflinePages.js',
@@ -170,6 +171,7 @@ var sources = {
     // An array containing all the TypeScript files that need compiling
     ts: [
         paths.scripts + 'captureErrors.ts',
+        paths.scripts + 'whenReady.ts',
         paths.scripts + 'partialLoad.ts',
         paths.scripts + 'timeLocaliser.ts',
         paths.scripts + 'logLongLoadingTimes.ts',

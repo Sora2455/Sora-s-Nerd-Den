@@ -1,7 +1,8 @@
-(function () {
+///<reference path="definitions/definitions.d.ts" />
+(function (w) {
     "use strict";
     //If the Internationalisation API is not supported, don't try to localise
-    if (!("Intl" in window)) {
+    if (!("Intl" in w)) {
         return;
     }
     //Try and use native language formatting, falling back to Australian, then American english
@@ -41,16 +42,16 @@
             }
         }
     }
-    document.addEventListener("DOMContentLoaded", function () {
+    w.whenReady(function () {
         //Get all the time tags
         var times = document.getElementsByTagName("time");
         localiseTimes(times);
-    });
-    var mainContent = document.getElementById("main-content");
-    mainContent.addEventListener("ContentModified", function () {
-        //Get the newly loaded time tags
-        var times = mainContent.getElementsByTagName("time");
-        localiseTimes(times);
+        var mainContent = document.getElementById("main-content");
+        mainContent.addEventListener("ContentModified", function () {
+            //Get the newly loaded time tags
+            var times = mainContent.getElementsByTagName("time");
+            localiseTimes(times);
+        });
     });
     function setDatePart(dateString, dateObj) {
         var _a = dateString.split("-"), year = _a[0], month = _a[1], day = _a[2];
@@ -62,4 +63,4 @@
         dateObj.setUTCHours(parseInt(hours, 10));
         dateObj.setUTCMinutes(parseInt(minutes, 10));
     }
-})();
+})(window);
