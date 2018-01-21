@@ -96,7 +96,7 @@ namespace SorasNerdDen.Services.HtmlHelpers
             return new HtmlString(
                     $"<picture>" +
                         $"<source type=\"image/svg+xml\" srcset=\"/img/{imageName}.svg\">" +
-                        $"<img src=\"/img/{imageName}.png\" alt=\"{imageAltText}\"" +
+                        $"<img src=\"/img/{imageName}.png\" alt=\"{imageAltText}\" " +
                             $"height=\"{height}\" width=\"{width}\"{classString}{idString}>" +
                     $"</picture>");
         }

@@ -149,22 +149,13 @@
                         // .FrameSources(x => ...)
                         // frame-ancestors - This directive restricts from where the protected resource can embed
                         //                   frame, iframe, object, embed or applet's.
-                        .FrameAncestors(x => x.None())
+                        .FrameAncestors(x => x.None());
                         // img-src - This directive restricts from where the protected resource can load images.
                         //.ImageSources(x => x.Self())           // Allow the current domain.
                         // script-src - This directive restricts which scripts the protected resource can execute.
                         //              The directive also controls other resources, such as XSLT style sheets, which
                         //              can cause the user agent to execute script.
-                        .ScriptSources(
-                            x =>
-                            {
-                                x.Self();                                 // Allow all scripts from the same domain.
-                                var customSources = new List<string>()
-                                {
-                                    ContentDeliveryNetwork.Polyfill.Domain // Allow scripts from the following CDN's.
-                                };
-                                x.CustomSources(customSources.ToArray());
-                            });
+                        //.ScriptSources(x => x.Self())          // Allow all scripts from the same domain.
                         // media-src - This directive restricts from where the protected resource can load video and audio.
                         // .MediaSources(x => ...)
                         // object-src - This directive restricts from where the protected resource can load plug-ins.

@@ -9,29 +9,24 @@
 
 @* Code in the head section below gets added at the bottom of the HTML head element. This section can be used to enter
     custom meta tags specific to this page. *@
-@section head
-{
+@section head {
     @* Author - (Optional) Used by search engines. The author of the page. *@
     <meta name="author" content="Muhammad Rehan Saeed">
-    @* Add Twitter Card social meta tags so we can customize what happens when our page is shared on Twitter. There are
-        several different Twitter Card types we could add, a different one is added on each page as an example.
-        These helpers make it very easy to add the meta tags. For best performance, see what tags are generated and
-        hand-code them yourself instead of using these helpers. *@
-    <twitter-card-summary-large-image username="@@RehanSaeedUK">
-        @* Add Open Graph social meta tags so we can customize what happens when our page is shared on Facebook, Google+,
-            Pintrest and other social media websites. There are dozens of Open Graph types, a different one is added on
-            each page as an example. These helpers make it very easy to add the meta tags. For best performance, see what
-            tags are generated and hand-code them yourself instead of using these helpers. *@
-        <open-graph-website site-name="@AppSettings.Value.SiteTitle"
-                            title="@ViewBag.Title"
-                            main-image="@(new OpenGraphImage(
+    @* Add Open Graph social meta tags so we can customize what happens when our page is shared on Facebook, Google+,
+        Pintrest and other social media websites. There are dozens of Open Graph types, a different one is added on
+        each page as an example. These helpers make it very easy to add the meta tags. For best performance, see what
+        tags are generated and hand-code them yourself instead of using these helpers. *@
+    <open-graph-website site-name="@AppSettings.Value.SiteTitle"
+                        title="@ViewBag.Title"
+                        main-image="@(new OpenGraphImage(
                             Url.AbsoluteContent("~/img/icons/open-graph-1200x630.png"),
                             ContentType.Png,
                             1200,
                             630))"
-                            determiner="Blank">
-            @* referrer - Controls what is sent in the HTTP referrer header when a client navigates to an external site. *@
-            <meta asp-referrer="OriginWhenCrossOrigin">
+                        determiner="Blank">
+    @* referrer - Controls what is sent in the HTTP referrer header when a client navigates to an external site. *@
+    <meta asp-referrer="OriginWhenCrossOrigin">
+    <script asp-append-version="true" src="~/js/addServiceWorker.js" defer async></script>
 }
 
 <header class="page-header">
@@ -143,10 +138,3 @@
         <p><a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a> is a core technology markup language of the Internet used for structuring and presenting content for the World Wide Web.</p>
     </article>
 </div>
-
-@* Code in the scripts section below gets added at the bottom of the HTML body element, below other scripts. This
-    section can be used to enter custom scripts specific to this page. *@
-@section scripts
-{
-<script asp-append-version="true" src="~/js/addServiceWorker.js"></script>
-}

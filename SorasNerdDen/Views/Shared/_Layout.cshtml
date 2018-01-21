@@ -28,15 +28,25 @@
     @* OpenSearch - (See http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d and http://www.opensearch.org) *@
     <link href="@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')" rel="search" title="ASP.NET Core Boilerplate Search" type="application/opensearchdescription+xml">
 
+    @* Add Twitter Card social meta tags so we can customize what happens when our page is shared on Twitter. *@
+    <meta name="twitter:card" content="summary" />
+    @*<meta name="twitter:site" content="@@flickr" />*@
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.Description" />
+    @*<meta name="twitter:image" content="" />
+        <meta name="twitter:image:alt" content=""/>*@
+
     @* You can use the head section to render additional meta tags. *@
     @RenderSection("head", required: false)
+
+    <script asp-append-version="true" src="~/js/site.js" defer async></script>
 </head>
 <body>
     @* Skip to main content link for people who use screen readers. sr-only makes this only visible to screen readers.
         See http://a11yproject.com/posts/skip-nav-links/. *@
     <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
     @* nav - The main navigation for the site. *@
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <a asp-route="@HomeControllerRoute.GetIndex" class="navbar-brand" role="banner">@Html.Emoji(Emoji.WhiteStar) @AppSettings.Value.SiteTitle</a>
@@ -69,27 +79,10 @@
             @RenderBody()
         </div>        
         <hr>
-        <footer role="contentinfo">
+        <footer>
             <p>&copy; @DateTime.Now.Year - @AppSettings.Value.SiteTitle</p>
-            <p>Page generated <time datetime="@DateTime.UtcNow.ToString("s")">@DateTime.Now.ToString("F")</time></p>
+            <p>Page generated <time datetime="@DateTime.UtcNow.ToString("s")">@DateTime.Now.ToString("F") @TimeZoneInfo.Local.StandardName</time></p>
         </footer>
     </main>
-
-
-    <environment names="@EnvironmentName.Development">
-        <script src="@ContentDeliveryNetwork.Polyfill.PolyfillDevUrl"></script>
-        <script asp-append-version="true" src="~/js/site.js"></script>
-    </environment>
-    <environment names="@EnvironmentName.Staging,@EnvironmentName.Production">
-        @* crossorigin - Enable reporting of errors from third party scripts.
-            See https://raygun.com/blog/2015/05/fixing-script-errors/
-           asp-subresource-integrity-src - Ensures the CDN resource has not been tampered with.
-            See http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core *@
-        <script crossorigin="anonymous"
-                src="@ContentDeliveryNetwork.Polyfill.PolyfillProdUrl"></script>
-        @* Move site.js to a content delivery network (CDN) for better performance. *@
-        <script asp-append-version="true" src="~/js/site.js"></script>
-    </environment>
-    @RenderSection("scripts", required: false)
 </body>
 </html>
