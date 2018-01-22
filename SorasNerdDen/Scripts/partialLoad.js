@@ -1,8 +1,8 @@
 ///<reference path="definitions/definitions.d.ts" />
 (function (w) {
     "use strict";
-    // We require pushState and CustomEvents, or else this isn't going to work
-    if (!history.pushState || typeof CustomEvent !== 'function') {
+    // Element.closest seems to be the 'lowest common function' needed here
+    if (!Element.prototype.closest) {
         return;
     }
     // When the document is availible for interaction:
