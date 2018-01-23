@@ -24,8 +24,6 @@
                             1200,
                             630))"
                         determiner="Blank">
-    @* referrer - Controls what is sent in the HTTP referrer header when a client navigates to an external site. *@
-    <meta asp-referrer="OriginWhenCrossOrigin">
     <script asp-append-version="true" src="~/js/addServiceWorker.js" defer async></script>
 }
 
@@ -41,18 +39,18 @@
                     <li><a href="@Url.RouteUrl(HomeControllerRoute.GetIndex)"><strong>@Url.RouteUrl(HomeControllerRoute.GetIndex)</strong></a> - This index page.</li>
                     <li><a href="@Url.RouteUrl(HomeControllerRoute.GetAbout)"><strong>@Url.RouteUrl(HomeControllerRoute.GetAbout)</strong></a> - An about us page.</li>
                     <li><a href="@Url.RouteUrl(HomeControllerRoute.GetContact)"><strong>@Url.RouteUrl(HomeControllerRoute.GetContact)</strong></a> - A contact us page.</li>
-                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><strong>@Url.RouteUrl(HomeControllerRoute.GetFeed)</strong></a> - An <a href="https://en.wikipedia.org/wiki/Atom_%28standard%29">Atom 1.0</a> feed.</li>
-                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetRobotsText).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetRobotsText).TrimEnd('/')</strong></a> - <a href="http://en.wikipedia.org/wiki/Robots_exclusion_standard">Robots text</a>.</li>
-                    <li><a href="~/humans.txt"><strong>/humans.txt</strong></a> - <a href="http://humanstxt.org">Humans text</a>.</li>
-                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetSitemapXml).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetSitemapXml).TrimEnd('/')</strong></a> - <a href="http://www.sitemaps.org/protocol.html">Site-map XML</a>.</li>
-                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')</strong></a> - <a href="http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d#commentstart">Open search XML</a>.</li>
+                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><strong>@Url.RouteUrl(HomeControllerRoute.GetFeed)</strong></a> - An <a rel="external" href="https://en.wikipedia.org/wiki/Atom_%28standard%29">Atom 1.0</a> feed.</li>
+                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetRobotsText).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetRobotsText).TrimEnd('/')</strong></a> - <a rel="external" href="http://en.wikipedia.org/wiki/Robots_exclusion_standard">Robots text</a>.</li>
+                    <li><a href="~/humans.txt"><strong>/humans.txt</strong></a> - <a rel="external" href="http://humanstxt.org">Humans text</a>.</li>
+                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetSitemapXml).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetSitemapXml).TrimEnd('/')</strong></a> - <a rel="external" href="http://www.sitemaps.org/protocol.html">Site-map XML</a>.</li>
+                    <li><a href="@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')"><strong>@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')</strong></a> - <a rel="external" href="http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d#commentstart">Open search XML</a>.</li>
                 </ul>
             </div>
             <div class="col-md-6">
                 <ul>
                     <li><a href="@Url.RouteUrl(ErrorControllerRoute.GetError, new { statusCode = 404, status = "notfound" })"><strong>@Url.RouteUrl(ErrorControllerRoute.GetError, new { statusCode = 404, status = "notfound" })</strong></a> - Error page.</li>
-                    <li><a href="/browserconfig.xml"><strong>/browserconfig.xml</strong></a> - <a href="http://www.buildmypinnedsite.com">Windows 8.1/10 Icons</a>.</li>
-                    <li><a href="/maifest.json"><strong>/maifest.json</strong></a> - <a href="https://developer.chrome.com/multidevice/android/installtohomescreen">Android/Chrome Icons</a>.</li>
+                    <li><a href="/browserconfig.xml"><strong>/browserconfig.xml</strong></a> - <a rel="external" href="http://www.buildmypinnedsite.com">Windows 8.1/10 Icons</a>.</li>
+                    <li><a href="/maifest.json"><strong>/maifest.json</strong></a> - <a rel="external" href="https://developer.chrome.com/multidevice/android/installtohomescreen">Android/Chrome Icons</a>.</li>
                 </ul>
             </div>
         </div>
@@ -61,7 +59,7 @@
         <header>
             <h2>@Html.Emoji(Emoji.LinkSymbol) ASP.NET Core Boilerplate</h2>
         </header>
-        <p>Find out more about how the <a href="https://github.com/ASP-NET-Core-Boilerplate/Templates/wiki/Getting-Started-Guide">ASP.NET Core Boilerplate</a> project template was put together and what features it includes out of the box. Read the <a href="https://github.com/ASP-NET-Core-Boilerplate/Templates/blob/master/Source/Boilerplate.Vsix/Release%20Notes.txt">release notes</a> to find out what updates are made to the project template and see the <a href="https://github.com/ASP-NET-Core-Boilerplate/Templates/projects">To-Do list</a> to view a list of features that will be added in the future.</p>
+        <p>Find out more about how the <a rel="external" href="https://github.com/ASP-NET-Core-Boilerplate/Templates/wiki/Getting-Started-Guide">ASP.NET Core Boilerplate</a> project template was put together and what features it includes out of the box. Read the <a rel="external" href="https://github.com/ASP-NET-Core-Boilerplate/Templates/blob/master/Source/Boilerplate.Vsix/Release%20Notes.txt">release notes</a> to find out what updates are made to the project template and see the <a rel="external" href="https://github.com/ASP-NET-Core-Boilerplate/Templates/projects">To-Do list</a> to view a list of features that will be added in the future.</p>
     </article>
 </div>
 
@@ -69,36 +67,36 @@
     <article class="col-md-4">
         <h2>@Html.Emoji(Emoji.Newspaper) New Concepts</h2>
         <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518016">What's new in ASP.NET Core</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518008">The 'wwwroot' explained</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518012">Configuration in ASP.NET Core</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518013">Dependency Injection</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518014">Razor TagHelpers</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517849">Manage client tasks using Gulp</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517850">Develop on different platforms</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkId=518016">What's new in ASP.NET Core</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkId=518008">The 'wwwroot' explained</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkId=518012">Configuration in ASP.NET Core</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkId=518013">Dependency Injection</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkId=518014">Razor TagHelpers</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517849">Manage client tasks using Gulp</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517850">Develop on different platforms</a></li>
         </ul>
     </article>
     <article class="col-md-4">
         <h2>Customize App</h2>
         <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398600">Add Controllers and Views</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398602">Add Data using EntityFramework</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398603">Add Authentication using Identity</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398606">Add real time support using SignalR</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398604">Add Class library</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517848">Add client packages using Bower</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517849">Manage client packages using Grunt</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517850">Develop on different platforms</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=398600">Add Controllers and Views</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=398602">Add Data using EntityFramework</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=398603">Add Authentication using Identity</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=398606">Add real time support using SignalR</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=398604">Add Class library</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517848">Add client packages using Bower</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517849">Manage client packages using Grunt</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517850">Develop on different platforms</a></li>
         </ul>
     </article>
     <article class="col-md-4">
         <h2>Run & Deploy</h2>
         <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517851">Run your app locally</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517852">Run your app on ASP.NET Core</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517853">Run commands defined in your project.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Sites</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518019">Publish to the file system</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517851">Run your app locally</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517852">Run your app on ASP.NET Core</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=517853">Run commands defined in your project.</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Sites</a></li>
+            <li><a rel="external" href="http://go.microsoft.com/fwlink/?LinkId=518019">Publish to the file system</a></li>
         </ul>
     </article>
 </div>
@@ -108,13 +106,13 @@
         <header>
             <h2>@Html.Emoji(Emoji.FileCabinet) npm</h2>
         </header>
-        <p><a href="https://www.npmjs.com/">npm</a> is a package manager and is used to get Gulp and also Gulp tasks among other things.</p>
+        <p><a rel="external" href="https://www.npmjs.com/">npm</a> is a package manager and is used to get Gulp and also Gulp tasks among other things.</p>
     </article>
     <article class="col-md-4">
         <header>
             <h2>@Html.Emoji(Emoji.BeerMug) Gulp</h2>
         </header>
-        <p><a href="http://gulpjs.com/">Gulp</a> is a task runner that can execute various build tasks and can be used for bundling and minifying your scripts among other things.</p>
+        <p><a rel="external" href="http://gulpjs.com/">Gulp</a> is a task runner that can execute various build tasks and can be used for bundling and minifying your scripts among other things.</p>
     </article>
 </div>
 
@@ -123,18 +121,18 @@
         <header>
             <h2>@Html.Emoji(Emoji.MobilePhone) Bootstrap</h2>
         </header>
-        <p><a href="http://getbootstrap.com/getting-started/">Bootstrap</a> is the most popular HTML, CSS, and JS framework for developing responsive, mobile first projects on the web and is used for theming this site.</p>
+        <p><a rel="external" href="http://getbootstrap.com/getting-started/">Bootstrap</a> is the most popular HTML, CSS, and JS framework for developing responsive, mobile first projects on the web and is used for theming this site.</p>
     </article>
     <article class="col-md-4">
         <header>
             <h2>@Html.Emoji(Emoji.Lock) NWebsec</h2>
         </header>
-        <p><a href="https://github.com/NWebsec/NWebsec">NWebsec</a> makes securing your ASP.NET Core site easy with a handful of simple attributes you can add to your global filters, controllers or actions.</p>
+        <p><a rel="external" href="https://github.com/NWebsec/NWebsec">NWebsec</a> makes securing your ASP.NET Core site easy with a handful of simple attributes you can add to your global filters, controllers or actions.</p>
     </article>
     <article class="col-md-4">
         <header>
             <h2>@Html.Emoji(Emoji.Scroll) HTML5</h2>
         </header>
-        <p><a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a> is a core technology markup language of the Internet used for structuring and presenting content for the World Wide Web.</p>
+        <p><a rel="external" href="http://en.wikipedia.org/wiki/HTML5">HTML5</a> is a core technology markup language of the Internet used for structuring and presenting content for the World Wide Web.</p>
     </article>
 </div>

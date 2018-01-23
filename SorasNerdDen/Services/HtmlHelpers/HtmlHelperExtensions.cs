@@ -58,6 +58,8 @@ namespace SorasNerdDen.Services.HtmlHelpers
         MobilePhone = 128241,
         /// <summary>🔌</summary>
         ElectricPlug = 128268,
+        /// <summary>🔍</summary>
+        MagnifyingGlass = 128269,
         /// <summary>🔒</summary>
         Lock = 128274,
         /// <summary>🔓</summary>

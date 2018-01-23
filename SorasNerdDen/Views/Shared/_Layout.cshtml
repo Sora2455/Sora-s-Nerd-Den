@@ -35,6 +35,8 @@
     <meta name="twitter:description" content="@ViewBag.Description" />
     @*<meta name="twitter:image" content="" />
         <meta name="twitter:image:alt" content=""/>*@
+    @* referrer - Controls what is sent in the HTTP referrer header when a client navigates to an external site. *@
+    <meta asp-referrer="OriginWhenCrossOrigin">
 
     @* You can use the head section to render additional meta tags. *@
     @RenderSection("head", required: false)
@@ -47,9 +49,9 @@
     <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
     @* nav - The main navigation for the site. *@
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container" role="banner">
             <div class="navbar-header">
-                <a asp-route="@HomeControllerRoute.GetIndex" class="navbar-brand" role="banner">@Html.Emoji(Emoji.WhiteStar) @AppSettings.Value.SiteTitle</a>
+                <a asp-route="@HomeControllerRoute.GetIndex" class="navbar-brand">@Html.Emoji(Emoji.WhiteStar) @AppSettings.Value.SiteTitle</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -61,7 +63,7 @@
                     <div class="input-group">
                         <input aria-label="Search" class="form-control" maxlength="2048" name="query" placeholder="Search" title="Search" type="text">
                         <div class="input-group-btn">
-                            <button aria-label="Search" class="btn btn-default" type="submit">&#128269;</button>
+                            <button aria-label="Search" class="btn btn-default" type="submit">@Html.Emoji(Emoji.MagnifyingGlass)</button>
                         </div>
                     </div>
                 </form>
