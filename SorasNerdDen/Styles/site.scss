@@ -10,7 +10,6 @@
 
 // Reset and dependencies
 @import '../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/normalize';
-@import '../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/print';
 
 // Core CSS
 @import '../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/scaffolding';
@@ -119,12 +118,6 @@ $semi-transparent-black: rgba(0, 0, 0, .85);
       position: absolute;
       top: 1.5em;
       z-index: 1;
-    }
-  }
-
-  @media print {
-    &::after {
-      content: ' (' attr(aria-label) ') ';
     }
   }
 }

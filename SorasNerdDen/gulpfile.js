@@ -129,6 +129,12 @@ var sources = {
             paths: [
                 paths.styles + 'site.scss'
             ]
+        },
+        {
+            name: 'print.css',
+            paths: [
+                paths.styles + 'print.scss'
+            ]
         }
     ],
     // An array of paths to images to be optimized.

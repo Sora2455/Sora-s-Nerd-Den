@@ -1,0 +1,11 @@
+﻿// Bootstrap's print styles
+@import '../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/print';
+
+// Emoji accessability styles - based on http://adrianroselli.com/2016/12/accessible-emoji-tweaked.html
+.emoji {
+  @media print {
+    &::after {
+      content: ' (' attr(aria-label) ') ';
+    }
+  }
+}
