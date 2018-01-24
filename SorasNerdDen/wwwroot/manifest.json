@@ -1,5 +1,6 @@
 {
-    "name": "",
+  "name": "Sora's Nerd Den",
+  "short_name": "SND",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
