@@ -23,7 +23,7 @@
             var dateObj = new Date(Date.UTC(1900, 1));
             //Get the datetime property of the time tag
             var dateTimeString = time.getAttribute("datetime");
-            if (dateTimeString.includes("-")) {
+            if (dateTimeString.indexOf("-") !== -1) {
                 //Date with possible time
                 var _a = dateTimeString.split("T"), dateString = _a[0], timeString = _a[1];
                 setDatePart(dateString, dateObj);
