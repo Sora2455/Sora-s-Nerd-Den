@@ -14,7 +14,7 @@
         if (!("caches" in w)) {
             offlineList.parentElement.innerHTML = "<div class=\"alert alert-warning\" role=\"alert\">" +
                 "<p>Unfortunately, JavaScript caching is not available in your browser. " +
-                "Please <a class=\"alert-link\" rel=\"external\" href=\"https://browsehappy.com/\">upgrade your browser</a> " +
+                "Please <a class=\"alert-link\" rel=\"external\" href=\"https://outdatedbrowser.com/\">upgrade your browser</a> " +
                 "to cache pages for future offline use.</p></div>";
         } else {
             caches.open("core").then(cache => {

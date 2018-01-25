@@ -140,3 +140,10 @@ a {
   top: calc(50% - 100px);
   z-index: 9999;
 }
+
+//Hide the 'outdated browser' message from browsers that support @supports
+@supports (display: none) {
+  .outdated-warning {
+    display: none;
+  }
+}
