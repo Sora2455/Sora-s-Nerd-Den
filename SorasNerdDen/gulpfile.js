@@ -158,6 +158,7 @@ var sources = {
                 paths.scripts + 'polyfills.ts',
                 paths.scripts + 'whenReady.ts',
                 paths.scripts + 'partialLoad.ts',
+                paths.scripts + 'titleAndDescription.ts',
                 paths.scripts + 'timeLocaliser.ts',
                 paths.scripts + 'loadOfflinePages.ts',
                 paths.scripts + 'logLongLoadingTimes.ts'

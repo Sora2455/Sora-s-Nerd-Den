@@ -28,6 +28,7 @@
     <None Remove="Scripts\polyfills.ts" />
     <None Remove="Scripts\serviceWorker.ts" />
     <None Remove="Scripts\timeLocaliser.ts" />
+    <None Remove="Scripts\titleAndDescription.ts" />
     <None Remove="Scripts\whenReady.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +102,7 @@
     <TypeScriptCompile Include="Scripts\polyfills.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker\serviceWorker.ts" />
     <TypeScriptCompile Include="Scripts\timeLocaliser.ts" />
+    <TypeScriptCompile Include="Scripts\titleAndDescription.ts" />
     <TypeScriptCompile Include="Scripts\whenReady.ts" />
   </ItemGroup>
   <!-- Execute the following commands before publishing the project. -->

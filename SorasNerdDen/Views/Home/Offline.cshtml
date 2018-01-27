@@ -1,10 +1,7 @@
 ﻿@inject IOptionsSnapshot<AppSettings> AppSettings
 @{
-    // title - The title of the page which appears in the browser window title. Aim for the title to be less than 70
-    //         characters. The site name appears at the end for better SEO.
     ViewBag.Title = "Offline";
-    // Description - Used by search engines. Aim for more than 160 characters.
-    ViewBag.Description = "A page that notifies a user that they are offline, and directs them to the pages they have cached.";
+    ViewBag.Description = "You are currently offline, and do not have a cached version of this page availible.";
 }
 
 <header class="page-header">
@@ -12,7 +9,7 @@
 </header>
 <div class="row">
     <article class="col-md-8">
-        <p>You are currently offline, and do not have a cached version of this page availible.</p>
+        <p>@ViewBag.Description</p>
         <p>Here are the pages you <em>do</em> have cached:</p>
         <noscript>
             <div class="alert alert-warning" role="alert">

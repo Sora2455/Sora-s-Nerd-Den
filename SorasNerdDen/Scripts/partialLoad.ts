@@ -87,14 +87,6 @@
                 mainContent.dispatchEvent(new CustomEvent("ContentModified", {
                     detail: partialLoadDetails
                 }));
-                const mainHeaders = mainContent.getElementsByTagName("h1");
-                if (mainHeaders.length > 0) {
-                    //If the first node isn't a text node, grab the second node's contents
-                    const headingText = mainHeaders[0].childNodes[0].nodeType === 3 ?
-                        mainHeaders[0].childNodes[0].nodeValue :
-                        mainHeaders[0].childNodes[1].nodeValue;
-                    document.title = `${headingText.trim()} - Sora's Nerd Den`;
-                }
             });
         }).catch(() => {
             // Hide the loading indicator, even on error

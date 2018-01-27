@@ -5,6 +5,10 @@ interface PartialLoadDetails {
     loadTime: number;
     destination: string;
 }
+interface PageTitleAndDescription {
+    title: string;
+    description: string;
+}
 interface Window {
     /**
      * Queue a function to run when the DOM is ready for interactivity

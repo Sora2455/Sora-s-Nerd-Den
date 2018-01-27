@@ -27,9 +27,14 @@
                         const link = document.createElement("a");
                         let linkDestination = request.url.replace("?v=m", "").replace(`${location.protocol}//${location.host}`, "");
                         link.setAttribute("href", linkDestination);
-                        if (linkDestination === "/") { linkDestination = "Home"; }
-                        else if (linkDestination === "/offline/") { return; }
-                        link.textContent = linkDestination;
+                        if (linkDestination === "/offline/") { return; }
+                        let titleJSON = localStorage.getItem(linkDestination);
+                        if (titleJSON) {
+                            const titleAndSecription = JSON.parse(titleJSON) as PageTitleAndDescription;
+                            link.textContent = titleAndSecription.title;
+                        } else {
+                            link.textContent = linkDestination;
+                        }
                         listItem.appendChild(link);
                         offlineList.appendChild(listItem);
                         link.dispatchEvent(new CustomEvent("LinkAdded", { bubbles: true }));
