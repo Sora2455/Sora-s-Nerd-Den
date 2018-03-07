@@ -18,6 +18,7 @@
     using Microsoft.Extensions.Logging;
     using SorasNerdDen.Settings;
     using Newtonsoft.Json.Serialization;
+    using WebMarkupMin.AspNetCore2;
 
     /// <summary>
     /// The main start-up class for the application.
@@ -112,8 +113,26 @@
         /// http://blogs.msdn.com/b/webdev/archive/2014/06/17/dependency-injection-in-asp-net-vnext.aspx
         /// </summary>
         /// <param name="services">The services collection or IoC container.</param>
-        public IServiceProvider ConfigureServices(IServiceCollection services) =>
+        public IServiceProvider ConfigureServices(IServiceCollection services) {
             services
+                .AddWebMarkupMin(
+                    options =>
+                    {
+                        //We want to make sure that the minifier works!
+                        options.AllowMinificationInDevelopmentEnvironment = true;
+                    })
+                .AddHtmlMinification(
+                    options =>
+                    {
+                        //We don't have any inline/embedded JavaScript/CSS to minify!
+                        options.MinificationSettings.MinifyEmbeddedJsCode = false;
+                        options.MinificationSettings.MinifyInlineJsCode = false;
+                        options.MinificationSettings.MinifyEmbeddedCssCode = false;
+                        options.MinificationSettings.MinifyInlineCssCode = false;
+                    }
+                );
+
+            return services
                 .AddAntiforgerySecurely()
                 .AddCaching()
                 .AddOptions(this.configuration)
@@ -175,12 +194,14 @@
                 .Services
                 .AddCustomServices()
                 .BuildServiceProvider();
+        }
 
         /// <summary>
         /// Configures the application and HTTP request pipeline. Configure is called after ConfigureServices is
         /// called by the ASP.NET runtime.
         /// </summary>
-        public void Configure(IApplicationBuilder application) =>
+        public void Configure(IApplicationBuilder application)
+        {
             application
                 // Removes the Server HTTP header from the HTTP response for marginally better security and performance.
                 .UseNoServerHttpHeader()
@@ -201,7 +222,10 @@
                 .UseStrictTransportSecurityHttpHeader()
                 .UseContentSecurityPolicyHttpHeader(this.sslPort, this.hostingEnvironment)
                 .UseSecurityHttpHeaders()
+                //Minify the HTML we generate
+                .UseWebMarkupMin()
                 // Add MVC to the request pipeline.
                 .UseMvc();
+        }
     }
 }
