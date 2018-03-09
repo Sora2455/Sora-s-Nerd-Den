@@ -1,5 +1,5 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-((w) => {
+((w, d) => {
     "use strict";
     //If the Internationalisation API is not supported, don't try to localise
     if (!("Intl" in w)) {
@@ -42,9 +42,9 @@
     }
     w.whenReady(() => {
         //Get all the time tags
-        const times = document.getElementsByTagName("time");
+        const times = d.getElementsByTagName("time");
         localiseTimes(times);
-        const mainContent = document.getElementById("main-content");
+        const mainContent = d.getElementById("main-content");
         mainContent.addEventListener("ContentModified", () => {
             //Get the newly loaded time tags
             const times = mainContent.getElementsByTagName("time");
@@ -61,4 +61,4 @@
         dateObj.setUTCHours(parseInt(hours,10));
         dateObj.setUTCMinutes(parseInt(minutes, 10));
     }
-})(window);
+})(window, document);

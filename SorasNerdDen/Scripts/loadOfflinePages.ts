@@ -1,12 +1,12 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-((w) => {
+((w, d) => {
     "use strict";
 
     /**
      * Show the user which offline pages they have saved locally
      */
     function setUp() {
-        const offlineList = document.getElementById("offline-nav-items") as HTMLUListElement;
+        const offlineList = d.getElementById("offline-nav-items") as HTMLUListElement;
 
         //If this isn't the offline page, don't show the cached content
         if (!offlineList) { return; }
@@ -23,8 +23,8 @@
                         //Filter out non-page navigations
                         if (!request.url.endsWith("/?v=m")) { return; }
                         //TODO other filtering logic
-                        const listItem = document.createElement("li");
-                        const link = document.createElement("a");
+                        const listItem = d.createElement("li");
+                        const link = d.createElement("a");
                         let linkDestination = request.url.replace("?v=m", "").replace(`${location.protocol}//${location.host}`, "");
                         link.setAttribute("href", linkDestination);
                         if (linkDestination === "/offline/") { return; }
@@ -44,7 +44,7 @@
         }
     }
     w.whenReady(() => {
-        document.getElementById("main-content").addEventListener("ContentModified", setUp);
+        d.getElementById("main-content").addEventListener("ContentModified", setUp);
         setUp();
     });
-})(window);
+})(window, document);

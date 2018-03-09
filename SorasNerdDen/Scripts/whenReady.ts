@@ -1,5 +1,5 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-(function (w) {
+(function (w, d) {
     "use strict";
     const readyCallbacks = [] as Function[];
     let isReady = false;
@@ -10,17 +10,17 @@
     };
 
     function isNowReady() {
-        document.removeEventListener("DOMContentLoaded", isNowReady);
+        d.removeEventListener("DOMContentLoaded", isNowReady);
         isReady = true;
-        var callback;
+        let callback;
         while (callback = readyCallbacks.pop()) {
             setTimeout(callback, 1);
         }
     }
 
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", isNowReady);
+    if (d.readyState === "loading") {
+        d.addEventListener("DOMContentLoaded", isNowReady);
     } else {
         isNowReady();
     }
-})(window);
+})(window, document);

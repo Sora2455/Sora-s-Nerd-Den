@@ -1,15 +1,15 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-((w) => {
+((w, d) => {
     "use strict";
     // Element.closest seems to be the 'lowest common function' needed here
     if (!Element.prototype.closest) { return; }
     // When the document is availible for interaction:
     w.whenReady(() => {
         // Find all the links that go places:
-        document.querySelectorAll("a[href]").forEach((link) => {
+        d.querySelectorAll("a[href]").forEach((link) => {
             link.addEventListener("click", tryPartialLoad);
         });
-        const mainHeading = document.querySelector("#main-content h1");
+        const mainHeading = d.querySelector("#main-content h1");
         if (mainHeading && mainHeading.textContent === "Loading") {
             //This is the loading page that the Service Worker returns - we need
             //to partial load the page so that the main area matches the location bar
@@ -17,14 +17,14 @@
             // Then, fetch that page and load it into the main tag
             partialLoad(newTarget);
         }
-        const mainContent = document.getElementById("main-content");
+        const mainContent = d.getElementById("main-content");
         mainContent.addEventListener("ContentModified", () => {
             mainContent.querySelectorAll("a[href]").forEach((link) => {
                 link.addEventListener("click", tryPartialLoad);
             });
         });
     });
-    document.addEventListener("LinkAdded", (e: CustomEvent) => {
+    d.addEventListener("LinkAdded", (e: CustomEvent) => {
         e.target.addEventListener("click", tryPartialLoad);
     });
     /**
@@ -72,13 +72,13 @@
      * @param isOffline True if we are trying to load the offline page
      */
     function partialLoad(destination: string, isOffline?: boolean) {
-        document.getElementById("loading-indicator").style.display = "block";
+        d.getElementById("loading-indicator").style.display = "block";
         const start = Date.now();
         fetch(destination).then(function (response) {
-            document.getElementById("loading-indicator").style.display = "none";
+            d.getElementById("loading-indicator").style.display = "none";
 
             return response.text().then(function (text) {
-                const mainContent = document.getElementById("main-content");
+                const mainContent = d.getElementById("main-content");
                 mainContent.innerHTML = text;
                 //Dispatch a custom event so that other functions know the page has updated
                 const partialLoadDetails: PartialLoadDetails = {
@@ -90,7 +90,7 @@
             });
         }).catch(() => {
             // Hide the loading indicator, even on error
-            document.getElementById("loading-indicator").style.display = "none";
+            d.getElementById("loading-indicator").style.display = "none";
             // if we got an error, we are most likely offline
             if (!isOffline) { return partialLoad("/offline/?v=m", true); }
         });
@@ -103,4 +103,4 @@
         if (!target) { target = getPartialUrl(location.toString()); }
         partialLoad(target);
     });
-})(window);
+})(window, document);

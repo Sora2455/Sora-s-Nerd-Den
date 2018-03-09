@@ -1,5 +1,5 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
-(function (w) {
+(function (w, d) {
     "use strict";
     if (!("performance" in w && "timing" in performance)) { return; }
     /**
@@ -45,12 +45,12 @@
             "To": to
         }));
     }
-    if (document.readyState === "completed") {
+    if (d.readyState === "completed") {
         setTimeout(timeFullPageLoad, 1);
     } else {
         w.addEventListener("load", () => setTimeout(timeFullPageLoad, 1));
     }
     w.whenReady(() => {
-        document.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);
+        d.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);
     });
-})(window);
+})(window, document);
