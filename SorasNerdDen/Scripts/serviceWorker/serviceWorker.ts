@@ -1,8 +1,10 @@
-﻿const log = console.log.bind(console);
-const err = console.error.bind(console);
-onerror = err;
+﻿onerror = console.error.bind(console);
 
-// Moves the contents of one named cached into another.
+/**
+ * Moves the contents of one named cached into another.
+ * @param source The name of the cache to move from
+ * @param destination The name of the cache to move into
+ */
 function cacheCopy(source: string, destination: string) {
     "use strict";
     return caches.delete(destination).then(() => {
@@ -24,35 +26,80 @@ function cacheCopy(source: string, destination: string) {
     });
 }
 
-function fetchAndCache(request: RequestInfo, cache: Cache, versioned: boolean) {
+/**
+ * Return to the client a cached version of the page (if we have one), check for updates to the page,
+ * and if it has updated, notify the client.
+ * @param e The fetch event we are responding to
+ * @param versioned True if this is a versioned file (like a stylesheet or a script), false otherwise
+ */
+function cacheUpdateRefresh(e: FetchEvent, versioned: boolean): void {
     "use strict";
-    if (!(request instanceof Request)) {
-        request = new Request(request);
+    // Return the first response from the cache (if possible)
+    e.respondWith(cacheFirst(e.request, versioned));
+    // Afterwards, update our cache copy of this resource
+    e.waitUntil(networkUpdate(e.request, versioned).then((updated) => {
+        if (updated && !versioned) return refresh(e.request.url);
+    }));
+}
+
+/**
+ * Notify clients that an updated version of this page is availible
+ * @param url The URL of the page that we have an updated copy of
+ */
+async function refresh(url: string): Promise<void> {
+    "use strict";
+    const message = {
+        type: "refresh",
+        url: url
+    };
+    const clients = await (self as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' });
+    // Notify each client
+    clients.forEach((client: Client) => {
+        client.postMessage(message);
+    });
+}
+
+/**
+ * Try to update a cached request.
+ * A server error or a 304 Not Modified response does not count as un update.
+ * @param request The request for the resource we are trying to update
+ * @param versioned True if the file is a versioned resource (like a script), false otherwise
+ * @returns True if the response was updated, false otherwise.
+ */
+async function networkUpdate(request: Request, versioned: boolean): Promise<boolean> {
+    "use strict";
+    const core = await caches.open("core");
+    const response = await fetch(request.clone(), { mode: "no-cors" });
+    if (response.ok) {
+        core.put(request.clone(), response);
+        return true;
     }
-    //TODO handle 404s intelligently
-    return fetch(request.clone(), {mode: "no-cors"}).then((response) => {
-        // if the response came back as a server error try and get from cache
-        if (response.status === 500) { return findInCache(request, cache, versioned); }
-        // otherwise delete any previous versions that might be in the cache already (if a versioned file),
-        if (versioned) { cache.delete(request, { ignoreSearch: true }); }
-        // then store the response for future use, and return the response to the client
-        cache.put(request, response.clone());
-        return response;
-    }).catch(() => {
-        // if there was an error (almost certainly network touble) try and get from cache
-        return findInCache(request, cache, versioned);
-    });
+    return false;
 }
 
-function findInCache(request: RequestInfo, cache: Cache, versioned: boolean) {
+/**
+ * Retrieve a file from the cache if possible, the network if not
+ * @param request The request of the resource we are seeking to fetch
+ * @param versioned True if the file is a versioned resource (like a script), false otherwise
+ */
+async function cacheFirst(request: Request, versioned: boolean): Promise<Response> {
     "use strict";
-    return cache.match(request).then((result) => {
-        if (result || !versioned) { return result; }
-        return cache.match(request, { ignoreSearch: true });
-    });
+    const core = await caches.open("core");
+    // Look in the cache for this value
+    let result = await core.match(request.clone());
+    if (result) { return result; }
+    // If we can't find that result in the cache, try and get it from the network
+    result = await fetch(request.clone(), { mode: "no-cors" });
+    if (result || !versioned) { return result; }
+    // If we can't get this file from the network and this is a versioned file, get the previous version
+    return core.match(request.clone(), { ignoreSearch: true });
 }
 
-addEventListener("install", (e: ExtendableEvent) => {
+/**
+ * When the service worker is being intalled, download the required assets into a temporary cache
+ * @param e The intall event
+ */
+function handleInstall(e: ExtendableEvent): void {
     "use strict";
     // Put updated resources in a new cache, so that currently running pages
     // get the current versions.
@@ -76,10 +123,13 @@ addEventListener("install", (e: ExtendableEvent) => {
                 .then(() => (self as ServiceWorkerGlobalScope).skipWaiting());
         });
     }));
-});
+}
 
-
-addEventListener("activate", (e: ExtendableEvent) => {
+/**
+ * When the service worker is being activated, move our assets from the temporary cache to our main cache
+ * @param e The install event
+ */
+function installHandler(e: ExtendableEvent): void {
     "use strict";
     // Copy the newly installed cache to the active cache
     e.waitUntil(cacheCopy("core-waiting", "core")
@@ -87,36 +137,40 @@ addEventListener("activate", (e: ExtendableEvent) => {
         .then(() => (self as ServiceWorkerGlobalScope).clients.claim())
         // Delete the waiting cache afterward to save client memory space
         .then(() => caches.delete("core-waiting")));
-});
+}
 
-addEventListener("fetch", (e: FetchEvent) => {
+/**
+ * When the browser makes a GET request, return a result from cache if possible before
+ * trying to update that page in said cache
+ * @param e The fetch event
+ */
+function fetchHandler(e: FetchEvent): void {
     "use strict";
     const request = e.request;
 
     // If not a GET request, don't cache
-    if (request.method !== "GET") { return fetch(request); }
+    if (request.method !== "GET") {
+        e.respondWith(fetch(request));
+        return;
+    }
     // If its the Atom feed, don't cache
-    if (request.url.includes("/feed/")) { return fetch(request); }
+    if (request.url.includes("/feed/")) {
+        e.respondWith(fetch(request));
+        return;
+    }
     // If it's a 'main' page, use the loading page instead
     if (request.url.endsWith("/")) {
-        e.respondWith(caches.open("core").then((core) => {
-            // Get the loading page
-            return fetchAndCache("/loading/", core, false);
-        }));
+        e.respondWith(cacheFirst(new Request('/loading/'), false));
         return;
     }
     // TODO filter requests
 
-    // Basic read-through caching.
-    e.respondWith(
-        caches.open("core").then((core) => {
-            return core.match(request).then((response) => {
-                if (response) { return response; }
-                // we didn't have it in the cache, so add it to the cache and return it
-                log("runtime caching:", request.url);
-                // now grab the file and add it to the cache
-                return fetchAndCache(request, core, true);
-            });
-        })
-    );
-});
+    // If the URL ends with v=m, this is one of our 'minimal views'
+    if (request.url.endsWith("v=m")) { return cacheUpdateRefresh(e, false); }
+
+    return cacheUpdateRefresh(e, true);
+}
+
+addEventListener("install", handleInstall);
+addEventListener("activate", installHandler);
+addEventListener("fetch", fetchHandler);
