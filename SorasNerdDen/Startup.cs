@@ -120,6 +120,7 @@
                     {
                         //We want to make sure that the minifier works!
                         options.AllowMinificationInDevelopmentEnvironment = true;
+                        options.DisablePoweredByHttpHeaders = true;
                     })
                 .AddHtmlMinification(
                     options =>
