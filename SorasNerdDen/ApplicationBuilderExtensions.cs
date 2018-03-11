@@ -191,5 +191,20 @@
                 //   Deny - Specifies that the X-Frame-Options header should be set in the HTTP response, instructing
                 //          the browser to not display the page when it is loaded in an iframe.
                 .UseXfo(options => options.Deny());
+
+        /// <summary>
+        /// Declare to the users that we are not collecting their browsing habits
+        /// </summary>
+        public static IApplicationBuilder DeclareNotTracking(this IApplicationBuilder application) =>
+            application.Use(next =>
+            {
+                return async context =>
+                {
+                    //Set the tracking header to 'No' so users know we are not tracking them
+                    //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Tk
+                    context.Response.Headers["Tk"] = "N";
+                    await next(context);
+                };
+            });
     }
 }

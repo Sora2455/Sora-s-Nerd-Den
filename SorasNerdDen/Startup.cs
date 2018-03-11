@@ -222,6 +222,7 @@
                 .UseStrictTransportSecurityHttpHeader()
                 .UseContentSecurityPolicyHttpHeader(this.sslPort, this.hostingEnvironment)
                 .UseSecurityHttpHeaders()
+                .DeclareNotTracking()
                 //Minify the HTML we generate
                 .UseWebMarkupMin()
                 // Add MVC to the request pipeline.
