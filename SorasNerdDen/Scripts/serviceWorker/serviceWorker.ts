@@ -46,16 +46,17 @@ function cacheUpdateRefresh(e: FetchEvent, versioned: boolean): void {
  * Notify clients that an updated version of this page is availible
  * @param url The URL of the page that we have an updated copy of
  */
-async function refresh(url: string): Promise<void> {
+function refresh(url: string): Promise<void> {
     "use strict";
     const message = {
         type: "refresh",
         url: url
     };
-    const clients = await (self as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' });
-    // Notify each client
-    clients.forEach((client: Client) => {
-        client.postMessage(message);
+    return (self as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' }).then((clients) => {
+        // Notify each client
+        clients.forEach((client: Client) => {
+            client.postMessage(message);
+        });
     });
 }
 
@@ -66,15 +67,18 @@ async function refresh(url: string): Promise<void> {
  * @param versioned True if the file is a versioned resource (like a script), false otherwise
  * @returns True if the response was updated, false otherwise.
  */
-async function networkUpdate(request: Request, versioned: boolean): Promise<boolean> {
+function networkUpdate(request: Request, versioned: boolean): Promise<boolean> {
     "use strict";
-    const core = await caches.open("core");
-    const response = await fetch(request.clone(), { mode: "no-cors" });
-    if (response.ok) {
-        core.put(request.clone(), response);
-        return true;
-    }
-    return false;
+    return caches.open("core").then((core) => {
+        return fetch(request.clone(), { mode: "no-cors" }).then((response) => {
+            if (response.ok) {
+                if (versioned) { core.delete(request.clone(), { ignoreSearch: true }); }
+                core.put(request.clone(), response);
+                return true;
+            }
+            return false;
+        });
+     });
 }
 
 /**
@@ -82,17 +86,20 @@ async function networkUpdate(request: Request, versioned: boolean): Promise<bool
  * @param request The request of the resource we are seeking to fetch
  * @param versioned True if the file is a versioned resource (like a script), false otherwise
  */
-async function cacheFirst(request: Request, versioned: boolean): Promise<Response> {
+function cacheFirst(request: Request, versioned: boolean): Promise<Response> {
     "use strict";
-    const core = await caches.open("core");
-    // Look in the cache for this value
-    let result = await core.match(request.clone());
-    if (result) { return result; }
-    // If we can't find that result in the cache, try and get it from the network
-    result = await fetch(request.clone(), { mode: "no-cors" });
-    if (result || !versioned) { return result; }
-    // If we can't get this file from the network and this is a versioned file, get the previous version
-    return core.match(request.clone(), { ignoreSearch: true });
+    return caches.open("core").then((core) => {
+        // Look in the cache for this value
+        return core.match(request.clone()).then((result) => {
+            if (result) { return result; }
+            // If we can't find that result in the cache, try and get it from the network
+            return fetch(request.clone(), { mode: "no-cors" }).then((result) => {
+                if (result || !versioned) { return result; }
+                // If we can't get this file from the network and this is a versioned file, get the previous version
+                return core.match(request.clone(), { ignoreSearch: true });
+            });
+        });
+    });
 }
 
 /**
