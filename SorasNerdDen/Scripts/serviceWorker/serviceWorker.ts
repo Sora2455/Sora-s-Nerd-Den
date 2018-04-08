@@ -77,6 +77,8 @@ function networkUpdate(request: Request, versioned: boolean): Promise<boolean> {
                 return true;
             }
             return false;
+        }).catch((reason) => {
+            return false;
         });
      });
 }
@@ -95,6 +97,10 @@ function cacheFirst(request: Request, versioned: boolean): Promise<Response> {
             // If we can't find that result in the cache, try and get it from the network
             return fetch(request.clone(), { mode: "no-cors" }).then((result) => {
                 if (result || !versioned) { return result; }
+                // If we can't get this file from the network and this is a versioned file, get the previous version
+                return core.match(request.clone(), { ignoreSearch: true });
+            }).catch((reason) => {
+                if (!versioned) return undefined;
                 // If we can't get this file from the network and this is a versioned file, get the previous version
                 return core.match(request.clone(), { ignoreSearch: true });
             });
@@ -126,8 +132,8 @@ function installHander(e: ExtendableEvent): void {
                 return fetch(key, { cache: "no-cache" })
                     .then((response) => core.put(key, response));
             }))
-                // Don't wait for the client to refresh the page (as this site is designed not to refresh)
-                .then(() => (self as ServiceWorkerGlobalScope).skipWaiting());
+            // Don't wait for the client to refresh the page (as this site is designed not to refresh)
+            .then(() => (self as ServiceWorkerGlobalScope).skipWaiting());
         });
     }));
 }
