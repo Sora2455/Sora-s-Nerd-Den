@@ -24,5 +24,7 @@
     }
     updateMessage.getElementsByTagName('a')[0].addEventListener('click', () => {
         l.reload();
-    })
+    });
+    const cs = d.currentScript;
+    if (cs) { cs.parentNode.removeChild(cs); }
 })(window, document, navigator, location);
