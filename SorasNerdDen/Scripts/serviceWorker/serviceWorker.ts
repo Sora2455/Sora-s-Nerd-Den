@@ -106,7 +106,7 @@ function cacheFirst(request: Request, versioned: boolean): Promise<Response> {
  * When the service worker is being intalled, download the required assets into a temporary cache
  * @param e The intall event
  */
-function handleInstall(e: ExtendableEvent): void {
+function installHander(e: ExtendableEvent): void {
     "use strict";
     // Put updated resources in a new cache, so that currently running pages
     // get the current versions.
@@ -136,7 +136,7 @@ function handleInstall(e: ExtendableEvent): void {
  * When the service worker is being activated, move our assets from the temporary cache to our main cache
  * @param e The install event
  */
-function installHandler(e: ExtendableEvent): void {
+function activationHander(e: ExtendableEvent): void {
     "use strict";
     // Copy the newly installed cache to the active cache
     e.waitUntil(cacheCopy("core-waiting", "core")
@@ -178,6 +178,6 @@ function fetchHandler(e: FetchEvent): void {
     return cacheUpdateRefresh(e, true);
 }
 
-addEventListener("install", handleInstall);
-addEventListener("activate", installHandler);
+addEventListener("install", installHander);
+addEventListener("activate", activationHander);
 addEventListener("fetch", fetchHandler);
