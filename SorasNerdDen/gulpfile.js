@@ -161,13 +161,9 @@ var sources = {
                 paths.scripts + 'titleAndDescription.ts',
                 paths.scripts + 'timeLocaliser.ts',
                 paths.scripts + 'loadOfflinePages.ts',
-                paths.scripts + 'logLongLoadingTimes.ts'
+                paths.scripts + 'logLongLoadingTimes.ts',
+                paths.scripts + 'addServiceWorker.ts'
             ],
-            dest: paths.js
-        },
-        {
-            name: 'addServiceWorker.js',
-            paths: paths.scripts + 'addServiceWorker.ts',
             dest: paths.js
         },
         {

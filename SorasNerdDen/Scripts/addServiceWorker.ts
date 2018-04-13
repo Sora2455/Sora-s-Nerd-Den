@@ -1,14 +1,9 @@
-﻿((w, d, n, l) => {
+﻿///<reference path="definitions/definitions.d.ts" />
+((w, d, n, l) => {
     "use strict";
     if ('serviceWorker' in n) {
-        // Register a service worker hosted at the root of the
-        // site using the default scope.
-        n.serviceWorker.register('/serviceWorker.js', {
-            scope: "./"
-        }).then(function (registration) {
-            console.log('Service worker registration succeeded:', registration);
-        }).catch(function (error) {
-            console.log('Service worker registration failed:', error);
+        w.whenLoaded(() => {
+            n.serviceWorker.register('/serviceWorker.js');
         });
         n.serviceWorker.addEventListener("message", recieveMessage);
     }
@@ -25,6 +20,4 @@
     updateMessage.getElementsByTagName('a')[0].addEventListener('click', () => {
         l.reload();
     });
-    const cs = d.currentScript;
-    if (cs) { cs.parentNode.removeChild(cs); }
 })(window, document, navigator, location);

@@ -15,4 +15,8 @@ interface Window {
      * (or now, if it is already interactive)
      */
     whenReady: (callback: Function) => void;
+    /**
+     * Queue a function to run when the page is fully loaded (or now, if it is already loaded)
+     */
+    whenLoaded: (callback: Function) => void;
 }

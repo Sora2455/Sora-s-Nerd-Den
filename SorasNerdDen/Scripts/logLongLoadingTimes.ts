@@ -45,11 +45,7 @@
             "To": to
         }));
     }
-    if (d.readyState === "completed") {
-        setTimeout(timeFullPageLoad, 1);
-    } else {
-        w.addEventListener("load", () => setTimeout(timeFullPageLoad, 1));
-    }
+    w.whenLoaded(timeFullPageLoad);
     w.whenReady(() => {
         d.getElementById("main-content").addEventListener("ContentModified", timePartialPageLoad);
     });
