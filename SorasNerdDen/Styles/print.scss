@@ -1,5 +1,10 @@
-﻿// Bootstrap's print styles
-@import '../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/print';
+﻿// Core variables and mixins
+@import '../node_modules/bootstrap/scss/functions';
+@import '../node_modules/bootstrap/scss/variables';
+@import '../node_modules/bootstrap/scss/mixins';
+
+// Bootstrap's print styles
+@import '../node_modules/bootstrap/scss/print';
 
 // Emoji accessability styles - based on http://adrianroselli.com/2016/12/accessible-emoji-tweaked.html
 .emoji {

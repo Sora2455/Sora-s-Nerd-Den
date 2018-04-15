@@ -2,7 +2,7 @@
   "name": "sorasnerdden",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap-sass": "3.3.7"
+    "bootstrap": "^4.1.0"
   },
   "devDependencies": {
     "autostrip-json-comments": "0.0.4",
@@ -39,7 +39,6 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "IE 10"
+    "last 2 versions"
   ]
 }
