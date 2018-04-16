@@ -44,15 +44,15 @@ Arial, sans-serif, 'Segoe UI Symbol';
 @import '../node_modules/bootstrap/scss/utilities';
 
 body {
-  padding-bottom: 20px;
-  padding-top: 50px;
+  padding-bottom: 1.5rem;
+  padding-top: 3rem;
 }
 
 // Wrapping element
 // Set some basic padding to keep content from hitting the edges
 .body-content {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 // Allow only vertical resizing of textareas.
