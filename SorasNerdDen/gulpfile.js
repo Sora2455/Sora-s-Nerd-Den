@@ -21,6 +21,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),            // Renames file paths (https://www.npmjs.com/package/gulp-rename/)
     size = require('gulp-size'),                // Prints size of files to console (https://www.npmjs.com/package/gulp-size/)
     sourcemaps = require('gulp-sourcemaps'),    // Creates source map files (https://www.npmjs.com/package/gulp-sourcemaps/)
+    gcmq = require('gulp-group-css-media-queries'),//Merges identical media queries together (https://www.npmjs.com/package/gulp-group-css-media-queries)
     uglify = require('gulp-uglify'),            // Minifies JavaScript (https://www.npmjs.com/package/gulp-uglify/)
     log = require('fancy-log'),                 // Log things (https://www.npmjs.com/package/fancy-log)
     merge = require('merge-stream'),            // Merges one or more gulp streams into one (https://www.npmjs.com/package/merge-stream/)
@@ -304,6 +305,7 @@ gulp.task('build-css', ['lint-css'], function () {
                 }))
                 .pipe(concat(source.name))          // Concatenate CSS files into a single CSS file with the specified name.
                 .pipe(sizeBefore(source.name))      // Write the size of the file to the console before minification.
+                .pipe(gcmq())                       // Merge identical media queries together
                 .pipe(gulpif(
                     !environment.isDevelopment(),   // If running in the staging or production environment.
                     purifycss(["Views/**/*.cshtml"],
