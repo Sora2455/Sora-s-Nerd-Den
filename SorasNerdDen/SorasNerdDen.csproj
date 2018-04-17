@@ -27,6 +27,7 @@
     <None Remove="Scripts\logLongLoadingTimes.ts" />
     <None Remove="Scripts\polyfills.ts" />
     <None Remove="Scripts\serviceWorker.ts" />
+    <None Remove="Scripts\StorageManager.ts" />
     <None Remove="Scripts\timeLocaliser.ts" />
     <None Remove="Scripts\titleAndDescription.ts" />
     <None Remove="Scripts\whenReady.ts" />
@@ -102,6 +103,7 @@
     <TypeScriptCompile Include="Scripts\logLongLoadingTimes.ts" />
     <TypeScriptCompile Include="Scripts\polyfills.ts" />
     <TypeScriptCompile Include="Scripts\serviceWorker\serviceWorker.ts" />
+    <TypeScriptCompile Include="Scripts\storageManager.ts" />
     <TypeScriptCompile Include="Scripts\timeLocaliser.ts" />
     <TypeScriptCompile Include="Scripts\titleAndDescription.ts" />
     <TypeScriptCompile Include="Scripts\whenReady.ts" />

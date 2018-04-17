@@ -14,9 +14,12 @@
             titleElement.childNodes[0].nodeValue :
             titleElement.childNodes[1].nodeValue.trim();
         titleAndDescription.description = descriptionElement.textContent;
-        //Now (if we can), store that away in localStorage
-        if (w.localStorage) {
-            localStorage.setItem(location.pathname, JSON.stringify(titleAndDescription));
+        titleAndDescription.url = location.pathname;
+        //Now (if we can), store that away in a client-side db
+        if (typeof Promise !== "undefined") {
+            w.dbReady.then(() => {
+                w.storePageDetails(titleAndDescription);
+            });
         }
         //And then, set the title and description of the page to our new values
         //(important if the page was partially loaded)
@@ -31,7 +34,11 @@
         }
     }
     w.whenReady(() => {
-        recordTitleAndDescription();
+        const mainHeading = d.querySelector("#main-content h1");
+        if (!mainHeading || mainHeading.textContent !== "Loading") {
+            //Only record the title if this isn't the loading page
+            recordTitleAndDescription();
+        }
         d.getElementById("main-content").addEventListener("ContentModified", recordTitleAndDescription);
     });
 })(window, document);
