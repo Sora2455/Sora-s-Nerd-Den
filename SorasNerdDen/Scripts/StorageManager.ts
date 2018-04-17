@@ -40,7 +40,7 @@
                     transaction.onerror = (ev) => {
                         writeFailed(ev);
                     };
-                    pageDetailsStore.add(pageDetails);
+                    pageDetailsStore.put(pageDetails);
                 });
             }
             w.retreivePageDetails = function (url): Promise<PageTitleAndDescription> {

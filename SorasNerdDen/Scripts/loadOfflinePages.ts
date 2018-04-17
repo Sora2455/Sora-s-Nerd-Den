@@ -41,7 +41,6 @@
                                 if (a.url > b.url) return 1;
                                 return 0;
                             });
-                            offlineList.innerHTML = "";
                             cachedPages.forEach((page) => {
                                 const listItem = d.createElement("li");
                                 const link = d.createElement("a");
@@ -51,6 +50,8 @@
                                 offlineList.appendChild(listItem);
                                 link.dispatchEvent(new CustomEvent("LinkAdded", { bubbles: true }));
                             });
+                            //Remove the 'Loading' line item
+                            offlineList.removeChild(offlineList.firstChild);
                             //If no pages appear in the cache
                             if (!cachedPages.length) {
                                 const listItem = d.createElement("li");
