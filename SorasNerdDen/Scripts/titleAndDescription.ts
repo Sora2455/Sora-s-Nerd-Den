@@ -1,44 +1,45 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
 ((w, d) => {
     "use strict";
-    function recordTitleAndDescription() {
-        const main = d.getElementById("main-content");
+    function getPageTitle() {
         //By convention, our page title is repeated in our main heading
-        const titleElement = main.getElementsByTagName("h1")[0];
-        //By convention, our page description is repeated in the first paragraph tag under the heading
-        const descriptionElement = main.getElementsByTagName("p")[0];
-        const titleAndDescription = {} as PageTitleAndDescription;
+        const mainHeading = d.querySelector("#main-content h1");
         //If the first child of the title element isn't a text node, that will be the emoji
         // in that case, grab the second node and trim it
-        titleAndDescription.title = titleElement.childNodes[0].nodeType === 3 ?
-            titleElement.childNodes[0].nodeValue :
-            titleElement.childNodes[1].nodeValue.trim();
-        titleAndDescription.description = descriptionElement.textContent;
-        titleAndDescription.url = location.pathname;
+        return mainHeading.childNodes[0].nodeType === 3 ?
+            mainHeading.childNodes[0].nodeValue :
+            mainHeading.childNodes[1].nodeValue.trim();
+    }
+    function recordTitleAndDescription() {
+        //By convention, our page description is repeated in the first paragraph tag under the heading
+        const descriptionElement = d.querySelector("#main-content p");
+        const td = {} as PageTitleAndDescription;
+        td.title = getPageTitle();
+        td.description = descriptionElement.textContent;
+        td.url = location.pathname;
         //Now (if we can), store that away in a client-side db
-        if (typeof Promise !== "undefined") {
+        if (typeof Promise !== "undefined" &&
+            //Only record the title if this isn't the loading page or the offline page
+            //TODO - not error pages?
+            td.title !== "Loading" && td.title !== "Offline") {
             w.dbReady.then(() => {
-                w.storePageDetails(titleAndDescription);
+                w.storePageDetails(td);
             });
         }
         //And then, set the title and description of the page to our new values
         //(important if the page was partially loaded)
-        d.title = `${titleAndDescription.title} - Sora's Nerd Den`;
+        d.title = `${td.title} - Sora's Nerd Den`;
         if (d.querySelector) {
             d.head.querySelector("meta[name='description']")
-                .setAttribute("content", titleAndDescription.description);
+                .setAttribute("content", td.description);
             d.head.querySelector("meta[name='twitter:title']")
-                .setAttribute("content", titleAndDescription.title);
+                .setAttribute("content", td.title);
             d.head.querySelector("meta[name='twitter:description']")
-                .setAttribute("content", titleAndDescription.description);
+                .setAttribute("content", td.description);
         }
     }
     w.whenReady(() => {
-        const mainHeading = d.querySelector("#main-content h1");
-        if (!mainHeading || mainHeading.textContent !== "Loading") {
-            //Only record the title if this isn't the loading page
-            recordTitleAndDescription();
-        }
+        recordTitleAndDescription();
         d.getElementById("main-content").addEventListener("ContentModified", recordTitleAndDescription);
     });
 })(window, document);
