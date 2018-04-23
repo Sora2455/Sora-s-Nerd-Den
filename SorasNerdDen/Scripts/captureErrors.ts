@@ -17,3 +17,4 @@
     }
     return false;
 };
+window.name = "Sora's Nerd Den";
