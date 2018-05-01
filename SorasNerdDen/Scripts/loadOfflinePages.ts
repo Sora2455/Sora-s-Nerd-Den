@@ -55,7 +55,7 @@
                             //If no pages appear in the cache
                             if (!cachedPages.length) {
                                 const listItem = d.createElement("li");
-                                listItem.textContent = "Unfortunitly, you have no pages in cache";
+                                listItem.textContent = "Unfortunately, you have no pages in cache";
                                 offlineList.appendChild(listItem);
                             }
                         });

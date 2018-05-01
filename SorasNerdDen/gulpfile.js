@@ -23,6 +23,7 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),    // Creates source map files (https://www.npmjs.com/package/gulp-sourcemaps/)
     gcmq = require('gulp-group-css-media-queries'),//Merges identical media queries together (https://www.npmjs.com/package/gulp-group-css-media-queries)
     uglify = require('gulp-uglify'),            // Minifies JavaScript (https://www.npmjs.com/package/gulp-uglify/)
+    cleanCSS = require('gulp-clean-css'),       // Minifies CSS (https://www.npmjs.com/package/gulp-clean-css)
     log = require('fancy-log'),                 // Log things (https://www.npmjs.com/package/fancy-log)
     merge = require('merge-stream'),            // Merges one or more gulp streams into one (https://www.npmjs.com/package/merge-stream/)
     psi = require('psi'),                       // Google PageSpeed performance tester (https://www.npmjs.com/package/psi/)
@@ -307,11 +308,8 @@ gulp.task('build-css', ['lint-css'], function () {
                 .pipe(concat(source.name))          // Concatenate CSS files into a single CSS file with the specified name.
                 .pipe(sizeBefore(source.name))      // Write the size of the file to the console before minification.
                 .pipe(gcmq())                       // Merge identical media queries together
-                .pipe(gulpif(
-                    !environment.isDevelopment(),   // If running in the staging or production environment.
-                    purifycss(["Views/**/*.cshtml"],
-                        { minify: true }),          // Minifies the CSS.
-                    purifycss(["Views/**/*.cshtml"])))
+                .pipe(purifycss(["Views/**/*.cshtml"]))//Remove unused CSS
+                .pipe(cleanCSS())                   // Minifies CSS
                 .pipe(sizeAfter(source.name))       // Write the size of the file to the console after minification.
                 .pipe(gulpif(
                     environment.isDevelopment(),    // If running in the development environment.
@@ -350,9 +348,7 @@ function () {
                     getTypeScriptProject(source)()))
                 .pipe(concat(source.name))          // Concatenate JavaScript files into a single file with the specified name.
                 .pipe(sizeBefore(source.name))      // Write the size of the file to the console before minification.
-                .pipe(gulpif(
-                    !environment.isDevelopment(),   // If running in the staging or production environment.
-                    uglify()))                      // Minifies the JavaScript.
+                .pipe(uglify())                     // Minifies the JavaScript.
                 .pipe(sizeAfter(source.name))       // Write the size of the file to the console after minification.
                 .pipe(gulpif(
                     environment.isDevelopment(),    // If running in the development environment.
