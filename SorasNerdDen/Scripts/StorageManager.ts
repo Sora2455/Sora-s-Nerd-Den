@@ -27,7 +27,7 @@
             dbReady();
         }
         let db: IDBDatabase;
-        var req = indexedDB.open("Offline storage", 1);
+        const req = indexedDB.open("Offline storage", 1);
         req.onsuccess = function (evt) {
             db = (evt.target as IDBOpenDBRequest).result;
             w.storePageDetails = function (pageDetails): Promise<void> {

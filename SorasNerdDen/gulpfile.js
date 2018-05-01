@@ -19,6 +19,7 @@ var gulp = require('gulp'),
     mocha = require('gulp-mocha-phantomjs'),    // JavaScript test runner (https://www.npmjs.com/package/gulp-mocha-phantomjs/).
     plumber = require('gulp-plumber'),          // Handles Gulp errors (https://www.npmjs.com/package/gulp-plumber)
     rename = require('gulp-rename'),            // Renames file paths (https://www.npmjs.com/package/gulp-rename/)
+    replace = require('gulp-replace'),          // Replaces string instances (https://www.npmjs.com/package/gulp-replace)
     size = require('gulp-size'),                // Prints size of files to console (https://www.npmjs.com/package/gulp-size/)
     sourcemaps = require('gulp-sourcemaps'),    // Creates source map files (https://www.npmjs.com/package/gulp-sourcemaps/)
     gcmq = require('gulp-group-css-media-queries'),//Merges identical media queries together (https://www.npmjs.com/package/gulp-group-css-media-queries)
@@ -185,6 +186,29 @@ var lintSources = {
     ts: paths.scripts + '**/*.ts'
 };
 
+var replaceStringsList = {
+    "@SiteTitle": config.AppSettings.SiteTitle
+}
+
+var regexString = "";
+var firstRegex = true;
+for (var keyword in replaceStringsList) {
+    if (!firstRegex) {
+        regexString += "|";
+    }
+    firstRegex = false;
+    regexString += keyword;
+}
+var replaceStringsRegex = new RegExp(regexString, "g");
+
+/**
+ * Replaces keywords with config properties
+ * @param {string} string The keyword to fill in
+ */
+function replaceStrings(string) {
+    return replaceStringsList[string];
+}
+
 // Calls and returns the result from the gulp-size plugin to print the size of the stream. Makes it more readable.
 function sizeBefore(title) {
     return size({
@@ -346,6 +370,8 @@ function () {
                     sourcemaps.init()))             // Set up the generation of .map source files for the JavaScript.
                 .pipe(gulpif('**/*.ts',             // If the file is a TypeScript file, compile it to JavaScript
                     getTypeScriptProject(source)()))
+                .pipe(replace(replaceStringsRegex,  // Replace any keywords in the JavaScript with the config options
+                    replaceStrings))
                 .pipe(concat(source.name))          // Concatenate JavaScript files into a single file with the specified name.
                 .pipe(sizeBefore(source.name))      // Write the size of the file to the console before minification.
                 .pipe(uglify())                     // Minifies the JavaScript.

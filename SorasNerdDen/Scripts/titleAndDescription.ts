@@ -28,7 +28,7 @@
         }
         //And then, set the title and description of the page to our new values
         //(important if the page was partially loaded)
-        d.title = `${td.title} - Sora's Nerd Den`;
+        d.title = `${td.title} - @SiteTitle`;
         if (d.querySelector) {
             d.head.querySelector("meta[name='description']")
                 .setAttribute("content", td.description);
