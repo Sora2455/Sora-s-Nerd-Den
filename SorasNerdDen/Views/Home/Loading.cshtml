@@ -4,10 +4,23 @@
     //         characters. The site name appears at the end for better SEO.
     ViewBag.Title = "Loading";
     // Description - Used by search engines. Aim for more than 160 characters.
-    ViewBag.Description = "This is a temporary page to show while the main page is being loaded.";
+    ViewBag.Description = "Your page is being loaded.";
 }
 
 <header class="mt-2">
     <h1>@ViewBag.Title</h1>
 </header>
-<p>@ViewBag.Description</p>
+<div class="row">
+    <article class="col-md-8">
+        <p>@ViewBag.Description</p>
+        <noscript>
+            <div class="alert alert-warning" role="alert">
+                <p>
+                    Unfortunately, partial page loading is not available with JavaScript disabled. Please
+                    <a class="alert-link" rel="external" href="https://enable-javascript.com/">enable JavaScript</a>
+                    to speed up page loading.
+                </p>
+            </div>
+        </noscript>
+    </article>
+</div>
