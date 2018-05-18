@@ -40,7 +40,8 @@
         [HttpGet("", Name = HomeControllerRoute.GetIndex)]
         public IActionResult Index()
         {
-            if (!CheckLastModified(lastModifiedDate))
+            bool includesShared = !IsMinimalViewRequest();
+            if (!CheckLastModified(nameof(HomeController), nameof(Index), includesShared))
             {
                 return ContentNotModified();
             }
@@ -51,7 +52,8 @@
         [HttpGet("about", Name = HomeControllerRoute.GetAbout)]
         public IActionResult About()
         {
-            if (!CheckLastModified(lastModifiedDate))
+            bool includesShared = !IsMinimalViewRequest();
+            if (!CheckLastModified(nameof(HomeController), nameof(About), includesShared))
             {
                 return ContentNotModified();
             }
@@ -62,7 +64,8 @@
         [HttpGet("contact", Name = HomeControllerRoute.GetContact)]
         public IActionResult Contact()
         {
-            if (!CheckLastModified(lastModifiedDate))
+            bool includesShared = !IsMinimalViewRequest();
+            if (!CheckLastModified(nameof(HomeController), nameof(Contact), includesShared))
             {
                 return ContentNotModified();
             }
