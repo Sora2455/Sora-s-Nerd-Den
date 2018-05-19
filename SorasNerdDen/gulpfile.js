@@ -188,7 +188,7 @@ var lintSources = {
 
 var replaceStringsList = {
     "@SiteTitle": config.AppSettings.SiteTitle
-}
+};
 
 var regexString = "";
 var firstRegex = true;
@@ -204,6 +204,7 @@ var replaceStringsRegex = new RegExp(regexString, "g");
 /**
  * Replaces keywords with config properties
  * @param {string} string The keyword to fill in
+ * @returns {string} The site property that repaces the passed keywork
  */
 function replaceStrings(string) {
     return replaceStringsList[string];

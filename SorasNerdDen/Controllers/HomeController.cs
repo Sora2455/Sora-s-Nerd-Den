@@ -8,11 +8,12 @@
     using Boilerplate.AspNetCore.Filters;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using SorasNerdDen.Attributes;
     using SorasNerdDen.Constants;
     using SorasNerdDen.Services;
     using SorasNerdDen.Settings;
 
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         // Hardcoded for demo purposes
         private static readonly DateTime lastModifiedDate = new DateTime(2017, 11, 4);
@@ -38,38 +39,23 @@
         }
 
         [HttpGet("", Name = HomeControllerRoute.GetIndex)]
+        [AddVersionHeader]
         public IActionResult Index()
         {
-            bool includesShared = !IsMinimalViewRequest();
-            if (!CheckLastModified(nameof(HomeController), nameof(Index), includesShared))
-            {
-                return ContentNotModified();
-            }
-
             return View(HomeControllerAction.Index);
         }
 
         [HttpGet("about", Name = HomeControllerRoute.GetAbout)]
+        [AddVersionHeader]
         public IActionResult About()
         {
-            bool includesShared = !IsMinimalViewRequest();
-            if (!CheckLastModified(nameof(HomeController), nameof(About), includesShared))
-            {
-                return ContentNotModified();
-            }
-
             return View(HomeControllerAction.About);
         }
 
         [HttpGet("contact", Name = HomeControllerRoute.GetContact)]
+        [AddVersionHeader]
         public IActionResult Contact()
         {
-            bool includesShared = !IsMinimalViewRequest();
-            if (!CheckLastModified(nameof(HomeController), nameof(Contact), includesShared))
-            {
-                return ContentNotModified();
-            }
-
             return View(HomeControllerAction.Contact);
         }
 
