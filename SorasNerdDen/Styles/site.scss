@@ -154,6 +154,11 @@ a {
   transition: max-height 1s;
 }
 
+.emoji-icon {
+  font-size: 3rem;
+  line-height: 1.25rem;
+}
+
 //Hide the 'outdated browser' message from browsers that support @supports
 @supports (display: none) {
   .outdated-warning {

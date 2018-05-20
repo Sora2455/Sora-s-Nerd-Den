@@ -10,6 +10,8 @@ namespace SorasNerdDen.Services.HtmlHelpers
     /// </summary>
     public enum Emoji : uint
     {
+        /// <summary>≡</summary>
+        TripleBar = 8801,
         /// <summary>⌛</summary>
         Hourglass = 8987,
         /// <summary>⏳</summary>
@@ -135,6 +137,25 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string emojiName = DisplayCamelCaseString(emoji.ToString());
             return new HtmlString(
                 $"<span role=\"img\" aria-label=\"{emojiName}\" tabindex=\"0\" class=\"emoji\">" +
+                //The first HTML entity is the symbol we want to display
+                // the second one tells the browser to render the symbol as text, not an image
+                $"&#{(uint)emoji};&#xFE0E;</span>"
+            );
+        }
+
+        /// <summary>
+        /// Render an emoji character that is readable to both human sight and screen readers
+        /// </summary>
+        /// <param name="helper">The HTML helper being used to render the text</param>
+        /// <param name="emoji">The <see cref="HtmlHelpers.Emoji"/> to render</param>
+        /// <param name="cssClass">A CSS class to apply to the rendered element</param>
+        /// <returns>A HtmlString of an emoji character wrapped in a span tag containing a description
+        /// for screen-readers</returns>
+        public static IHtmlContent Emoji(this IHtmlHelper helper, Emoji emoji, string cssClass)
+        {
+            string emojiName = DisplayCamelCaseString(emoji.ToString());
+            return new HtmlString(
+                $"<span role=\"img\" aria-label=\"{emojiName}\" tabindex=\"0\" class=\"{cssClass}\">" +
                 //The first HTML entity is the symbol we want to display
                 // the second one tells the browser to render the symbol as text, not an image
                 $"&#{(uint)emoji};&#xFE0E;</span>"
