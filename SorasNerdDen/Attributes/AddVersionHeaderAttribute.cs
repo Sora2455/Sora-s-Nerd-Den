@@ -26,25 +26,16 @@ namespace SorasNerdDen.Attributes
         /// <param name="filterContext">The current action context</param>
         private static void CheckLastModified(ActionExecutingContext filterContext)
         {
+            //The shared view has multiple subresources. Rather than checking all of their modified dates,
+            //we'll just keep an eye on the minimal views.
+            if (filterContext.HttpContext.Request.Query["v"] != "m") return;
+
             string actionName = filterContext.RouteData.Values["action"].ToString();
             string controllerName = filterContext.RouteData.Values["controller"].ToString();
-            //If v=m is in the query string, this is a minimal view and there is no point checking the
-            // last modified date of the shared view
-            bool includesShared = filterContext.HttpContext.Request.Query["v"] != "m";
 
             string viewPath = Path.Combine(BASE_VIEW_FOLDER, controllerName, actionName + ".cshtml");
 
-            DateTime lastModifiedDate = new FileInfo(viewPath).LastWriteTime;
-
-            if (includesShared)
-            {
-                string sharedViewPath = Path.Combine(BASE_VIEW_FOLDER, "Shared", "_Layout.cshtml");
-
-                DateTime shareModifiedDate = new FileInfo(sharedViewPath).LastWriteTime;
-
-                //Get the maximum of the two dates
-                lastModifiedDate = lastModifiedDate > shareModifiedDate ? lastModifiedDate : shareModifiedDate;
-            }
+            DateTime lastModifiedDate = File.GetLastWriteTime(viewPath);
 
             CheckLastModified(lastModifiedDate, filterContext);
         }
