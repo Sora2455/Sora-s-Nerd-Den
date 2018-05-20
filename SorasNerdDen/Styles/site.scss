@@ -137,6 +137,23 @@ a {
   z-index: 9999;
 }
 
+.navbar-toggler-checkbox {
+  display: none;
+
+  &:not(:checked) {
+    & + .navbar-nav {
+      max-height: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+//Animate the navbar opening
+.navbar-nav {
+  max-height: 9rem;//This is needed to force the animation
+  transition: max-height 1s;
+}
+
 //Hide the 'outdated browser' message from browsers that support @supports
 @supports (display: none) {
   .outdated-warning {

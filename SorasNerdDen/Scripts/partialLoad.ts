@@ -87,6 +87,8 @@
                 mainContent.dispatchEvent(new CustomEvent("ContentModified", {
                     detail: partialLoadDetails
                 }));
+                //Close the mobile menu
+                (document.getElementById("dropdownSwitch") as HTMLInputElement).checked = false;
             });
         }).catch(() => {
             // Hide the loading indicator, even on error
