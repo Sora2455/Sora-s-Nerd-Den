@@ -7,25 +7,6 @@
     ViewBag.Description = "A professional ASP.NET Core project template for building secure, fast, robust and adaptable web applications or sites. It provides the minimum amount of code required on top of the default ASP.NET Core project template provided by Microsoft.";
 }
 
-@* Code in the head section below gets added at the bottom of the HTML head element. This section can be used to enter
-    custom meta tags specific to this page. *@
-@section head {
-    @* Author - (Optional) Used by search engines. The author of the page. *@
-    <meta name="author" content="Muhammad Rehan Saeed">
-    @* Add Open Graph social meta tags so we can customize what happens when our page is shared on Facebook, Google+,
-        Pintrest and other social media websites. There are dozens of Open Graph types, a different one is added on
-        each page as an example. These helpers make it very easy to add the meta tags. For best performance, see what
-        tags are generated and hand-code them yourself instead of using these helpers. *@
-    <open-graph-website site-name="@AppSettings.Value.SiteTitle"
-                        title="@ViewBag.Title"
-                        main-image="@(new OpenGraphImage(
-                            Url.AbsoluteContent("~/img/icons/open-graph-1200x630.png"),
-                            ContentType.Png,
-                            1200,
-                            630))"
-                        determiner="Blank">
-}
-
 <header class="mt-2">
     <h1>@Html.Emoji(Emoji.House) @ViewBag.Title</h1>
 </header>

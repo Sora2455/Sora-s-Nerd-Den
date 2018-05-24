@@ -1,9 +1,10 @@
 ﻿@inject IOptionsSnapshot<AppSettings> AppSettings
 @inject IHostingEnvironment HostingEnvironment
+@inject IHttpContextAccessor HttpContextAccessor
 <!DOCTYPE html>
 @* lang - The language of the page. *@
 <html lang="en-au" dir="ltr">
-<head asp-open-graph-prefix="true">
+<head prefix="og: http://ogp.me/ns#">
     @* The order of the tags in the head is important for best performance and compatibility. *@
     @* charset - The character encoding of the document. *@
     <meta charset="utf-8">
@@ -29,15 +30,19 @@
     @* OpenSearch - (See http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d and http://www.opensearch.org) *@
     <link href="@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')" rel="search" title="@AppSettings.Value.SiteTitle Search" type="application/opensearchdescription+xml">
 
-    @* Add Twitter Card social meta tags so we can customize what happens when our page is shared on Twitter. *@
-    <meta name="twitter:card" content="summary" />
-    @*<meta name="twitter:site" content="@@flickr" />*@
-    <meta name="twitter:title" content="@ViewBag.Title" />
-    <meta name="twitter:description" content="@ViewBag.Description" />
-    @*<meta name="twitter:image" content="" />
-        <meta name="twitter:image:alt" content=""/>*@
     @* referrer - Controls what is sent in the HTTP referrer header when a client navigates to an external site. *@
     <meta asp-referrer="None">
+
+    @* OpenGraph tags that control how our site appears on social media sites*@
+    <meta property="og:title" content="@ViewBag.Title">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="@ViewBag.Description">
+    <meta property="og:url" content="https://@HttpContextAccessor.HttpContext.Request.Host">
+    <meta property="og:image" content="https://@HttpContextAccessor.HttpContext.Request.Host/android-chrome-512x512.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:site_name" content="@AppSettings.Value.SiteTitle">
 
     @* You can use the head section to render additional meta tags. *@
     @RenderSection("head", required: false)

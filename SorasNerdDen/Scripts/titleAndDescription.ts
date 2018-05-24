@@ -32,10 +32,12 @@
         if (d.querySelector) {
             d.head.querySelector("meta[name='description']")
                 .setAttribute("content", td.description);
-            d.head.querySelector("meta[name='twitter:title']")
+            d.head.querySelector("meta[property='og:title']")
                 .setAttribute("content", td.title);
-            d.head.querySelector("meta[name='twitter:description']")
+            d.head.querySelector("meta[property='og:description']")
                 .setAttribute("content", td.description);
+            d.head.querySelector("meta[property='og:url']")
+                .setAttribute("content", location.href);
         }
     }
     w.whenReady(() => {
