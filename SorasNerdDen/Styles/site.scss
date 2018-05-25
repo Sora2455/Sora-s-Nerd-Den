@@ -138,12 +138,21 @@ a {
 }
 
 .navbar-toggler-checkbox {
-  display: none;
-
   &:not(:checked) {
-    & + .navbar-nav {
-      max-height: 0;
-      pointer-events: none;
+    & + .d-md-none {
+      .navbar-nav {
+        max-height: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
+  &:checked {
+    & + .d-md-none {
+      .navbar-toggler {
+        background-color: var(--light);
+        color: var(--dark);
+      }
     }
   }
 }
@@ -152,6 +161,11 @@ a {
 .navbar-nav {
   max-height: 9rem;//This is needed to force the animation
   transition: max-height 1s;
+}
+
+.navbar-toggler {
+  margin-bottom: 0;
+  transition: background-color 1s, color 1s;
 }
 
 .emoji-icon {
