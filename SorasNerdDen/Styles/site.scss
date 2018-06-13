@@ -173,8 +173,8 @@ a {
   line-height: 1.25rem;
 }
 
-//Hide the 'outdated browser' message from browsers that support @supports
-@supports (display: none) {
+//Hide the 'outdated browser' message from browsers that support @supports and display: flex
+@supports (display: flex) {
   .outdated-warning {
     display: none;
   }
