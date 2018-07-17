@@ -74,6 +74,7 @@ $white: rgba(255, 255, 255, 1);
 $transparent-white: rgba(255, 255, 255, 0);
 $black: rgba(0, 0, 0, 1);
 $semi-transparent-black: rgba(0, 0, 0, .85);
+$red: #f00;
 
 @keyframes TOOLTIP {
   from {
@@ -177,5 +178,25 @@ a {
 @supports (display: flex) {
   .outdated-warning {
     display: none;
+  }
+}
+
+//Add a CSS-based scroll indicator to the site
+//Trick taken from https://codepen.io/MadeByMike/pen/ZOrEmr
+@supports (height: 100vh) {
+  body {
+    background: linear-gradient(to right top, $red 50%, $white 50%);
+    background-repeat: no-repeat;
+    background-size: 100% calc(100% - 100vh + 4em - 4px);
+
+    &::before {
+      background: $white;
+      bottom: 0;
+      content: '';
+      position: fixed;
+      top: calc(4em - 5px);
+      width: 100%;
+      z-index: -1;
+    }
   }
 }
