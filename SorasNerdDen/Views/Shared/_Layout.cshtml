@@ -27,9 +27,6 @@
     @* Atom 1.0 Feed - Link to the. This enables the 'Subscribe to this page' button in FireFox. *@
     <link href="@Url.RouteUrl(HomeControllerRoute.GetFeed)" rel="alternate" title="@AppSettings.Value.SiteTitle Feed" type="application/atom+xml">
 
-    @* OpenSearch - (See http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d and http://www.opensearch.org) *@
-    <link href="@Url.RouteUrl(HomeControllerRoute.GetOpenSearchXml).TrimEnd('/')" rel="search" title="@AppSettings.Value.SiteTitle Search" type="application/opensearchdescription+xml">
-
     @* referrer - Controls what is sent in the HTTP referrer header when a client navigates to an external site. *@
     <meta asp-referrer="None">
 
@@ -71,14 +68,6 @@
                         <a class="nav-link" asp-route="@HomeControllerRoute.GetFeed">RSS</a>
                     </li>
                 </ul>
-                <form action="@Url.RouteUrl(HomeControllerRoute.GetSearch)" class="form-inline" method="get" role="search">
-                    <div class="input-group">
-                        <input aria-label="Search" class="form-control" maxlength="2048" name="query" placeholder="Search" title="Search" type="text">
-                        <div class="input-group-append">
-                            <button aria-label="Search" class="btn btn-light" type="submit">@Html.Emoji(Emoji.MagnifyingGlass)</button>
-                        </div>
-                    </div>
-                </form>
             </div>
             <input type="checkbox" id="dropdownSwitch" class="navbar-toggler-checkbox" hidden/>
             <div class="d-md-none" aria-hidden="true">

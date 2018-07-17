@@ -20,20 +20,17 @@
 
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IFeedService feedService;
-        private readonly IOpenSearchService openSearchService;
         private readonly IRobotsService robotsService;
         private readonly ISitemapService sitemapService;
 
         public HomeController(
             IFeedService feedService,
-            IOpenSearchService openSearchService,
             IRobotsService robotsService,
             ISitemapService sitemapService,
             IOptionsSnapshot<AppSettings> appSettings)
         {
             this.appSettings = appSettings;
             this.feedService = feedService;
-            this.openSearchService = openSearchService;
             this.robotsService = robotsService;
             this.sitemapService = sitemapService;
         }
@@ -84,38 +81,6 @@
         public async Task<IActionResult> Feed(CancellationToken cancellationToken)
         {
             return Content(await feedService.GetFeed(cancellationToken), ContentType.Atom, Encoding.Unicode);
-        }
-
-        [Route("search", Name = HomeControllerRoute.GetSearch)]
-        public IActionResult Search(string query)
-        {
-            // You can implement a proper search function here and add a Search.cshtml page.
-            // return this.View(HomeControllerAction.Search);
-
-            // Or you could use Google Custom Search (https://cse.google.co.uk/cse) to index your site and display your
-            // search results in your own page.
-
-            // For simplicity we are just assuming your site is indexed on Google and redirecting to it.
-            return this.Redirect(string.Format(
-                "https://www.google.co.uk/?q=site:{0} {1}",
-                this.Url.AbsoluteRouteUrl(HomeControllerRoute.GetIndex),
-                query));
-        }
-
-        /// <summary>
-        /// Gets the Open Search XML for the current site. You can customize the contents of this XML here. The open
-        /// search action is cached for one day, adjust this time to whatever you require. See
-        /// http://www.hanselman.com/blog/CommentView.aspx?guid=50cc95b1-c043-451f-9bc2-696dc564766d
-        /// http://www.opensearch.org
-        /// </summary>
-        /// <returns>The Open Search XML for the current site.</returns>
-        [NoTrailingSlash]
-        [ResponseCache(CacheProfileName = CacheProfileName.OpenSearchXml)]
-        [Route("opensearch.xml", Name = HomeControllerRoute.GetOpenSearchXml)]
-        public IActionResult OpenSearchXml()
-        {
-            string content = this.openSearchService.GetOpenSearchXml();
-            return this.Content(content, ContentType.Xml, Encoding.UTF8);
         }
 
         /// <summary>

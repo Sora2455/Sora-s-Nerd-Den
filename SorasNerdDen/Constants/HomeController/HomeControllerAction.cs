@@ -8,9 +8,7 @@
         public const string Index = "Index";
         public const string Loading = "Loading";
         public const string Offline = "Offline";
-        public const string OpenSearchXml = "OpenSearchXml";
         public const string RobotsText = "RobotsText";
-        public const string Search = "Search";
         public const string SitemapXml = "SitemapXml";
     }
 }

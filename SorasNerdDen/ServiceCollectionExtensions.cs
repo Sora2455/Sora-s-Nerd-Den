@@ -89,7 +89,6 @@
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             services.AddScoped<IFeedService, FeedService>();
-            services.AddScoped<IOpenSearchService, OpenSearchService>();
             services.AddScoped<IRobotsService, RobotsService>();
             services.AddScoped<ISitemapService, SitemapService>();
             services.AddScoped<ISitemapPingerService, SitemapPingerService>();
