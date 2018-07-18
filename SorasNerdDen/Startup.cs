@@ -18,7 +18,6 @@
     using Microsoft.Extensions.Logging;
     using SorasNerdDen.Settings;
     using Newtonsoft.Json.Serialization;
-    using WebMarkupMin.AspNetCore2;
 
     /// <summary>
     /// The main start-up class for the application.
@@ -114,25 +113,6 @@
         /// </summary>
         /// <param name="services">The services collection or IoC container.</param>
         public IServiceProvider ConfigureServices(IServiceCollection services) {
-            services
-                .AddWebMarkupMin(
-                    options =>
-                    {
-                        //We want to make sure that the minifier works!
-                        options.AllowMinificationInDevelopmentEnvironment = true;
-                        options.DisablePoweredByHttpHeaders = true;
-                    })
-                .AddHtmlMinification(
-                    options =>
-                    {
-                        //We don't have any inline/embedded JavaScript/CSS to minify!
-                        options.MinificationSettings.MinifyEmbeddedJsCode = false;
-                        options.MinificationSettings.MinifyInlineJsCode = false;
-                        options.MinificationSettings.MinifyEmbeddedCssCode = false;
-                        options.MinificationSettings.MinifyInlineCssCode = false;
-                    }
-                );
-
             return services
                 .AddAntiforgerySecurely()
                 .AddCaching()
@@ -224,8 +204,6 @@
                 .UseContentSecurityPolicyHttpHeader(this.sslPort, this.hostingEnvironment)
                 .UseSecurityHttpHeaders()
                 .DeclareNotTracking()
-                //Minify the HTML we generate
-                .UseWebMarkupMin()
                 // Add MVC to the request pipeline.
                 .UseMvc();
         }

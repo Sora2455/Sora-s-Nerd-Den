@@ -43,6 +43,12 @@ Arial, sans-serif, 'Segoe UI Symbol';
 @import '../node_modules/bootstrap/scss/carousel';
 @import '../node_modules/bootstrap/scss/utilities';
 
+$white: rgba(255, 255, 255, 1);
+$transparent-white: rgba(255, 255, 255, 0);
+$black: rgba(0, 0, 0, 1);
+$semi-transparent-black: rgba(0, 0, 0, .85);
+$red: #f00;
+
 body {
   padding-bottom: 1.5rem;
   padding-top: 3rem;
@@ -69,12 +75,6 @@ textarea {
     transform: rotate(359deg);
   }
 }
-
-$white: rgba(255, 255, 255, 1);
-$transparent-white: rgba(255, 255, 255, 0);
-$black: rgba(0, 0, 0, 1);
-$semi-transparent-black: rgba(0, 0, 0, .85);
-$red: #f00;
 
 @keyframes TOOLTIP {
   from {
@@ -187,14 +187,15 @@ a {
   body {
     background: linear-gradient(to right top, $red 50%, $white 50%);
     background-repeat: no-repeat;
-    background-size: 100% calc(100% - 100vh + 4em - 4px);
+    background-size: 100% calc(100% - 100vh + 1em - 4px);
+    background-position-y: 3em;
 
     &::before {
       background: $white;
       bottom: 0;
       content: '';
       position: fixed;
-      top: calc(4em - 5px);
+      top: calc(4em - 3px);
       width: 100%;
       z-index: -1;
     }

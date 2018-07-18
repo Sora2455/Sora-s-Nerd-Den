@@ -1,9 +1,11 @@
 ﻿namespace SorasNerdDen
 {
+    using Microsoft.AspNetCore.Razor.Language;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using SorasNerdDen.Services;
     using SorasNerdDen.Settings;
+    using System.Linq;
 
     public static partial class ServiceCollectionExtensions
     {
@@ -92,6 +94,14 @@
             services.AddScoped<IRobotsService, RobotsService>();
             services.AddScoped<ISitemapService, SitemapService>();
             services.AddScoped<ISitemapPingerService, SitemapPingerService>();
+
+            var descriptor = services.Single(s => s.ServiceType == typeof(RazorProjectFileSystem));
+            services.AddSingleton<RazorProjectFileSystem>(s =>
+            {
+                var existingFileSystem = (RazorProjectFileSystem)ActivatorUtilities.GetServiceOrCreateInstance(s, descriptor.ImplementationType);
+                // Minify HTML at compile time
+                return new MinifyRazorProjectFileSystem(existingFileSystem);
+            });
 
             // Add your own custom services here e.g.
 
