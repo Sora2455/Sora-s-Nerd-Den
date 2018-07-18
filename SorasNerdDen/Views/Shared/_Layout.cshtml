@@ -104,7 +104,7 @@
         <hr>
         <footer>
             <p>&copy; @DateTime.Now.Year - @AppSettings.Value.SiteTitle</p>
-            <p>Page generated <time datetime="@DateTime.UtcNow.ToString("s")">@DateTime.Now.ToString("F") @TimeZoneInfo.Local.StandardName</time></p>
+            <p>Page generated @Html.DateTime(DateTime.Now)</p>
         </footer>
     </main>
 </body>

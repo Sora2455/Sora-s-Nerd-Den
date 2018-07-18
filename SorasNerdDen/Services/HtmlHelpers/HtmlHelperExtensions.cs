@@ -161,5 +161,24 @@ namespace SorasNerdDen.Services.HtmlHelpers
                 $"&#{(uint)emoji};&#xFE0E;</span>"
             );
         }
+
+        /// <summary>
+        /// Place a human-and-computer readable date and time on the page
+        /// (will be localised by JavaScript if possible)
+        /// </summary>
+        /// <param name="helper">The HTML helper being used to render the text</param>
+        /// <param name="dateTime">The DateTime object to render (assumed to be in the local timezone)</param>
+        /// <returns>A HtmlString representing the passed DateTime</returns>
+        public static IHtmlContent DateTime(this IHtmlHelper helper, System.DateTime dateTime)
+        {
+            //The dateTime in a format the computer will understand
+            string computerString = dateTime.ToUniversalTime().ToString("s");
+            //The dateTime in a format a human will understand
+            string humanString = dateTime.ToString("F");
+            //The name of the timezone at this computer
+            string timeZoneName = System.TimeZoneInfo.Local.StandardName;
+            string timeString = $"<time datetime=\"{computerString}\">{humanString} {timeZoneName}</time>";
+            return new HtmlString(timeString);
+        }
     }
 }
