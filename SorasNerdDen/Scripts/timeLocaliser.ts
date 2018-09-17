@@ -9,7 +9,7 @@
     const locales = [navigator.language, "en-AU", "en-US"];
     //Set up the formatters for time, dates, and date-times
     const timeFormatter = new Intl.DateTimeFormat(locales, { hour: "numeric", minute: "numeric", timeZoneName: "short" });
-    const dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
     const dateTimeFormatter = new Intl.DateTimeFormat(locales, { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric", timeZoneName: "short" });
     /**
      * Localise <time> tags to their native language, format and timezone
