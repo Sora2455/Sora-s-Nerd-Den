@@ -2,7 +2,7 @@
 ((w, d) => {
     "use strict";
     //If the Internationalisation API is not supported, don't try to localise
-    if (!("Intl" in w)) {
+    if (typeof Intl !== "object") {
         return;
     }
     //Try and use native language formatting, falling back to Australian, then American english
@@ -50,6 +50,11 @@
             const times = mainContent.getElementsByTagName("time");
             localiseTimes(times);
         });
+        //If the user changes their language, relocalise
+        d.addEventListener("languagechange", () => {
+            const times = d.getElementsByTagName("time");
+            localiseTimes(times);
+        })
     });
     function setDatePart(dateString: string, dateObj: Date) {
         const [year, month, day] = dateString.split("-");
