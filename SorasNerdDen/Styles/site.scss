@@ -139,6 +139,12 @@ a {
 }
 
 .navbar-toggler-checkbox {
+  & + .d-md-none {
+    .navbar-nav {
+      transition: max-height .5s ease-in;
+    }
+  }
+
   &:not(:checked) {
     & + .d-md-none {
       .navbar-nav {
@@ -153,6 +159,7 @@ a {
       .navbar-toggler {
         background-color: var(--light);
         color: var(--dark);
+        max-height: 6rem;
       }
     }
   }
@@ -186,9 +193,9 @@ a {
 @supports (height: 100vh) {
   body {
     background: linear-gradient(to right top, $red 50%, $white 50%);
+    background-position-y: 3em;
     background-repeat: no-repeat;
     background-size: 100% calc(100% - 100vh + 1em - 4px);
-    background-position-y: 3em;
 
     &::before {
       background: $white;
