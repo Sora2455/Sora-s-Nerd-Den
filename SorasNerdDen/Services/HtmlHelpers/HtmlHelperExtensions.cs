@@ -173,7 +173,7 @@ namespace SorasNerdDen.Services.HtmlHelpers
         public static IHtmlContent DateTime(this IHtmlHelper helper, DateTimeOffset dateTime)
         {
             //The dateTime in a format the computer will understand
-            string computerString = dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string computerString = dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'");
             string timeString = $"<time datetime=\"{computerString}\"></time>";
             return new HtmlString(timeString);
         }
