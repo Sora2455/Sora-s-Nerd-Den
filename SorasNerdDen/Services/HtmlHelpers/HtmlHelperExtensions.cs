@@ -168,17 +168,13 @@ namespace SorasNerdDen.Services.HtmlHelpers
         /// (will be localised by JavaScript if possible)
         /// </summary>
         /// <param name="helper">The HTML helper being used to render the text</param>
-        /// <param name="dateTime">The DateTime object to render (assumed to be in the local timezone)</param>
+        /// <param name="dateTime">The DateTimeOffset object to render</param>
         /// <returns>A HtmlString representing the passed DateTime</returns>
-        public static IHtmlContent DateTime(this IHtmlHelper helper, DateTime dateTime)
+        public static IHtmlContent DateTime(this IHtmlHelper helper, DateTimeOffset dateTime)
         {
             //The dateTime in a format the computer will understand
             string computerString = dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
-            //The dateTime in a format a human will understand
-            string humanString = dateTime.ToString("dddd, dd MMM yyyy h:mm:ss tt");
-            //The name of the timezone at this computer
-            string timeZoneName = TimeZoneInfo.Local.StandardName;
-            string timeString = $"<time datetime=\"{computerString}\">{humanString} {timeZoneName}</time>";
+            string timeString = $"<time datetime=\"{computerString}\"></time>";
             return new HtmlString(timeString);
         }
 

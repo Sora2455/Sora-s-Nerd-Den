@@ -181,8 +181,16 @@ a {
   line-height: 1.25rem;
 }
 
-//Hide the 'outdated browser' message from browsers that support @supports and display: flex
-@supports (display: flex) {
+time {
+  &:empty {
+    &::after {
+      content: attr(dateTime);
+    }
+  }
+}
+
+//Hide the 'outdated browser' message from browsers that support @supports and display: grid
+@supports (display: grid) {
   .outdated-warning {
     display: none;
   }
