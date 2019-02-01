@@ -15,7 +15,7 @@ function cacheCopy(source: string, destination: string) {
             const sourceCache = results[0];
             const destCache = results[1];
 
-            return sourceCache.keys().then((requests: RequestInfo[]) => {
+            return sourceCache.keys().then((requests: ReadonlyArray<Request>) => {
                 return Promise.all(requests.map((request) => {
                     return sourceCache.match(request).then((response) => {
                         return destCache.put(request, response);

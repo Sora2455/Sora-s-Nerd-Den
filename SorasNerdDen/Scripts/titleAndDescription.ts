@@ -1,21 +1,10 @@
 ﻿///<reference path="definitions/definitions.d.ts" />
 ((w, d) => {
     "use strict";
-    function getPageTitle() {
-        //By convention, our page title is repeated in our main heading
-        const mainHeading = d.querySelector("#main-content h1");
-        //If the first child of the title element isn't a text node, that will be the emoji
-        // in that case, grab the second node and trim it
-        return mainHeading.childNodes[0].nodeType === 3 ?
-            mainHeading.childNodes[0].nodeValue :
-            mainHeading.childNodes[1].nodeValue.trim();
-    }
     function recordTitleAndDescription() {
-        //By convention, our page description is repeated in the first paragraph tag under the heading
-        const descriptionElement = d.querySelector("#main-content p");
-        const td = {} as PageTitleAndDescription;
-        td.title = getPageTitle();
-        td.description = descriptionElement.textContent;
+        const tdElm = d.getElementById("td");
+        if (!tdElm) return;
+        const td = JSON.parse(d.getElementById("td").textContent) as PageTitleAndDescription;
         td.url = location.pathname;
         //Now (if we can), store that away in a client-side db
         if (typeof Promise !== "undefined" &&

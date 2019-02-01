@@ -4,6 +4,7 @@
     ViewBag.Description = "You are currently offline, and do not have a cached version of this page availible.";
 }
 
+<script type="application/json" id="td">{"title": "@ViewBag.Title", "description": "@ViewBag.Description"}</script>
 <header class="mt-2">
     <h1>@Html.Emoji(Emoji.ElectricPlug) @ViewBag.Title</h1>
 </header>
