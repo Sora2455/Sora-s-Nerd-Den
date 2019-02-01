@@ -20,7 +20,7 @@
             }
         }
     }
-    w.dbReady = new Promise((dbReady, dbSetupFailed) => {
+    w.dbReady = new Promise((dbReady) => {
         if (!w.indexedDB) {
             localStorageFallback();
             //Database fallback in place - we're ready for reads and writes now
@@ -34,7 +34,7 @@
                 const transaction = db.transaction("pageDetails", "readwrite");
                 const pageDetailsStore = transaction.objectStore("pageDetails");
                 return new Promise((writeCompleted, writeFailed) => {
-                    transaction.oncomplete = (ev) => {
+                    transaction.oncomplete = () => {
                         writeCompleted();
                     };
                     transaction.onerror = (ev) => {
@@ -59,7 +59,7 @@
             //Database set up - we're ready for reads and writes now
             dbReady();
         };
-        req.onerror = function (evt) {
+        req.onerror = function () {
             localStorageFallback();
             //Database fallback in place - we're ready for reads and writes now
             dbReady();
@@ -68,9 +68,9 @@
             // Save the IDBDatabase interface
             const dbu = (evt.target as IDBOpenDBRequest).result as IDBDatabase;
             if (!evt.oldVersion) {
-                const pageDetails = dbu.createObjectStore("pageDetails", { keyPath: "url" });
-                const pendingLoads = dbu.createObjectStore("pendingLoads", { autoIncrement: true });
-                const pendingComments = dbu.createObjectStore("pendingComments", { autoIncrement: true });
+                dbu.createObjectStore("pageDetails", { keyPath: "url" });
+                dbu.createObjectStore("pendingLoads", { autoIncrement: true });
+                dbu.createObjectStore("pendingComments", { autoIncrement: true });
             }
         }
     });
