@@ -81,6 +81,8 @@ namespace SorasNerdDen.Services.HtmlHelpers
 
     public static class HtmlHelperExtensions
     {
+        private readonly static string timeZoneName = TimeZoneInfo.Local.StandardName;
+
         /// <summary>
         /// Renders a HTML picture tag with an SVG source and a PNG fallback
         /// </summary>
@@ -174,7 +176,9 @@ namespace SorasNerdDen.Services.HtmlHelpers
         {
             //The dateTime in a format the computer will understand
             string computerString = dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'");
-            string timeString = $"<time datetime=\"{computerString}\"></time>";
+            //The dateTime in a format a human will understand
+            string humanString = dateTime.ToString("dddd, dd MMM yyyy h:mm:ss tt");
+            string timeString = $"<time datetime=\"{computerString}\">{humanString} {timeZoneName}</time>";
             return new HtmlString(timeString);
         }
 
@@ -191,8 +195,6 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string computerString = dateTime.ToUniversalTime().ToString("yyyy-MM-dd");
             //The dateTime in a format a human will understand
             string humanString = dateTime.ToString("dddd, dd MMM yyyy");
-            //The name of the timezone at this computer
-            string timeZoneName = TimeZoneInfo.Local.StandardName;
             string timeString = $"<time datetime=\"{computerString}\">{humanString} {timeZoneName}</time>";
             return new HtmlString(timeString);
         }
@@ -210,8 +212,6 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string computerString = dateTime.ToUniversalTime().ToString("HH:mm:ssZ");
             //The dateTime in a format a human will understand
             string humanString = dateTime.ToString("h:mm:ss tt");
-            //The name of the timezone at this computer
-            string timeZoneName = TimeZoneInfo.Local.StandardName;
             string timeString = $"<time datetime=\"{computerString}\">{humanString} {timeZoneName}</time>";
             return new HtmlString(timeString);
         }
