@@ -15,7 +15,7 @@
      * Localise <time> tags to their native language, format and timezone
      * @param timeTags The time tags to localise
      */
-    function localiseTimes(timeTags: NodeListOf<HTMLTimeElement>) {
+    function localiseTimes(timeTags: HTMLCollectionOf<HTMLTimeElement>) {
         //Now format each of the time tags
         for (let i = timeTags.length; i--;) {
             const time = timeTags[i];
@@ -42,19 +42,14 @@
     }
     w.whenReady(() => {
         //Get all the time tags
-        const times = d.getElementsByTagName("time");
+        const times = (d.getElementsByTagName("time") as any) as HTMLCollectionOf<HTMLTimeElement>;
         localiseTimes(times);
         const mainContent = d.getElementById("main-content");
         mainContent.addEventListener("ContentModified", () => {
             //Get the newly loaded time tags
-            const times = mainContent.getElementsByTagName("time");
+            const times = (mainContent.getElementsByTagName("time") as any) as HTMLCollectionOf<HTMLTimeElement>;
             localiseTimes(times);
         });
-        //If the user changes their language, relocalise
-        d.addEventListener("languagechange", () => {
-            const times = d.getElementsByTagName("time");
-            localiseTimes(times);
-        })
     });
     function setDatePart(dateString: string, dateObj: Date) {
         const [year, month, day] = dateString.split("-");
@@ -62,8 +57,9 @@
         dateObj.setUTCFullYear(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
     }
     function setTimePart(timeString: string, dateObj: Date) {
-        const [hours, minutes] = timeString.replace("Z", "").split(":");
+        const [hours, minutes, seconds] = timeString.replace("Z", "").split(":");
         dateObj.setUTCHours(parseInt(hours,10));
-        dateObj.setUTCMinutes(parseInt(minutes, 10));
+        dateObj.setUTCMinutes(parseInt(minutes,10));
+        dateObj.setUTCSeconds(parseInt(seconds,10));
     }
 })(window, document);
