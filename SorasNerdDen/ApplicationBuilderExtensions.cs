@@ -149,7 +149,7 @@
                         // .FrameSources(x => ...)
                         // frame-ancestors - This directive restricts from where the protected resource can embed
                         //                   frame, iframe, object, embed or applet's.
-                        .FrameAncestors(x => x.None());
+                        .FrameAncestors(x => x.Self());
                         // img-src - This directive restricts from where the protected resource can load images.
                         //.ImageSources(x => x.Self())           // Allow the current domain.
                         // script-src - This directive restricts which scripts the protected resource can execute.
@@ -190,7 +190,7 @@
                 //                if the iframe is from the same origin as the page.
                 //   Deny - Specifies that the X-Frame-Options header should be set in the HTTP response, instructing
                 //          the browser to not display the page when it is loaded in an iframe.
-                .UseXfo(options => options.Deny());
+                .UseXfo(options => options.SameOrigin());
 
         /// <summary>
         /// Declare to the users that we are not collecting their browsing habits
