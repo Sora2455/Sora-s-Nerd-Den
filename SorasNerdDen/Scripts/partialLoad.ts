@@ -89,6 +89,15 @@
                 }));
                 //Close the mobile menu
                 (document.getElementById("dropdownSwitch") as HTMLInputElement).checked = false;
+                // Remove any existing 'current' markers
+                document.querySelectorAll("a[aria-current]")
+                    .forEach((a: HTMLAnchorElement) => a.removeAttribute("aria-current"));
+                try {
+                    const url = new URL(destination);
+                    // Mark links to this address as current
+                    document.querySelectorAll(`a[href='${url.pathname}']`)
+                        .forEach((a: HTMLAnchorElement) => a.setAttribute("aria-current", "page"));
+                } catch (e) {}
             });
         }).catch(() => {
             // Hide the loading indicator, even on error
