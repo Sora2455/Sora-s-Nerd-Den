@@ -87,33 +87,17 @@ namespace SorasNerdDen.Services.HtmlHelpers
         /// <param name="helper">The HTML helper being used to render the text</param>
         /// <param name="url">The path to the page being linked to</param>
         /// <param name="text">The text to display in the link</param>
-        /// <returns>A link to the specified location</returns>
-        public static IHtmlContent Link(this IHtmlHelper helper, string url, string text)
-        {
-            bool external = url.StartsWith("http", StringComparison.InvariantCultureIgnoreCase);
-            string currentUrl = helper.ViewContext.HttpContext.Request.Path.Value;
-            bool isCurrentUrl = url == currentUrl;
-            string relString = external ? " rel=\"noopener external\"" : null;
-            string aria = isCurrentUrl ? " area-current=\"page\"" : null;
-            return new HtmlString($"<a{aria}{relString} href=\"{url}\">{text}</a>");
-        }
-
-        /// <summary>
-        /// Places a link to another website (or the current website) on the page
-        /// </summary>
-        /// <param name="helper">The HTML helper being used to render the text</param>
-        /// <param name="url">The path to the page being linked to</param>
-        /// <param name="text">The text to display in the link</param>
         /// <param name="cssClass">The css class to apply to the link (null if not applicable)</param>
         /// <returns>A link to the specified location</returns>
-        public static IHtmlContent Link(this IHtmlHelper helper, string url, string text, string cssClass)
+        public static IHtmlContent Link(this IHtmlHelper helper, string url, string text, string cssClass = null)
         {
             bool external = url.StartsWith("http", StringComparison.InvariantCultureIgnoreCase);
             string currentUrl = helper.ViewContext.HttpContext.Request.Path.Value;
             bool isCurrentUrl = url == currentUrl;
             string relString = external ? " rel=\"noopener external\"" : null;
-            string aria = isCurrentUrl ? " area-current=\"page\"" : null;
-            return new HtmlString($"<a{aria}{relString} class=\"{cssClass}\" href=\"{url}\">{text}</a>");
+            string aria = isCurrentUrl ? " aria-current=\"page\"" : null;
+            string cssClassString = !string.IsNullOrWhiteSpace(cssClass) ? $" class=\"{cssClass}\"" : null;
+            return new HtmlString($"<a{aria}{relString}{cssClassString} href=\"{url}\">{text}</a>");
         }
 
         /// <summary>
@@ -129,7 +113,7 @@ namespace SorasNerdDen.Services.HtmlHelpers
             string currentUrl = helper.ViewContext.HttpContext.Request.Path.Value;
             bool isCurrentUrl = url == currentUrl;
             string relString = external ? " rel=\"noopener external nofollow\"" : null;
-            string aria = isCurrentUrl ? " area-current=\"page\"" : null;
+            string aria = isCurrentUrl ? " aria-current=\"page\"" : null;
             return new HtmlString($"<a{aria}{relString} href=\"{url}\">{helper.Encode(text)}</a>");
         }
 
