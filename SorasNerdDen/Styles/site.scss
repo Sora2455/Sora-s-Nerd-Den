@@ -184,7 +184,35 @@ a {
 time {
   &:empty {
     &::after {
+      //If the timeLocaliser script fails to run, at least show the (machine-formatted) date/time
       content: attr(dateTime);
+    }
+  }
+}
+
+//Set number-related font options
+data.frac {
+  font-feature-settings: 'frac' 1;
+}
+
+span.ord {
+  font-feature-settings: 'ordn' 1;
+}
+
+@supports (font-variant-numeric: diagonal-fractions) {
+  data{
+    &.frac {
+      font-feature-settings: normal;
+      font-variant-numeric: diagonal-fractions;
+    }
+  }
+}
+
+@supports (font-variant-numeric: ordinal) {
+  span{
+    &.ord {
+      font-feature-settings: normal;
+      font-variant-numeric: ordinal;
     }
   }
 }
