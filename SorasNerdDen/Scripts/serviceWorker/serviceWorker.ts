@@ -38,23 +38,31 @@ function cacheUpdateRefresh(e: FetchEvent, versioned: boolean): void {
     e.respondWith(cacheFirst(e.request, versioned));
     // Afterwards, update our cache copy of this resource
     e.waitUntil(networkUpdate(e.request, versioned).then((updated) => {
-        if (updated && !versioned) return refresh(e.request.url);
+        if (updated && !versioned) return refresh(e.request.url, e.clientId);
     }));
 }
 
 /**
  * Notify clients that an updated version of this page is availible
  * @param url The URL of the page that we have an updated copy of
+ * @param clientId The ID of the window to notify to refresh (if known)
  */
-function refresh(url: string): Promise<void> {
+function refresh(url: string, clientId: string): Promise<void> {
     "use strict";
     const message = {
         type: "refresh",
         url: url
     };
-    return (self as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' }).then((clients) => {
+    if (clientId) {
+        // If we know which client to send it to, send it to that one
+        return (self as ServiceWorkerGlobalScope).clients.get(clientId).then((client: Client) => {
+            client.postMessage(message);
+        });
+    }
+    // Otherwise let all of them know
+    return (self as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' }).then((clients: ReadonlyArray<Client>) => {
         // Notify each client
-        clients.forEach((client: Client) => {
+        clients.forEach((client) => {
             client.postMessage(message);
         });
     });
