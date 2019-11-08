@@ -6,7 +6,7 @@
         return;
     }
     //Try and use native language formatting, falling back to Australian, then American english
-    const locales = [navigator.language, "en-AU", "en-US"];
+    const locales = (navigator.languages || [navigator.language]).concat(["en-AU", "en-US"]);
     //Set up the formatters for time, dates, and date-times
     const timeFormatter = new Intl.DateTimeFormat(locales, { hour: "numeric", minute: "numeric", timeZoneName: "short" });
     const dateFormatter = new Intl.DateTimeFormat(locales, { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
