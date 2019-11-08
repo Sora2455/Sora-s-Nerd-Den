@@ -15,7 +15,7 @@
     <title>@ViewBag.Title - @AppSettings.Value.SiteTitle</title>
 
     @* favicons generated with https://realfavicongenerator.net *@
-    @Html.Partial("_Favicons")
+    <partial name="_Favicons"/>
 
     @* Move site.css to a content delivery network (CDN) for better performance. *@
     <link asp-append-version="true" rel="stylesheet" href="~/css/site.css" />
