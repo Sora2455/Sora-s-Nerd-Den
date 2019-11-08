@@ -8,7 +8,6 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.ResponseCompression;
@@ -57,7 +56,7 @@
         {
             this.hostingEnvironment = hostingEnvironment;
 
-            this.configuration = new ConfigurationBuilder()
+            configuration = new ConfigurationBuilder()
                 .SetBasePath(this.hostingEnvironment.ContentRootPath)
                 // Add configuration from the config.json file.
                 .AddJsonFile("config.json")
@@ -86,23 +85,13 @@
                 .AddEnvironmentVariables()
                 .Build();
 
-            loggerFactory
-                // Log to Serilog (A great logging framework). See https://github.com/serilog/serilog-framework-logging.
-                // .AddSerilog()
-                // Log to the console and Visual Studio debug window if in development mode.
-                .AddIf(
-                    this.hostingEnvironment.IsDevelopment(),
-                    x => x
-                        .AddConsole(this.configuration.GetSection("Logging"))
-                        .AddDebug());
-
             if (this.hostingEnvironment.IsDevelopment())
             {
                 var launchConfiguration = new ConfigurationBuilder()
                     .SetBasePath(this.hostingEnvironment.ContentRootPath)
                     .AddJsonFile(@"Properties\launchSettings.json")
                     .Build();
-                this.sslPort = launchConfiguration.GetValue<int>("iisSettings:iisExpress:sslPort");
+                sslPort = launchConfiguration.GetValue<int>("iisSettings:iisExpress:sslPort");
             }
         }
 
@@ -116,7 +105,20 @@
             return services
                 .AddAntiforgerySecurely()
                 .AddCaching()
-                .AddOptions(this.configuration)
+                .AddOptions(configuration)
+                .AddLogging((logging) =>
+                {
+                    // Log to Serilog (A great logging framework). See https://github.com/serilog/serilog-framework-logging.
+                    // logging.AddSerilog()
+                    if (hostingEnvironment.IsDevelopment())
+                    {
+                        logging
+                            // Log to the console and Visual Studio debug window if in development mode.
+                            .AddConfiguration(configuration.GetSection("Logging"))
+                            .AddConsole()
+                            .AddDebug();
+                    }
+                })
                 .AddRouting(
                     options =>
                     {
@@ -147,7 +149,7 @@
                 // Add useful interface for accessing the HttpContext outside a controller.
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 // Add useful interface for accessing the IUrlHelper outside a controller.
-                .AddScoped<IUrlHelper>(x => x
+                .AddScoped(x => x
                     .GetRequiredService<IUrlHelperFactory>()
                     .GetUrlHelper(x.GetRequiredService<IActionContextAccessor>().ActionContext))
                 // Adds a filter which help improve search engine optimization (SEO).
@@ -190,18 +192,18 @@
                 // Development. The port number to use is taken from the launchSettings.json file which Visual
                 // Studio uses to start the application.
                 .UseRewriter(
-                    new RewriteOptions().AddRedirectToHttps(StatusCodes.Status301MovedPermanently, this.sslPort))
+                    new RewriteOptions().AddRedirectToHttps(StatusCodes.Status301MovedPermanently, sslPort))
                 .UseResponseCaching()
                 .UseResponseCompression()
-                .UseStaticFilesWithCacheControl(this.configuration)
+                .UseStaticFilesWithCacheControl(configuration)
                 .UseCookiePolicy()
                 .UseIfElse(
-                    this.hostingEnvironment.IsDevelopment(),
+                    hostingEnvironment.IsDevelopment(),
                     x => x
                         .UseDeveloperErrorPages(),
                     x => x.UseErrorPages())
                 .UseStrictTransportSecurityHttpHeader()
-                .UseContentSecurityPolicyHttpHeader(this.sslPort, this.hostingEnvironment)
+                .UseContentSecurityPolicyHttpHeader(sslPort, hostingEnvironment)
                 .UseSecurityHttpHeaders()
                 .DeclareNotTracking()
                 // Add MVC to the request pipeline.
