@@ -2,7 +2,7 @@
   "name": "sorasnerdden",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap": "^4.2.1"
+    "bootstrap": "^4.3.1"
   },
   "devDependencies": {
     "autostrip-json-comments": "0.0.4",
