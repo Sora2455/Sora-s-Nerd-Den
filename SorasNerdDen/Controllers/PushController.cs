@@ -78,6 +78,13 @@
             return new EmptyResult();
         }
 
+        /// <summary>
+        /// Send a push notification to the given subscription
+        /// </summary>
+        /// <param name="model">The push notification to send to</param>
+        /// <param name="title">The title of the notification</param>
+        /// <param name="message">The message of the notification</param>
+        /// <returns>A task that resolves after the notification has been sent</returns>
         private async Task SendNotification(PushSubscriptionModel model, string title, string message)
         {
             var subscription = new PushSubscription(model.endpoint, model.keys?.p256dh, model.keys?.auth);
