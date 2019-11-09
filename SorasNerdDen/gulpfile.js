@@ -7,7 +7,6 @@
 
 // Set up imported packages.
 var gulp = require('gulp'),
-    fs = require('fs'),                         // NPM file system API (https://nodejs.org/api/fs.html)
     autoprefixer = require('gulp-autoprefixer'),// Auto-prefix CSS (https://www.npmjs.com/package/gulp-autoprefixer)
     concat = require('gulp-concat'),            // Concatenate files (https://www.npmjs.com/package/gulp-concat/)
     csslint = require('gulp-csslint'),          // CSS linter (https://www.npmjs.com/package/gulp-csslint/)
@@ -33,7 +32,6 @@ var gulp = require('gulp'),
     sasslint = require('gulp-sass-lint'),       // SASS linter (https://www.npmjs.com/package/gulp-sass-lint/)
     tslint = require('gulp-tslint'),            // TypeScript linter (https://www.npmjs.com/package/gulp-tslint/)
     typescript = require('gulp-typescript'),    // TypeScript compiler (https://www.npmjs.com/package/gulp-typescript/)
-    svgtopng = require('gulp-svg2png'),         // SVG to PNG converter (https://www.npmjs.com/package/gulp-svg2png)
     _ = require('autostrip-json-comments'),     // Strips JSON comments so the next two lines work (https://www.npmjs.com/package/autostrip-json-comments)
     config = require('./config.json'),          // Read the config.json file into the config variable.
     hosting = require('./hosting.json'),        // Read the hosting.json file into the hosting variable.
@@ -386,29 +384,29 @@ function () {
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.
 }));
 
-gulp.task('build-img', gulp.parallel(function () {
-    return gulp.src(sources.imgCopy)                // Copy all images to the wwwroot img folder
+gulp.task('build-img', gulp.parallel(
+    function minifyCopyImages () {
+        return gulp.src(sources.imgCopy)            // Copy all images to the wwwroot img folder
             .pipe(plumber())                        // Handle any errors.
             .pipe(sizeBefore())                     // Write the size of the file to the console before minification.
             .pipe(imagemin({                        // Optimize the images.
-                multipass: true,                    // Optimize SVG multiple times until it's fully optimized.
+                multipass: true,                    // Optimize image multiple times until it's fully optimized.
                 optimizationLevel: 7                // The level of optimization (0 to 7) to make, the higher the slower it is.
             }))
             .pipe(gulp.dest(paths.img))
             .pipe(sizeAfter());                     // Write the size of the file to the console after minification.
-    },
-    function () {
+    }/*,TODO fix this so it works again
+    function createPngFallbacks() {
         return gulp.src(sources.svg)                // Give the svg files in particular png fallbacks
-            .pipe(plumber())                        // Handle any errors.
             .pipe(sizeBefore())                     // Write the size of the file to the console before minification.
-            .pipe(imagemin({                        // Optimize the images.
-                multipass: true,                    // Optimize SVG multiple times until it's fully optimized.
+            .pipe(new SvgToPng())                   // Convert the SVG files to PNGs of the same size.
+            .pipe(imagemin({                        // Optimize the new PNGs images.
+                multipass: true,                    // Optimize PNG multiple times until it's fully optimized.
                 optimizationLevel: 7                // The level of optimization (0 to 7) to make, the higher the slower it is.
             }))
-            .pipe(svgtopng())                       // Convert the SVG files to PNGs of the same size
             .pipe(gulp.dest(paths.img))             // Write PNG files to the wwwroot img folder
             .pipe(sizeAfter());                     // Write the size of the file to the console after minification.
-    }
+    }*/
 ));
 
 /*
@@ -528,3 +526,8 @@ gulp.task(
         //'test',
         'watch'
     ));
+
+// Add a global error handler
+process.on('unhandledRejection', error => {
+    console.error('unhandledRejection', error);
+});
