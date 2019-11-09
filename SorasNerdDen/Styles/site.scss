@@ -191,16 +191,20 @@ time {
 }
 
 //Set number-related font options
-data.frac {
-  font-feature-settings: 'frac' 1;
+data {
+  &.frac {
+    font-feature-settings: 'frac' 1;
+  }
 }
 
-span.ord {
-  font-feature-settings: 'ordn' 1;
+span {
+  &.ord {
+    font-feature-settings: 'ordn' 1;
+  }
 }
 
 @supports (font-variant-numeric: diagonal-fractions) {
-  data{
+  data {
     &.frac {
       font-feature-settings: normal;
       font-variant-numeric: diagonal-fractions;
@@ -209,7 +213,7 @@ span.ord {
 }
 
 @supports (font-variant-numeric: ordinal) {
-  span{
+  span {
     &.ord {
       font-feature-settings: normal;
       font-variant-numeric: ordinal;
