@@ -416,7 +416,7 @@ gulp.task('watch-css', gulp.series(function () {
     return gulp
         .watch(
             paths.styles + '**/*.{css,scss}',   // Watch the styles folder for file changes.
-            ['clean-css', 'build-css'])         // Run the build-css task if a file changes.
+            gulp.series('clean-css', 'build-css'))         // Run the build-css task if a file changes.
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-css task started.');
         });
@@ -429,7 +429,7 @@ gulp.task('watch-js', gulp.series(function () {
     return gulp
         .watch(
             paths.scripts + '**/*.{js,ts}',          // Watch the scripts folder for file changes.
-            ['clean-js', 'build-js'])           // Run the build-js task if a file changes.
+            gulp.series('clean-js', 'build-js'))           // Run the build-js task if a file changes.
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');
         });
@@ -442,7 +442,7 @@ gulp.task('watch-img', gulp.series(function () {
     return gulp
         .watch(
             sources.imgCopy,                    // Watch the images folder for file changes
-            ['clean-img', 'build-img'])         // Run the build-img task if a file changes
+            gulp.series('clean-img', 'build-img'))         // Run the build-img task if a file changes
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');
         });
@@ -457,7 +457,7 @@ gulp.task('watch-img', gulp.series(function () {
 //            paths.scripts + '**/*.{js,ts}',     // Watch the scripts folder for file changes.
 //            paths.tests + '**/*.{js,ts}'        // Watch the tests folder for file changes.
 //        ],
-//        ['test'])                               // Run the test task if a file changes.
+//        gulp.series('test'))                               // Run the test task if a file changes.
 //        .on('change', function (event) {        // Log the change to the console.
 //            log.info('File ' + event.path + ' was ' + event.type + ', test task started.');
 //        });
