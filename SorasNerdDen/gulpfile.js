@@ -349,18 +349,8 @@ gulp.task('build-css', gulp.series('lint-css', function () {
 gulp.task('build-js', gulp.series(
     'lint-js'
 ,
-function () {
+function buildTypeScript () {
     var tasks = sources.js.map(function (source) {  // For each set of source files in the sources.
-        if (source.copy) {                          // If we are only copying files.
-            return gulp
-                .src(source.paths)                  // Start with the source paths.
-                .pipe(rename({                      // Rename the file to the source name.
-                    basename: source.name,
-                    extname: ''
-                }))
-                .pipe(gulp.dest(source.dest));      // Saves the JavaScript file to the specified destination path.
-        }
-        else {
             return gulp                             // Return the stream.
                 .src(source.paths)                  // Start with the source paths.
                 .pipe(plumber())                    // Handle any errors.
@@ -379,7 +369,6 @@ function () {
                     environment.isDevelopment(),    // If running in the development environment.
                     sourcemaps.write('.')))         // Generates source .map files for the JavaScript.
                 .pipe(gulp.dest(source.dest));      // Saves the JavaScript file to the specified destination path.
-        }
     });
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.
 }));
