@@ -1,6 +1,8 @@
 {
   "name": "sorasnerdden",
   "version": "0.0.0",
+  "repository": "https://github.com/Sora2455/Sora-s-Nerd-Den/",
+  "license": "MIT",
   "dependencies": {
     "bootstrap": "^4.3.1",
     "natives": "^1.1.6"
