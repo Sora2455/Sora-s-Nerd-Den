@@ -274,7 +274,7 @@ function pushSubscriptionChanged(e: PushSubscriptionChangeEvent) {
                 });
             })
             .then(subscription => {
-                return fetch("push/subscribe", {
+                return fetch("push/update", {
                     method: "post",
                     headers: {
                         "Content-type": "application/json"

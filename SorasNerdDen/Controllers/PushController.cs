@@ -61,6 +61,25 @@
         [HttpPost("push/subscribe", Name = PushControllerRoute.Subscribe)]
         public async Task<IActionResult> Subscribe([FromBody] PushSubscriptionModel model)
         {
+            await SendNotification(model, "It works!", "Thank you for enabling live updates.");
+            return new EmptyResult();
+        }
+
+        [HttpPost("push/unsubscribe", Name = PushControllerRoute.Unsubscribe)]
+        public IActionResult Unubscribe([FromBody] PushSubscriptionModel model)
+        {
+            return new EmptyResult();
+        }
+
+        [HttpPost("push/update", Name = PushControllerRoute.Update)]
+        public async Task<IActionResult> Update([FromBody] PushSubscriptionModel model)
+        {
+            await SendNotification(model, "Hello there", "Your push subscription has auto-renewed.");
+            return new EmptyResult();
+        }
+
+        private async Task SendNotification(PushSubscriptionModel model, string title, string message)
+        {
             var subscription = new PushSubscription(model.endpoint, model.keys?.p256dh, model.keys?.auth);
             VapidDetails vapidDetails = new VapidDetails("mailto:example@example.com",
                 vapidSettings.Value.PublicKey, vapidSettings.Value.PrivateKey);
@@ -68,13 +87,13 @@
             {
                 await webPushClient.SendNotificationAsync(
                     subscription,
-                    "{\"title\":\"It works!\",\"message\":\"Thank you for enabling live updates.\"}",
+                    $"{{\"title\":\"{title}\",\"message\":\"{message}\"}}",
                     vapidDetails
                 );
             }
             catch (WebPushException exception)
             {
-                switch ((int) exception.StatusCode)
+                switch ((int)exception.StatusCode)
                 {
                     case 400:
                         Console.WriteLine("Invalid request (usually malformed headers)");
@@ -96,13 +115,6 @@
                         break;
                 }
             }
-            return new EmptyResult();
-        }
-
-        [HttpPost("push/unsubscribe", Name = PushControllerRoute.Unsubscribe)]
-        public IActionResult Unubscribe([FromBody] PushSubscriptionModel model)
-        {
-            return new EmptyResult();
         }
     }
 }
