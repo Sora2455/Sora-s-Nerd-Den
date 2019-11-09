@@ -225,33 +225,33 @@ function sizeAfter(title) {
 /*
  * Deletes all files and folders within the css directory.
  */
-gulp.task('clean-css', function (cb) {
+gulp.task('clean-css', gulp.series(function (cb) {
     return rimraf(paths.css, cb);
-});
+}));
 
 /*
  * Deletes all files and folders within the js directory.
  */
-gulp.task('clean-js', function (cb) {
+gulp.task('clean-js', gulp.series(function (cb) {
     return rimraf(paths.js, cb);
-});
+}));
 
 /*
  * Delete the generated files inside the img directory
  */
-gulp.task('clean-img', function (cb) {
+gulp.task('clean-img', gulp.series(function (cb) {
     return rimraf(paths.img, cb);
-});
+}));
 
 /*
  * Deletes all files and folders within the css, img and js directories.
  */
-gulp.task('clean', ['clean-css', 'clean-js', 'clean-img']);
+gulp.task('clean', gulp.parallel('clean-css', 'clean-js', 'clean-img'));
 
 /*
  * Report warnings and errors in your CSS and SCSS files (lint them) under the Styles folder.
  */
-gulp.task('lint-css', function () {
+gulp.task('lint-css', gulp.series(function () {
     return merge([                              // Combine multiple streams to one and return it so the task can be chained.
         gulp.src(lintSources.css)               // Start with the source .css files.
             .pipe(plumber())                    // Handle any errors.
@@ -263,23 +263,23 @@ gulp.task('lint-css', function () {
             .pipe(sasslint.format())            // Report any SCSS linting errors to the console.
             .pipe(sasslint.failOnError())       // Fail the task if an error is found.
     ]);
-});
+}));
 
 /*
  * Report warnings and errors in your TypeScript files (lint them) under the Scripts folder.
  */
-gulp.task('lint-ts', function () {
+gulp.task('lint-ts', gulp.series(function () {
     return  gulp.src(lintSources.ts)            // Start with the source .ts files.
             .pipe(plumber())                    // Handle any errors.
             .pipe(tslint({                      // Get any TypeScript linting errors.
                 formatter: "verbose"            // Use a verbose output.
             }));
-});
+}));
 
 /*
  * Report warnings and errors in your JavaScript files (lint them) under the Scripts folder.
  */
-gulp.task('lint-js', function () {
+gulp.task('lint-js', gulp.series(function () {
     return merge([                              // Combine multiple streams to one and return it so the task can be chained.
         gulp.src(lintSources.js)                // Start with the source .js files.
             .pipe(plumber())                    // Handle any errors.
@@ -291,21 +291,21 @@ gulp.task('lint-js', function () {
             .pipe(plumber())                    // Handle any errors.
             .pipe(jscs())                       // Get and report any JavaScript style linting errors to the console.
     ]);
-});
+}));
 
 /*
  * Report warnings and errors in your styles and scripts (lint them).
  */
-gulp.task('lint', [
+gulp.task('lint', gulp.parallel(
     'lint-css',
     'lint-ts',
     'lint-js'
-]);
+));
 
 /*
  * Builds the CSS for the site.
  */
-gulp.task('build-css', ['lint-css'], function () {
+gulp.task('build-css', gulp.series('lint-css', function () {
     var tasks = sources.css.map(function (source) { // For each set of source files in the sources.
         if (source.copy) {                          // If we are only copying files.
             return gulp
@@ -343,14 +343,14 @@ gulp.task('build-css', ['lint-css'], function () {
         }
     });
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.
-});
+}));
 
 /*
  * Builds the JavaScript files for the site.
  */
-gulp.task('build-js', [
+gulp.task('build-js', gulp.series(
     'lint-js'
-],
+,
 function () {
     var tasks = sources.js.map(function (source) {  // For each set of source files in the sources.
         if (source.copy) {                          // If we are only copying files.
@@ -384,11 +384,10 @@ function () {
         }
     });
     return merge(tasks);                            // Combine multiple streams to one and return it so the task can be chained.
-});
+}));
 
-gulp.task('build-img', function () {
-    return merge([                                  // Combine multiple streams to one and return it so the task can be chained.
-        gulp.src(sources.imgCopy)                   // Copy all images to the wwwroot img folder
+gulp.task('build-img', gulp.parallel(function () {
+    return gulp.src(sources.imgCopy)                // Copy all images to the wwwroot img folder
             .pipe(plumber())                        // Handle any errors.
             .pipe(sizeBefore())                     // Write the size of the file to the console before minification.
             .pipe(imagemin({                        // Optimize the images.
@@ -396,8 +395,10 @@ gulp.task('build-img', function () {
                 optimizationLevel: 7                // The level of optimization (0 to 7) to make, the higher the slower it is.
             }))
             .pipe(gulp.dest(paths.img))
-            .pipe(sizeAfter()),                     // Write the size of the file to the console after minification.,
-        gulp.src(sources.svg)                       // Give the svg files in particular png fallbacks
+            .pipe(sizeAfter());                     // Write the size of the file to the console after minification.
+    },
+    function () {
+        return gulp.src(sources.svg)                // Give the svg files in particular png fallbacks
             .pipe(plumber())                        // Handle any errors.
             .pipe(sizeBefore())                     // Write the size of the file to the console before minification.
             .pipe(imagemin({                        // Optimize the images.
@@ -406,14 +407,14 @@ gulp.task('build-img', function () {
             }))
             .pipe(svgtopng())                       // Convert the SVG files to PNGs of the same size
             .pipe(gulp.dest(paths.img))             // Write PNG files to the wwwroot img folder
-            .pipe(sizeAfter())
-    ]);
-});
+            .pipe(sizeAfter());                     // Write the size of the file to the console after minification.
+    }
+));
 
 /*
  * Cleans and builds the CSS, Image, TypeScript and JavaScript files for the site.
  */
-gulp.task('build', ['build-css', 'build-img', 'build-js']);
+gulp.task('build', gulp.parallel('build-css', 'build-img', 'build-js'));
 
 //gulp.task('test', function () {
 //    return gulp
@@ -424,7 +425,7 @@ gulp.task('build', ['build-css', 'build-img', 'build-js']);
 /*
  * Watch the styles folder for changes to .css or .scss files. Build the CSS if something changes.
  */
-gulp.task('watch-css', function () {
+gulp.task('watch-css', gulp.series(function () {
     return gulp
         .watch(
             paths.styles + '**/*.{css,scss}',   // Watch the styles folder for file changes.
@@ -432,12 +433,12 @@ gulp.task('watch-css', function () {
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-css task started.');
         });
-});
+}));
 
 /*
  * Watch the scripts folder for changes to .js or .ts files. Build the JavaScript if something changes.
  */
-gulp.task('watch-js', function () {
+gulp.task('watch-js', gulp.series(function () {
     return gulp
         .watch(
             paths.scripts + '**/*.{js,ts}',          // Watch the scripts folder for file changes.
@@ -445,12 +446,12 @@ gulp.task('watch-js', function () {
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');
         });
-});
+}));
 
 /*
  * Watch the images folder for changes to image files. Rebuild the fallbacks if anything changes.
  */
-gulp.task('watch-img', function () {
+gulp.task('watch-img', gulp.series(function () {
     return gulp
         .watch(
             sources.imgCopy,                    // Watch the images folder for file changes
@@ -458,12 +459,12 @@ gulp.task('watch-img', function () {
         .on('change', function (event) {        // Log the change to the console.
             log.info('File ' + event.path + ' was ' + event.type + ', build-js task started.');
         });
-});
+}));
 
 /*
  * Watch the scripts and tests folder for changes to .js or .ts files. Run the JavaScript tests if something changes.
  */
-//gulp.task('watch-tests', function () {
+//gulp.task('watch-tests', gulp.series(function () {
 //    return gulp
 //        .watch([
 //            paths.scripts + '**/*.{js,ts}',     // Watch the scripts folder for file changes.
@@ -473,12 +474,12 @@ gulp.task('watch-img', function () {
 //        .on('change', function (event) {        // Log the change to the console.
 //            log.info('File ' + event.path + ' was ' + event.type + ', test task started.');
 //        });
-//});
+//}));
 
 /*
  * Watch the styles, images and scripts folders for changes. Build the CSS and JavaScript if something changes.
  */
-gulp.task('watch', ['watch-css', 'watch-img', 'watch-js']);
+gulp.task('watch', gulp.parallel('watch-css', 'watch-img', 'watch-js'));
 
 function pageSpeed(strategy, cb) {
     if (siteUrl === undefined) {
@@ -504,16 +505,16 @@ function pageSpeed(strategy, cb) {
 /*
  * Measure the performance of your site for mobiles using Google PageSpeed. Prefer using this test to the desktop test.
  */
-gulp.task('pagespeed-mobile', function (cb) {
+gulp.task('pagespeed-mobile', gulp.series(function (cb) {
     return pageSpeed('mobile', cb);
-});
+}));
 
 /*
  * Measure the performance of your site for desktops using Google PageSpeed.
  */
-gulp.task('pagespeed-desktop', function (cb) {
+gulp.task('pagespeed-desktop', gulp.series(function (cb) {
     return pageSpeed('desktop', cb);
-});
+}));
 
 /*
  * The default gulp task. This is useful for scenarios where you are not using Visual Studio. Does a full clean and
@@ -521,9 +522,9 @@ gulp.task('pagespeed-desktop', function (cb) {
  */
 gulp.task(
     'default',
-    [
+    gulp.series(
         'clean',
         'build',
         //'test',
         'watch'
-    ]);
+    ));
