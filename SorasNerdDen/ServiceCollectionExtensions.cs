@@ -82,7 +82,9 @@
                 // Adds IOptionsSnapshot<SitemapSettings> to the services container.
                 .Configure<SitemapSettings>(configuration.GetSection(nameof(SitemapSettings)))
                 // Adds IOptionsSnapshot<CacheProfileSettings> to the services container.
-                .Configure<CacheProfileSettings>(configuration.GetSection(nameof(CacheProfileSettings)));
+                .Configure<CacheProfileSettings>(configuration.GetSection(nameof(CacheProfileSettings)))
+                // Adds IOptionsSnapshot<VapidSettings> to the services container.
+                .Configure<VapidSettings>(configuration.GetSection(nameof(VapidSettings)));
 
         /// <summary>
         /// Configures custom services to add to the ASP.NET Core Injection of Control (IoC) container.

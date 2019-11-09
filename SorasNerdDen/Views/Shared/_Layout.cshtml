@@ -49,7 +49,7 @@
 <body>
     @* Skip to main content link for people who use screen readers. sr-only makes this only visible to screen readers.
         See http://a11yproject.com/posts/skip-nav-links/. *@
-    <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
+    <a href="#main-content" class="sr-only sr-only-focusable">Skip to main content</a>
     @* nav - The main navigation for the site. *@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container" role="banner">
@@ -97,6 +97,12 @@
         </div>
         <div id="update" class="alert alert-info" role="alert" hidden>
             <a class="alert-link">Updates for this page are availible.</a>
+        </div>
+        <div>
+            <label>
+                <input id="notificationsCheckbox" type="checkbox" disabled title="Live updates require JavaScript"/>
+                Receive live updates from this page
+            </label>
         </div>
         <div id="main-content">
             @RenderBody()

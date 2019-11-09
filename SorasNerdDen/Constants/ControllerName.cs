@@ -4,5 +4,6 @@
     {
         public const string Error = "Error";
         public const string Home = "Home";
+        public const string Push = "Push";
     }
 }

@@ -55,12 +55,12 @@ function refresh(url: string, clientId: string): Promise<void> {
     };
     if (clientId) {
         // If we know which client to send it to, send it to that one
-        return (self as ServiceWorkerGlobalScope).clients.get(clientId).then((client: Client) => {
+        return (self as unknown as ServiceWorkerGlobalScope).clients.get(clientId).then((client: Client) => {
             client.postMessage(message);
         });
     }
     // Otherwise let all of them know
-    return (self as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' }).then((clients: ReadonlyArray<Client>) => {
+    return (self as unknown as ServiceWorkerGlobalScope).clients.matchAll({ type: 'window' }).then((clients) => {
         // Notify each client
         clients.forEach((client) => {
             client.postMessage(message);
@@ -141,7 +141,7 @@ function installHander(e: ExtendableEvent): void {
                     .then((response) => core.put(key, response));
             }))
             // Don't wait for the client to refresh the page (as this site is designed not to refresh)
-            .then(() => (self as ServiceWorkerGlobalScope).skipWaiting());
+            .then(() => (self as unknown as ServiceWorkerGlobalScope).skipWaiting());
         });
     }));
 }
@@ -155,7 +155,7 @@ function activationHander(e: ExtendableEvent): void {
     // Copy the newly installed cache to the active cache
     e.waitUntil(cacheCopy("core-waiting", "core")
         // Declare that we'll be taking over now
-        .then(() => (self as ServiceWorkerGlobalScope).clients.claim())
+        .then(() => (self as unknown as ServiceWorkerGlobalScope).clients.claim())
         // Delete the waiting cache afterward to save client memory space
         .then(() => caches.delete("core-waiting")));
 }
@@ -192,6 +192,100 @@ function fetchHandler(e: FetchEvent): void {
     return cacheUpdateRefresh(e, true);
 }
 
+/**
+ * Handle data being pushed from the server to the client (primarily showing a notification)
+ * @param e The push event
+ */
+function pushHandler(e: PushEvent): void {
+    "use strict";
+    e.waitUntil(
+        (self as unknown as ServiceWorkerGlobalScope).clients.matchAll({
+            type: "window"
+        }).then((clientList: WindowClient[]) => {
+            const focused = clientList.some((client) => {
+                return client.focused;
+            });
+
+            const pushPayload = e.data ? e.data.json() : { title: "@SiteTitle update" };
+            const pushMessage = pushPayload.message || "A new event has occured!";
+
+            let notificationMessage: string;
+            if (focused) {
+                // A window is open and in view!
+                notificationMessage = pushMessage;
+            } else if (clientList.length > 0) {
+                // A window is open!
+                notificationMessage = `${pushMessage} Click here to view!`;
+            } else {
+                // None of our windows are open :(
+                notificationMessage = `${pushMessage} Click here to open!`;
+            }
+
+            return (self as unknown as ServiceWorkerGlobalScope).registration.showNotification(pushPayload.title, {
+                body: notificationMessage,
+                dir: "ltr",
+                lang: "en-AU",
+                tag: pushPayload.tag,
+                timestamp: pushPayload.timestamp
+            } as NotificationOptions);
+        })
+    );
+}
+
+/**
+ * Handle a click on a notification (by focusing/opening a window if nessisary)
+ * @param e The notification click event
+ */
+function notificationClickHandler(e: NotificationEvent) {
+    "use strict";
+    e.waitUntil(
+        (self as unknown as ServiceWorkerGlobalScope).clients.matchAll({
+            type: "window"
+        }).then((clientList: WindowClient[]) => {
+            const focused = clientList.some((client) => {
+                return client.focused;
+            });
+            if (!focused) {
+                // If we have no focused tabs but some open one, focus one of those
+                if (clientList.length > 0) {
+                    return clientList[0].focus();
+                }
+                // Otherwise, open a new window
+                return (self as unknown as ServiceWorkerGlobalScope).clients.openWindow("/offline");
+            }
+        })
+    );
+}
+
+/**
+ * Handle the expiration of a push subscription by automatically renewing it
+ * @param e The push subscription change event
+ */
+function pushSubscriptionChanged(e: PushSubscriptionChangeEvent) {
+    e.waitUntil(
+        // Subscription has expired - resubscribe and let the server know
+        (self as unknown as ServiceWorkerGlobalScope).registration.pushManager.subscribe(e.oldSubscription.options)
+            .then(subscription => {
+                return fetch("push/update", {
+                    method: "post",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        // TODO add extra security paramaters?
+                        oldEndpoint: e.oldSubscription.endpoint,
+                        newEndpoint: subscription.endpoint
+                    })
+                }).catch(() => {
+                    // TODO handle the fact that we can't contact the server
+                });
+            })
+    );
+}
+
 addEventListener("install", installHander);
 addEventListener("activate", activationHander);
 addEventListener("fetch", fetchHandler);
+addEventListener("push", pushHandler);
+addEventListener("notificationclick", notificationClickHandler);
+addEventListener("pushsubscriptionchange", pushSubscriptionChanged);
