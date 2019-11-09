@@ -264,23 +264,48 @@ function notificationClickHandler(e: NotificationEvent) {
 function pushSubscriptionChanged(e: PushSubscriptionChangeEvent) {
     e.waitUntil(
         // Subscription has expired - resubscribe and let the server know
-        (self as unknown as ServiceWorkerGlobalScope).registration.pushManager.subscribe(e.oldSubscription.options)
+        cacheFirst(new Request("push/publicKey"), false).then((response) => response.text())
+            .then((publicKey) => {
+                const convertedVapidKey = urlBase64ToUint8Array(publicKey);
+
+                return (self as unknown as ServiceWorkerGlobalScope).registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: convertedVapidKey
+                });
+            })
             .then(subscription => {
-                return fetch("push/update", {
+                return fetch("push/subscribe", {
                     method: "post",
                     headers: {
                         "Content-type": "application/json"
                     },
-                    body: JSON.stringify({
-                        // TODO add extra security paramaters?
-                        oldEndpoint: e.oldSubscription.endpoint,
-                        newEndpoint: subscription.endpoint
-                    })
+                    body: JSON.stringify(subscription)
                 }).catch(() => {
                     // TODO handle the fact that we can't contact the server
                 });
             })
     );
+}
+
+/**
+ * This function is needed because Chrome doesn't accept a base64 encoded string
+ * as value for applicationServerKey in pushManager.subscribe yet
+ * https://bugs.chromium.org/p/chromium/issues/detail?id=802280
+ * @param {string} base64String The base64 string to convert to an array of unsigned 8-bit integers
+ */
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }
 
 addEventListener("install", installHander);

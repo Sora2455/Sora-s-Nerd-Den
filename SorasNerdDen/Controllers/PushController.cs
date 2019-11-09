@@ -39,8 +39,8 @@
         }
 
         /// <summary>
-        /// The C# model of JSON data posted when push notifications are being subscribed to,
-        /// unsubscribed from, or updated
+        /// The C# model of JSON data posted when push notifications are being subscribed to
+        /// or unsubscribed from
         /// </summary>
         public class PushSubscriptionModel
         {
@@ -52,8 +52,10 @@
             /// The encryption keys for this push subscription
             /// </summary>
             public PushSubscriptionKeys keys;
-            public string oldEndpoint;
-            public string newEndpoint;
+            /// <summary>
+            /// The expiration date of this push subscription (if any)
+            /// </summary>
+            public long? expirationTime;
         }
 
         [HttpPost("push/subscribe", Name = PushControllerRoute.Subscribe)]
@@ -99,12 +101,6 @@
 
         [HttpPost("push/unsubscribe", Name = PushControllerRoute.Unsubscribe)]
         public IActionResult Unubscribe([FromBody] PushSubscriptionModel model)
-        {
-            return new EmptyResult();
-        }
-
-        [HttpPost("push/update", Name = PushControllerRoute.Update)]
-        public IActionResult Update([FromBody] PushSubscriptionModel model)
         {
             return new EmptyResult();
         }
