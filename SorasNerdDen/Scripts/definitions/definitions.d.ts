@@ -19,8 +19,15 @@ interface PageTitleAndDescription {
      */
     description: string;
 }
+
 // To add to this list, you need to modify storageManager's onupgradeneeded handler
 declare type StoreName = "pageDetails" | "pendingLoads" | "pendingComments" | "environmentVariables";
+
+interface EnvironmentVariable {
+    name: string;
+    value: string;
+}
+
 interface Window {
     /**
      * Queue a function to run when the DOM is ready for interactivity
@@ -54,5 +61,5 @@ interface Window {
      * @param store The name of the namespace where this data was stored
      * @param key The index that the data was stored under
      */
-    retrieveJsonData: (store: StoreName, key: string | number) => Promise<any>;
+    retrieveJsonData<T>(store: StoreName, key: string | number): Promise<T>;
 }

@@ -30,7 +30,7 @@
                                 .replace(`${location.protocol}//${location.host}`, "");
                             if (linkDestination === "/offline/") { return; }
                             cachedPagesData.push(
-                                w.retrieveJsonData("pageDetails", linkDestination).then((page: PageTitleAndDescription) => {
+                                w.retrieveJsonData<PageTitleAndDescription>("pageDetails", linkDestination).then((page) => {
                                     return page || { url: linkDestination } as PageTitleAndDescription;
                                 })
                             );
