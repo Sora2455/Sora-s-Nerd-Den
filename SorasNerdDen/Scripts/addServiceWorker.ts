@@ -27,7 +27,7 @@
     w.whenReady(() => {
         const notificationCheckbox = d.getElementById('notificationsCheckbox') as HTMLInputElement;
         // If it is possible to use push notifications...
-        if ("PushManager" in w && typeof Notification === "function") {
+        if ("serviceWorker" in n && "PushManager" in w && typeof Notification === "function") {
             notificationCheckbox.removeAttribute("title");
             notificationCheckbox.disabled = false;
             setCheckboxState(notificationCheckbox);
