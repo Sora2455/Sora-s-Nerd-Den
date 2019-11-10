@@ -331,6 +331,11 @@ interface EnvironmentVariable {
     value: string;
 }
 
+/**
+ * Retrieve JSON data we stored in indexedDB earlier
+ * @param store The store we stored our data under
+ * @param key The key we stored it under
+ */
 function retrieveJsonData<T>(store: StoreName, key: string | number): Promise<T> {
     const req = indexedDB.open("Offline storage", 1);
     return new Promise((resolve, reject) => {
@@ -347,6 +352,11 @@ function retrieveJsonData<T>(store: StoreName, key: string | number): Promise<T>
     });
 }
 
+/**
+ * Store data in indexedDB
+ * @param store The store to store the data under
+ * @param data The data to store
+ */
 function storeJsonData<T>(store: StoreName, data: T): Promise<void> {
     const req = indexedDB.open("Offline storage", 1);
     return new Promise((resolve, reject) => {

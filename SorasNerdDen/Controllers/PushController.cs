@@ -84,6 +84,9 @@
         [HttpPost("push/update", Name = PushControllerRoute.Update)]
         public async Task<IActionResult> Update([FromBody] PushSubscriptionUpdateModel model)
         {
+            // TODO unregister old endpoint, register new on TO THE CURRENT SESSION
+            // (protects us against people changing the subscription to their device 
+            // when they aren't the owner)
             await SendNotification(model.newSubscription,
                 new PushPayload("Hello there", "Your push subscription has auto-renewed."));
             return new EmptyResult();
