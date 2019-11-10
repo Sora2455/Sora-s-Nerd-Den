@@ -192,6 +192,29 @@ function fetchHandler(e: FetchEvent): void {
     return cacheUpdateRefresh(e, true);
 }
 
+interface IPushPayload {
+    /**
+     * The title of the push notification
+     */
+    title: string;
+    /**
+     * The message of the push notification
+     * (should only be a couple of sentences at most)
+     */
+    message?: string;
+    /**
+     * A push message with the same tag as an earlier one 
+     * will replace that earlier one if it is still open
+     */
+    tag?: string;
+    /**
+     * The timestamp that this notification should appear to be sent from
+     * (remembering that the user might only get their notifications
+     * the next time they connect to the internet)
+     */
+    timestamp?: number;
+}
+
 /**
  * Handle data being pushed from the server to the client (primarily showing a notification)
  * @param e The push event
@@ -206,7 +229,7 @@ function pushHandler(e: PushEvent): void {
                 return client.focused;
             });
 
-            const pushPayload = e.data ? e.data.json() : { title: "@SiteTitle update" };
+            const pushPayload = (e.data ? e.data.json() : { title: "@SiteTitle update" }) as IPushPayload;
             const pushMessage = pushPayload.message || "A new event has occured!";
 
             let notificationMessage: string;
@@ -221,7 +244,8 @@ function pushHandler(e: PushEvent): void {
                 notificationMessage = `${pushMessage} Click here to open!`;
             }
 
-            return (self as unknown as ServiceWorkerGlobalScope).registration.showNotification(pushPayload.title, {
+            return (self as unknown as ServiceWorkerGlobalScope)
+                    .registration.showNotification(pushPayload.title, {
                 body: notificationMessage,
                 dir: "ltr",
                 lang: "en-AU",

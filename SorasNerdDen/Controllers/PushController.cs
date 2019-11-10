@@ -5,6 +5,9 @@
     using SorasNerdDen.Constants;
     using SorasNerdDen.Settings;
     using System;
+    using System.IO;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using WebPush;
 
@@ -61,7 +64,8 @@
         [HttpPost("push/subscribe", Name = PushControllerRoute.Subscribe)]
         public async Task<IActionResult> Subscribe([FromBody] PushSubscriptionModel model)
         {
-            await SendNotification(model, "It works!", "Thank you for enabling live updates.");
+            await SendNotification(model,
+                new PushPayload("It works!", "Thank you for enabling live updates."));
             return new EmptyResult();
         }
 
@@ -74,29 +78,87 @@
         [HttpPost("push/update", Name = PushControllerRoute.Update)]
         public async Task<IActionResult> Update([FromBody] PushSubscriptionModel model)
         {
-            await SendNotification(model, "Hello there", "Your push subscription has auto-renewed.");
+            await SendNotification(model,
+                new PushPayload("Hello there", "Your push subscription has auto-renewed."));
             return new EmptyResult();
+        }
+
+        public class PushPayload
+        {
+            /// <summary>
+            /// The title of the push notification
+            /// </summary>
+            [JsonPropertyName("title")]
+            public string Title { get; set; }
+            /// <summary>
+            /// The message of the push notification
+            /// (should only be a couple of sentences at most)
+            /// </summary>
+            [JsonPropertyName("message")]
+            public string Message { get; set; }
+            /// <summary>
+            /// A push message with the same tag as an earlier one
+            /// will replace that earlier one if it is still open
+            /// </summary>
+            [JsonPropertyName("tag")]
+            public string Tag { get; set; }
+            /// <summary>
+            /// The timestamp that this notification should appear to be sent from
+            /// (remembering that the user might only get their notifications 
+            /// the next time they connect to the internet)
+            /// </summary>
+            [JsonPropertyName("timestamp")]
+            public long Timestamp { get; set; }
+
+            /// <summary>
+            /// Create a push payload for a given date/time
+            /// </summary>
+            /// <param name="title">The title of the notification</param>
+            /// <param name="message">The message of the notification</param>
+            /// <param name="tag">The tag of the notification
+            /// (notifications with the same tag overwrite each other)</param>
+            /// <param name="eventDateTime">The date/time the event happened</param>
+            public PushPayload(string title, string message,
+                string tag, DateTimeOffset eventDateTime)
+            {
+                Title = title;
+                Message = message;
+                Tag = tag;
+                Timestamp = eventDateTime.ToUnixTimeMilliseconds();
+            }
+
+            /// <summary>
+            /// Create a push payload for the current date/time
+            /// </summary>
+            /// <param name="title">The title of the notification</param>
+            /// <param name="message">The message of the notification</param>
+            /// <param name="tag">The tag of the notification
+            /// (notifications with the same tag overwrite each other)</param>
+            public PushPayload(string title, string message, string tag = null)
+            {
+                Title = title;
+                Message = message;
+                Tag = tag;
+                Timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            }
         }
 
         /// <summary>
         /// Send a push notification to the given subscription
         /// </summary>
-        /// <param name="model">The push notification to send to</param>
-        /// <param name="title">The title of the notification</param>
-        /// <param name="message">The message of the notification</param>
+        /// <param name="subscriptionModel">The model of the push subscription to send to</param>
+        /// <param name="payload">The model of the payload to send</param>
         /// <returns>A task that resolves after the notification has been sent</returns>
-        private async Task SendNotification(PushSubscriptionModel model, string title, string message)
+        private async Task SendNotification(PushSubscriptionModel subscriptionModel, PushPayload payload)
         {
-            var subscription = new PushSubscription(model.endpoint, model.keys?.p256dh, model.keys?.auth);
+            PushSubscription subscription = new PushSubscription(subscriptionModel.endpoint,
+                subscriptionModel.keys?.p256dh, subscriptionModel.keys?.auth);
             VapidDetails vapidDetails = new VapidDetails("mailto:example@example.com",
                 vapidSettings.Value.PublicKey, vapidSettings.Value.PrivateKey);
+            string payloadString = await SerializeToJsonAsync(payload);
             try
             {
-                await webPushClient.SendNotificationAsync(
-                    subscription,
-                    $"{{\"title\":\"{title}\",\"message\":\"{message}\"}}",
-                    vapidDetails
-                );
+                await webPushClient.SendNotificationAsync(subscription, payloadString, vapidDetails);
             }
             catch (WebPushException exception)
             {
@@ -121,6 +183,26 @@
                         Console.WriteLine("Http STATUS code" + exception.StatusCode);
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Serialize an object with the DataContract attribute to JSON
+        /// </summary>
+        /// <typeparam name="T">A class decorated with the DataContract attribute</typeparam>
+        /// <param name="obj">The instance to serialize</param>
+        /// <returns>A JSON string</returns>
+        private static async Task<string> SerializeToJsonAsync<T>(T obj) where T : class
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            using (StreamReader reader = new StreamReader(memoryStream))
+            {
+                JsonSerializerOptions options = new JsonSerializerOptions {
+                    IgnoreNullValues = true
+                };
+                await JsonSerializer.SerializeAsync(memoryStream, obj, options);
+                memoryStream.Position = 0;
+                return await reader.ReadToEndAsync();
             }
         }
     }
