@@ -122,6 +122,10 @@
                                         "Content-type": "application/json"
                                     },
                                     body: JSON.stringify(newSubscription)
+                                }).then(() => {
+                                    w.storeJsonData("environmentVariables",
+                                        (obj) => obj.name,
+                                        { name: "pushEndpoint", value: newSubscription.endpoint });
                                 });
                             }).then(() => {
                                 console.log("Push subscription suceeded!");

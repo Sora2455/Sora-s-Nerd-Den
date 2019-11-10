@@ -288,27 +288,79 @@ function notificationClickHandler(e: NotificationEvent) {
 function pushSubscriptionChanged(e: PushSubscriptionChangeEvent) {
     e.waitUntil(
         // Subscription has expired - resubscribe and let the server know
-        cacheFirst(new Request("push/publicKey"), false).then((response) => response.text())
-            .then((publicKey) => {
-                const convertedVapidKey = urlBase64ToUint8Array(publicKey);
+        Promise.all([
+            cacheFirst(new Request("push/publicKey"), false).then((response) => response.text())
+                .then((publicKey) => {
+                    const convertedVapidKey = urlBase64ToUint8Array(publicKey);
 
-                return (self as unknown as ServiceWorkerGlobalScope).registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: convertedVapidKey
-                });
-            })
-            .then(subscription => {
-                return fetch("push/update", {
-                    method: "post",
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: JSON.stringify(subscription)
-                }).catch(() => {
-                    // TODO handle the fact that we can't contact the server
-                });
-            })
+                    return (self as unknown as ServiceWorkerGlobalScope).registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: convertedVapidKey
+                    });
+                }),
+            // The oldSubscription property on the event is supposed to give us this,
+            // but it doesn't
+            retrieveJsonData<EnvironmentVariable>("environmentVariables", "pushEndpoint")
+        ])
+        .then(([subscription, previousEndpoint]) => {
+            return fetch("push/update", {
+                method: "post",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    newSubscription: subscription.toJSON(),
+                    oldEndpoint: previousEndpoint.value
+                })
+            }).then(() => {
+                storeJsonData("environmentVariables", {
+                    name: "pushEndpoint",
+                    value: subscription.endpoint
+                } as EnvironmentVariable);
+            }, () => {
+                // TODO handle the fact that we can't contact the server
+            });
+        })
     );
+}
+
+declare type StoreName = "pageDetails" | "pendingLoads" | "pendingComments" | "environmentVariables";
+
+interface EnvironmentVariable {
+    name: string;
+    value: string;
+}
+
+function retrieveJsonData<T>(store: StoreName, key: string | number): Promise<T> {
+    const req = indexedDB.open("Offline storage", 1);
+    return new Promise((resolve, reject) => {
+        req.onupgradeneeded = req.onblocked = req.onerror = reject;
+        req.onsuccess = () => {
+            const db = req.result;
+            const transaction = db.transaction(store, "readonly");
+            const getRequest = transaction.objectStore(store).get(key);
+            transaction.onerror = reject;
+            transaction.oncomplete = () => {
+                resolve(getRequest.result);
+            }
+        }
+    });
+}
+
+function storeJsonData<T>(store: StoreName, data: T): Promise<void> {
+    const req = indexedDB.open("Offline storage", 1);
+    return new Promise((resolve, reject) => {
+        req.onupgradeneeded = req.onblocked = req.onerror = reject;
+        req.onsuccess = () => {
+            const db = req.result;
+            const transaction = db.transaction(store, "readwrite");
+            transaction.onerror = reject;
+            transaction.oncomplete = () => {
+                resolve();
+            };
+            transaction.objectStore(store).put(data);
+        }
+    });
 }
 
 /**

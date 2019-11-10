@@ -61,6 +61,12 @@
             public long? expirationTime;
         }
 
+        public class PushSubscriptionUpdateModel
+        {
+            public PushSubscriptionModel newSubscription;
+            public string oldEndpoint;
+        }
+
         [HttpPost("push/subscribe", Name = PushControllerRoute.Subscribe)]
         public async Task<IActionResult> Subscribe([FromBody] PushSubscriptionModel model)
         {
@@ -76,9 +82,9 @@
         }
 
         [HttpPost("push/update", Name = PushControllerRoute.Update)]
-        public async Task<IActionResult> Update([FromBody] PushSubscriptionModel model)
+        public async Task<IActionResult> Update([FromBody] PushSubscriptionUpdateModel model)
         {
-            await SendNotification(model,
+            await SendNotification(model.newSubscription,
                 new PushPayload("Hello there", "Your push subscription has auto-renewed."));
             return new EmptyResult();
         }

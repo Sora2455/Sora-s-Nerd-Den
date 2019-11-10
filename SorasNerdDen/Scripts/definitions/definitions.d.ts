@@ -20,7 +20,7 @@ interface PageTitleAndDescription {
     description: string;
 }
 // To add to this list, you need to modify storageManager's onupgradeneeded handler
-declare type StoreName = "pageDetails" | "pendingLoads" | "pendingComments";
+declare type StoreName = "pageDetails" | "pendingLoads" | "pendingComments" | "environmentVariables";
 interface Window {
     /**
      * Queue a function to run when the DOM is ready for interactivity
