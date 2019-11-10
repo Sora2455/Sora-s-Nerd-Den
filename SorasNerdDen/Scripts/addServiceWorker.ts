@@ -6,21 +6,23 @@
         w.whenLoaded(() => {
             n.serviceWorker.register('/serviceWorker.js');
         });
-        n.serviceWorker.addEventListener("message", recieveMessage);
-    }
-    const updateMessage = d.getElementById('update');
-    function recieveMessage(messageEvent: MessageEvent) {
-        if (messageEvent.data && messageEvent.data.type === "refresh") {
-            const url = messageEvent.data.url as string;
-            if (url === l.href || url === l.pathname ||
-                url === l.pathname.substring(1)) {
-                updateMessage.removeAttribute('hidden');
+        w.whenReady(() => {
+            const updateMessage = d.getElementById('update');
+            const recieveMessage = (messageEvent: MessageEvent) => {
+                if (messageEvent.data && messageEvent.data.type === "refresh") {
+                    const url = messageEvent.data.url as string;
+                    if (url === l.href || url === l.pathname ||
+                        url === l.pathname.substring(1)) {
+                        updateMessage.removeAttribute('hidden');
+                    }
+                }
             }
-        }
+            updateMessage.getElementsByTagName('a')[0].addEventListener('click', () => {
+                l.reload();
+            });
+            n.serviceWorker.addEventListener("message", recieveMessage);
+        })
     }
-    updateMessage.getElementsByTagName('a')[0].addEventListener('click', () => {
-        l.reload();
-    });
     // Set up the 'live updates' checkbox
     w.whenReady(() => {
         const notificationCheckbox = d.getElementById('notificationsCheckbox') as HTMLInputElement;
