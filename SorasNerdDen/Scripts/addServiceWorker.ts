@@ -46,19 +46,30 @@
         if (Notification.permission === 'granted') {
             // We can't "un-request" Notification permission,
             // so set our localstorage option to the new checkbox value
-            localStorage.setItem(notificationPermissionKey,
-                permissionCheckbox.checked ? 'granted' : 'denied');
-            setCheckboxState(permissionCheckbox);
+            w.storeJsonData<EnvironmentVariable>("environmentVariables", (obj) => obj.name, {
+                name: notificationPermissionKey,
+                value: permissionCheckbox.checked ? 'granted' : 'denied'
+            }).then(() => {
+                setCheckboxState(permissionCheckbox);
+            });
         } else if (Notification.permission === 'denied') {
             // If the user has denied Notification permissions, we should have picked that up on load
             // But just in case, remove the permission now and lock the checkbox
-            localStorage.setItem(notificationPermissionKey, 'denied');
-            setCheckboxState(permissionCheckbox);
+            w.storeJsonData<EnvironmentVariable>("environmentVariables", (obj) => obj.name, {
+                name: notificationPermissionKey,
+                value: 'denied'
+            }).then(() => {
+                setCheckboxState(permissionCheckbox);
+            });
         } else if (Notification.permission === 'default' && permissionCheckbox.checked) {
             // If we haven't asked them before and they want to enable updates, ask them formally
             const handleNotificationChoice = (choice: NotificationPermission) => {
-                localStorage.setItem(notificationPermissionKey, choice);
-                setCheckboxState(permissionCheckbox);
+                w.storeJsonData<EnvironmentVariable>("environmentVariables", (obj) => obj.name, {
+                    name: notificationPermissionKey,
+                    value: choice
+                }).then(() => {
+                    setCheckboxState(permissionCheckbox);
+                });
             }
             try {
                 // Old browsers use a callback, new browsers use a promise
@@ -73,29 +84,32 @@
      * based on the current permission state
      */
     function setCheckboxState(permissionCheckbox: HTMLInputElement) {
-        let permission: NotificationPermission;
+        let permissionPromise: Promise<NotificationPermission>;
         if (Notification.permission === 'granted') {
-            // Becuase we can't "un-rquest" Notification permision,
-            // we use a localstorage toggle to mark where the user doesn't want
+            // Becuase we can't "un-request" Notification permision,
+            // we use a storage toggle to mark where the user doesn't want
             // to recieve notifications anymore
-            permission = localStorage.getItem(notificationPermissionKey) as NotificationPermission;
+            permissionPromise = w.retrieveJsonData<EnvironmentVariable>("environmentVariables", notificationPermissionKey)
+                .then(variable => variable.value as NotificationPermission);
         } else {
-            permission = Notification.permission;
+            permissionPromise = Promise.resolve(Notification.permission);
         }
-        if (permission === "granted") {
-            permissionCheckbox.checked = true;
-            ensureSubscribedToPushNotifications();
-        } else {
-            permissionCheckbox.checked = false;
-            ensureNotSubscribedToPushNotifications();
-        }
-        // If permission has been denied, we can't re-enable it with JavaScript,
-        // so disable the checkbox
-        if (Notification.permission === "denied") {
-            permissionCheckbox.disabled = true;
-            permissionCheckbox.title =
-                "To enable this feature, you must un-block notifications then reload this page.";
-        }
+        permissionPromise.then(permission => {
+            if (permission === "granted") {
+                permissionCheckbox.checked = true;
+                ensureSubscribedToPushNotifications();
+            } else {
+                permissionCheckbox.checked = false;
+                ensureNotSubscribedToPushNotifications();
+            }
+            // If permission has been denied, we can't re-enable it with JavaScript,
+            // so disable the checkbox
+            if (Notification.permission === "denied") {
+                permissionCheckbox.disabled = true;
+                permissionCheckbox.title =
+                    "To enable this feature, you must un-block notifications then reload this page.";
+            }
+        });
     }
     /**
      * Subscribe to push notifications if we aren't already
