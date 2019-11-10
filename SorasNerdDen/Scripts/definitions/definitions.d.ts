@@ -44,6 +44,12 @@ interface Window {
      */
     storeJsonData<T>(store: StoreName, keyFunc: (obj: T) => string | number, data: T): Promise<void>;
     /**
+     * Delete the details of a JSON object from the user's disk (indexeddb with a localstorage fallback)
+     * @param store The name of the namespace where this data was stored
+     * @param key The index that the data was stored under
+     */
+    removeJsonData(store: StoreName, key: string | number): Promise<void>;
+    /**
      * Retrieves earlier stored data from the user's disk (indexeddb with a localstorage fallback)
      * @param store The name of the namespace where this data was stored
      * @param key The index that the data was stored under

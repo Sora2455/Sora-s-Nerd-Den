@@ -116,17 +116,18 @@
                                 });
                             })
                             .then(newSubscription => {
-                                return fetch("/push/subscribe", {
-                                    method: "post",
-                                    headers: {
-                                        "Content-type": "application/json"
-                                    },
-                                    body: JSON.stringify(newSubscription)
-                                }).then(() => {
+                                return Promise.all([
+                                    fetch("/push/subscribe", {
+                                        method: "post",
+                                        headers: {
+                                            "Content-type": "application/json"
+                                        },
+                                        body: JSON.stringify(newSubscription)
+                                    }),
                                     w.storeJsonData("environmentVariables",
                                         (obj) => obj.name,
-                                        { name: "pushEndpoint", value: newSubscription.endpoint });
-                                });
+                                        { name: "pushEndpoint", value: newSubscription.endpoint })
+                                ]);
                             }).then(() => {
                                 console.log("Push subscription suceeded!");
                             }, (err) => {
@@ -148,15 +149,18 @@
                 // We have no permission, but a subscription - fix that now
                 return existingSubscription.unsubscribe().then((succeeded) => {
                     if (succeeded) {
-                        return fetch("push/unsubscribe", {
-                            method: "post",
-                            headers: {
-                                "Content-type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                endpoint: oldEndpoint
-                            })
-                        }).then(() => {
+                        return Promise.all([
+                            fetch("push/unsubscribe", {
+                                method: "post",
+                                headers: {
+                                    "Content-type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    endpoint: oldEndpoint
+                                })
+                            }),
+                            w.removeJsonData("environmentVariables", "pushEndpoint")
+                        ]).then(() => {
                             console.log("Push unsubscription suceeded!");
                         }, (err) => {
                             console.error("Push unsubscription failed:", err);

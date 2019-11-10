@@ -11,6 +11,10 @@
             localStorage.setItem(`${store}.${keyFunc(data)}`, JSON.stringify(data));
             return Promise.resolve();
         }
+        w.removeJsonData = function(store: StoreName, key: string | number): Promise<void> {
+            localStorage.removeItem(`${store}.${key}`);
+            return Promise.resolve();
+        }
         w.retrieveJsonData = function (store: StoreName, key: string | number): Promise<any> {
             let json = localStorage.getItem(`${store}.${key}`);
             if (json) {
@@ -40,6 +44,18 @@
                         writeFailed(ev);
                     };
                     transaction.objectStore(store).put(data);
+                });
+            }
+            w.removeJsonData = function (store: StoreName, key: string | number): Promise<void> {
+                const transaction = db.transaction(store, "readwrite");
+                return new Promise((deleteCompleted, deleteFailed) => {
+                    transaction.oncomplete = () => {
+                        deleteCompleted();
+                    };
+                    transaction.onerror = (ev) => {
+                        deleteFailed(ev);
+                    };
+                    transaction.objectStore(store).delete(key);
                 });
             }
             w.retrieveJsonData = function (store: StoreName, key: string | number): Promise<any> {
