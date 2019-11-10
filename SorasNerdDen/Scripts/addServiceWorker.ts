@@ -29,11 +29,13 @@
         // If it is possible to use push notifications...
         // (In Firefox private windows, serviceWorker can be missing while PushManager is present)
         if ("serviceWorker" in n && "PushManager" in w && typeof Notification === "function") {
-            notificationCheckbox.removeAttribute("title");
-            notificationCheckbox.disabled = false;
-            setCheckboxState(notificationCheckbox);
-            // Handle changes to the checkbox
-            notificationCheckbox.addEventListener("change", toggleNotificationPermissions);
+            (w as unknown as Window).dbReady.then(() => {
+                notificationCheckbox.removeAttribute("title");
+                notificationCheckbox.disabled = false;
+                setCheckboxState(notificationCheckbox);
+                // Handle changes to the checkbox
+                notificationCheckbox.addEventListener("change", toggleNotificationPermissions);
+            });
         } else {
             notificationCheckbox.title = "Your browser does not support live updates";
         }
