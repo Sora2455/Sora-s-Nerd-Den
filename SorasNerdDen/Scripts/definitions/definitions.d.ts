@@ -19,6 +19,8 @@ interface PageTitleAndDescription {
      */
     description: string;
 }
+// To add to this list, you need to modify storageManager's onupgradeneeded handler
+declare type StoreName = "pageDetails" | "pendingLoads" | "pendingComments";
 interface Window {
     /**
      * Queue a function to run when the DOM is ready for interactivity
@@ -35,14 +37,16 @@ interface Window {
      */
     dbReady: Promise<void>;
     /**
-     * Store the details of a page to the user's disk (indexeddb with a localstorage fallback)
-     * @param pageTitleAndDescription The page details
+     * Store the details of a JSON object to the user's disk (indexeddb with a localstorage fallback)
+     * @param store The name of the namespace where this data will be stored
+     * @param key A function that selects the index to store the data under from the obj being stored
+     * @param data The data to store
      */
-    storePageDetails: (pageTitleAndDescription: PageTitleAndDescription)
-        => Promise<void>;
+    storeJsonData<T>(store: StoreName, keyFunc: (obj: T) => string | number, data: T): Promise<void>;
     /**
-     * Retrieve the details of a page from the user's disk (indexeddb with a localstorage fallback)
-     * @param relativeUrl The (relative) URL of the page we are retrieving the details of
+     * Retrieves earlier stored data from the user's disk (indexeddb with a localstorage fallback)
+     * @param store The name of the namespace where this data was stored
+     * @param key The index that the data was stored under
      */
-    retreivePageDetails: (relativeUrl: string) => Promise<PageTitleAndDescription>;
+    retrieveJsonData: (store: StoreName, key: string | number) => Promise<any>;
 }

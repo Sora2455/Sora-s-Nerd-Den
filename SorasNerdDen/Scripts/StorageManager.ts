@@ -7,16 +7,16 @@
     }
 
     function localStorageFallback() {
-        w.storePageDetails = function (pageDetails): Promise<void> {
-            localStorage.setItem(`pageDetails.${pageDetails.url}`, JSON.stringify(pageDetails));
+        w.storeJsonData = function<T> (store: StoreName, keyFunc: (obj: T) => string | number, data: T): Promise<void> {
+            localStorage.setItem(`${store}.${keyFunc(data)}`, JSON.stringify(data));
             return Promise.resolve();
         }
-        w.retreivePageDetails = function (url): Promise<PageTitleAndDescription> {
-            let titleJSON = localStorage.getItem(`pageDetails.${url}`);
-            if (titleJSON) {
-                return Promise.resolve(JSON.parse(titleJSON) as PageTitleAndDescription);
+        w.retrieveJsonData = function (store: StoreName, key: string): Promise<any> {
+            let json = localStorage.getItem(`${store}.${key}`);
+            if (json) {
+                return Promise.resolve(JSON.parse(json));
             } else {
-                Promise.reject("No details found");
+                return Promise.reject(null);
             }
         }
     }
@@ -30,9 +30,8 @@
         const req = indexedDB.open("Offline storage", 1);
         req.onsuccess = function (evt) {
             db = (evt.target as IDBOpenDBRequest).result;
-            w.storePageDetails = function (pageDetails): Promise<void> {
-                const transaction = db.transaction("pageDetails", "readwrite");
-                const pageDetailsStore = transaction.objectStore("pageDetails");
+            w.storeJsonData = function<T> (store: StoreName, _: (obj: T) => string | number, data: T): Promise<void> {
+                const transaction = db.transaction(store, "readwrite");
                 return new Promise((writeCompleted, writeFailed) => {
                     transaction.oncomplete = () => {
                         writeCompleted();
@@ -40,18 +39,17 @@
                     transaction.onerror = (ev) => {
                         writeFailed(ev);
                     };
-                    pageDetailsStore.put(pageDetails);
+                    transaction.objectStore(store).put(data);
                 });
             }
-            w.retreivePageDetails = function (url): Promise<PageTitleAndDescription> {
-                const transaction = db.transaction("pageDetails");
-                const pageDetailsStore = transaction.objectStore("pageDetails");
-                const result = pageDetailsStore.get(url);
+            w.retrieveJsonData = function (store: StoreName, key: string | number): Promise<any> {
+                const transaction = db.transaction(store);
+                const result = transaction.objectStore(store).get(key);
                 return new Promise((readCompleted, readFailed) => {
-                    result.onsuccess = (ev) => {
-                        readCompleted((ev.target as IDBRequest).result);
+                    transaction.oncomplete = () => {
+                        readCompleted(result.result);
                     };
-                    result.onerror = (ev) => {
+                    transaction.onerror = (ev) => {
                         readFailed(ev);
                     };
                 });
@@ -71,6 +69,7 @@
                 dbu.createObjectStore("pageDetails", { keyPath: "url" });
                 dbu.createObjectStore("pendingLoads", { autoIncrement: true });
                 dbu.createObjectStore("pendingComments", { autoIncrement: true });
+                dbu.createObjectStore("environmentVariables", { keyPath: "name" });
             }
         }
     });

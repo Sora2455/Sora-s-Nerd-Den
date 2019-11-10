@@ -12,7 +12,7 @@
             //TODO - not error pages?
             td.title !== "Loading" && td.title !== "Offline") {
             w.dbReady.then(() => {
-                w.storePageDetails(td);
+                w.storeJsonData("pageDetails", (td) => td.url, td);
             });
         }
         //And then, set the title and description of the page to our new values
