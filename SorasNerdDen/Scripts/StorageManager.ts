@@ -11,7 +11,7 @@
             localStorage.setItem(`${store}.${keyFunc(data)}`, JSON.stringify(data));
             return Promise.resolve();
         }
-        w.retrieveJsonData = function (store: StoreName, key: string): Promise<any> {
+        w.retrieveJsonData = function (store: StoreName, key: string | number): Promise<any> {
             let json = localStorage.getItem(`${store}.${key}`);
             if (json) {
                 return Promise.resolve(JSON.parse(json));
@@ -43,7 +43,7 @@
                 });
             }
             w.retrieveJsonData = function (store: StoreName, key: string | number): Promise<any> {
-                const transaction = db.transaction(store);
+                const transaction = db.transaction(store, "readonly");
                 const result = transaction.objectStore(store).get(key);
                 return new Promise((readCompleted, readFailed) => {
                     transaction.oncomplete = () => {
