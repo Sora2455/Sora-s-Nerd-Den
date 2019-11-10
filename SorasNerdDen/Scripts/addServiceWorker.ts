@@ -27,6 +27,7 @@
     w.whenReady(() => {
         const notificationCheckbox = d.getElementById('notificationsCheckbox') as HTMLInputElement;
         // If it is possible to use push notifications...
+        // (In Firefox private windows, serviceWorker can be missing while PushManager is present)
         if ("serviceWorker" in n && "PushManager" in w && typeof Notification === "function") {
             notificationCheckbox.removeAttribute("title");
             notificationCheckbox.disabled = false;
