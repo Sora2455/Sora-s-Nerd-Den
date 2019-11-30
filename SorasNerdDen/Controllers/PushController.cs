@@ -1,13 +1,19 @@
 ﻿namespace SorasNerdDen.Controllers
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using SorasNerdDen.Constants;
+    using SorasNerdDen.Models;
+    using SorasNerdDen.Services.CancellationTokens;
     using SorasNerdDen.Settings;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text.Json;
     using System.Text.Json.Serialization;
+    using System.Threading;
     using System.Threading.Tasks;
     using WebPush;
 
@@ -16,6 +22,10 @@
         private readonly IOptionsSnapshot<VapidSettings> vapidSettings;
 
         private static readonly WebPushClient webPushClient = new WebPushClient();
+        // Use server-sent events when Pushing is not supported or disabled
+        private static readonly ConcurrentDictionary<Guid, ConcurrentCollection<HttpResponse>>
+            ServerSentEventResponses =
+            new ConcurrentDictionary<Guid, ConcurrentCollection<HttpResponse>>();
 
         public PushController(IOptionsSnapshot<VapidSettings> vapidSettings)
         {
@@ -90,6 +100,94 @@
             await SendNotification(model.newSubscription,
                 new PushPayload("Hello there", "Your push subscription has auto-renewed."));
             return new EmptyResult();
+        }
+
+        [HttpPost("push/eventsource", Name = PushControllerRoute.EventSource)]
+        public async Task<IActionResult> EventSource()
+        {
+            if (Request.Headers["Accept"] == "text/event-stream")
+            {
+                Response.ContentType = "text/event-stream";
+                await Response.Body.FlushAsync();
+
+                Guid clientGuid = Guid.NewGuid();//TODO
+
+                ConcurrentCollection<HttpResponse> listOfClientConections =
+                    new ConcurrentCollection<HttpResponse>
+                    {
+                        Response
+                    };
+                ServerSentEventResponses.AddOrUpdate(clientGuid, listOfClientConections,
+                    (key, oldValue) => {
+                    oldValue.Add(Response);
+                    return oldValue;
+                });
+
+                await HttpContext.RequestAborted.WaitAsync();
+
+                // Remove the now-closed response
+                if (ServerSentEventResponses.TryGetValue(clientGuid,
+                    out ConcurrentCollection<HttpResponse> clientResponses))
+                {
+                    try
+                    {
+                        clientResponses._lock.EnterWriteLock();
+                        clientResponses.Remove(Response);
+                        if (clientResponses.Count == 0)
+                        {
+                            //TODO unit test the interleaving
+                            ServerSentEventResponses.TryRemove(clientGuid, out clientResponses);
+                        }
+                    }
+                    finally
+                    {
+                        clientResponses._lock.ExitWriteLock();
+                    }
+                }
+            }
+
+            return new EmptyResult();
+        }
+
+        private static async Task WriteEventSourceEventAsync(Guid clientGuid, PushPayload payload)
+        {
+            string payloadString = await SerializeToJsonAsync(payload);
+
+            if (ServerSentEventResponses.TryGetValue(clientGuid,
+                out ConcurrentCollection<HttpResponse> responses))
+            {
+                foreach (HttpResponse response in responses)
+                {
+                    await WriteEventSourceDataAsync("data", payloadString, response);
+                }
+            }
+        }
+
+        private static async Task WriteEventSourceDataAsync(string dataType, string data,
+            HttpResponse response)
+        {
+            await response.WriteAsync($"{dataType}: {data}\n\n");
+            await response.Body.FlushAsync();
+        }
+
+        //TODO call when?
+        private static async Task WriteEventSourceHeartbeatAsync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                foreach(KeyValuePair<Guid, ConcurrentCollection<HttpResponse>> pair
+                    in ServerSentEventResponses)
+                {
+                    // It doesn't really matter what we write, as long as we write something
+                    // to keep the connection alive
+                    foreach (HttpResponse response in pair.Value)
+                    {
+                        await WriteEventSourceDataAsync(null, null, response);
+                    }
+                }
+
+                await Task.Delay(1000 * 15);// Repeat every 15 seconds
+            }
         }
 
         public class PushPayload
