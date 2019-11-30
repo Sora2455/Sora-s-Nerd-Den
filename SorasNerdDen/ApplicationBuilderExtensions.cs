@@ -24,7 +24,9 @@
                     // Ensure that external script cannot access the cookie.
                     HttpOnly = HttpOnlyPolicy.Always,
                     // Ensure that the cookie can only be transported over HTTPS.
-                    Secure = CookieSecurePolicy.Always
+                    Secure = CookieSecurePolicy.Always,
+                    // Cookies should have SameSite=Strict set on them to prevent CRSF
+                    MinimumSameSitePolicy = SameSiteMode.Strict
                 });
 
         /// <summary>
