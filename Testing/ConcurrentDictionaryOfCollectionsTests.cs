@@ -79,6 +79,21 @@ namespace Testing
         }
 
         [TestMethod]
+        public void AddThenRemove()
+        {
+            ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+            testDic.Add(0, "Hi");
+
+            Assert.AreEqual(testDic.Get(0).FirstOrDefault(), "Hi");
+
+            testDic.Remove(0, "Hi");
+
+            Assert.IsTrue(testDic.Get(0) is string[] arr && arr.Length == 0);
+        }
+
+        [TestMethod]
         //[DataRaceTestMethod]
         public void ConcurrentAddDiffKeys()
         {
