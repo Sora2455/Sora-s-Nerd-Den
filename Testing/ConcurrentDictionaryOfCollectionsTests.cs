@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Common.Concurrency;
+using Microsoft.Concurrency.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = Microsoft.Concurrency.TestTools.UnitTesting.Assert;
 
 namespace Testing
 {
@@ -61,6 +64,25 @@ namespace Testing
             Assert.AreEqual(finalValues[1], "There");
             Assert.AreEqual(finalValues[2], "Hello");
             Assert.AreEqual(finalValues[3], "World");
+        }
+
+        [TestMethod, DataRaceTestMethod]
+        public void ConcurrentAddDiffKeys()
+        {
+            ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+            Parallel.Invoke(() =>
+            {
+                testDic.Add(0, "Hi");
+            }, () => {
+                testDic.Add(1, "There");
+            });
+
+            List<string> finalValues = testDic.GetAll();
+
+            Assert.AreEqual(testDic.Get(0).FirstOrDefault(), "Hi");
+            Assert.AreEqual(testDic.Get(1).FirstOrDefault(), "There");
         }
     }
 }
