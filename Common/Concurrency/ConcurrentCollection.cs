@@ -59,6 +59,17 @@ namespace Common.Concurrency
             }
         }
 
+        /// <summary>
+        /// Remove an item from the list without first entering a write lock.
+        /// (For when you already have a write lock).
+        /// </summary>
+        /// <param name="item">The item to remove.</param>
+        /// <returns>True iff an item was removed.</returns>
+        public bool RemoveNoLock(T item)
+        {
+            return _list.Remove(item);
+        }
+
         public void Clear()
         {
             try
@@ -128,6 +139,18 @@ namespace Common.Concurrency
                 {
                     _lock.ExitReadLock();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items in the list without first
+        /// establishing a read lock (for when we already have a lock)
+        /// </summary>
+        public int CountNoLock
+        {
+            get
+            {
+                return _list.Count;
             }
         }
 

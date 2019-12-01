@@ -48,8 +48,8 @@ namespace Common.Concurrency
                 try
                 {
                     values._lock.EnterWriteLock();
-                    values.Remove(value);
-                    if (values.Count == 0)
+                    values.RemoveNoLock(value);
+                    if (values.CountNoLock == 0)
                     {
                         Values.TryRemove(key, out values);
                     }
