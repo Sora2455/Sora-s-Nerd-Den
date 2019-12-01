@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Concurrency;
@@ -101,8 +102,10 @@ namespace Testing
             Parallel.Invoke(() =>
             {
                 testDic.Add(0, "Hi");
+                Debug.WriteLine("Wrote Hi");
             }, () => {
                 testDic.Add(0, "There");
+                Debug.WriteLine("Wrote There");
             });
 
             List<string> finalValues = testDic.Get(0).ToList();
