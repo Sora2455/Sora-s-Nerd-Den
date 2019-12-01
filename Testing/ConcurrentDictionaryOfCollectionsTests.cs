@@ -3,8 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Concurrency;
 using Microsoft.Concurrency.TestTools.UnitTesting;
+using Microsoft.Concurrency.TestTools.UnitTesting.Chess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = Microsoft.Concurrency.TestTools.UnitTesting.Assert;
+
+//**********************************************************************************************
+// Instruct Chess to instrument the System.dll assembly so we can catch data races in CLR classes 
+// such as LinkedList{T}
+//**********************************************************************************************
+[assembly: ChessInstrumentAssembly("System")]
+[assembly: ChessInstrumentAssembly("Concurrency")]
+[assembly: ChessInstrumentAssembly("Common")]
 
 namespace Testing
 {
@@ -66,7 +75,7 @@ namespace Testing
             Assert.AreEqual(finalValues[3], "World");
         }
 
-        [TestMethod, DataRaceTestMethod]
+        [TestMethod, ScheduleTestMethod]
         public void ConcurrentAddDiffKeys()
         {
             ConcurrentDictionaryOfCollections<int, string> testDic =
@@ -79,10 +88,27 @@ namespace Testing
                 testDic.Add(1, "There");
             });
 
-            List<string> finalValues = testDic.GetAll();
-
             Assert.AreEqual(testDic.Get(0).FirstOrDefault(), "Hi");
             Assert.AreEqual(testDic.Get(1).FirstOrDefault(), "There");
+        }
+
+        [TestMethod, ScheduleTestMethod]
+        public void ConcurrentAddSameKey()
+        {
+            ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+            Parallel.Invoke(() =>
+            {
+                testDic.Add(0, "Hi");
+            }, () => {
+                testDic.Add(0, "There");
+            });
+
+            List<string> finalValues = testDic.Get(0).ToList();
+
+            Assert.AreEqual(finalValues[0], "Hi");
+            Assert.AreEqual(finalValues[1], "There");
         }
     }
 }
