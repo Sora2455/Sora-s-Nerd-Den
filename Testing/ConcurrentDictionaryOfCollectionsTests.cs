@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Concurrency;
-using Microsoft.Concurrency.TestTools.UnitTesting;
-using Microsoft.Concurrency.TestTools.UnitTesting.Chess;
+//using Microsoft.Concurrency.TestTools.UnitTesting;
+//using Microsoft.Concurrency.TestTools.UnitTesting.Chess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = Microsoft.Concurrency.TestTools.UnitTesting.Assert;
 
@@ -12,9 +11,12 @@ using Assert = Microsoft.Concurrency.TestTools.UnitTesting.Assert;
 // Instruct Chess to instrument the System.dll assembly so we can catch data races in CLR classes 
 // such as LinkedList{T}
 //**********************************************************************************************
-[assembly: ChessInstrumentAssembly("System")]
-[assembly: ChessInstrumentAssembly("Concurrency")]
-[assembly: ChessInstrumentAssembly("Common")]
+//[assembly: ChessInstrumentAssembly("System")]
+//[assembly: ChessInstrumentAssembly("Concurrency")]
+
+//Run //.\/mcut.exe runAllTests [PathToRepo]\Testing\bin\Debug\Testing.dll
+//From //[PathToRepo]\packages\Chess.1.0.1\tools
+//Correct as needed
 
 namespace Testing
 {
@@ -76,42 +78,48 @@ namespace Testing
             Assert.AreEqual(finalValues[3], "World");
         }
 
-        [TestMethod, ScheduleTestMethod]
+        [TestMethod]
+        //[DataRaceTestMethod]
         public void ConcurrentAddDiffKeys()
         {
-            ConcurrentDictionaryOfCollections<int, string> testDic =
-                new ConcurrentDictionaryOfCollections<int, string>();
-
-            Parallel.Invoke(() =>
+            for (int i = 0; i < 100; i++)
             {
-                testDic.Add(0, "Hi");
-            }, () => {
-                testDic.Add(1, "There");
-            });
+                ConcurrentDictionaryOfCollections<int, string> testDic =
+                    new ConcurrentDictionaryOfCollections<int, string>();
 
-            Assert.AreEqual(testDic.Get(0).FirstOrDefault(), "Hi");
-            Assert.AreEqual(testDic.Get(1).FirstOrDefault(), "There");
+                Parallel.Invoke(() =>
+                {
+                    testDic.Add(0, "Hi");
+                }, () => {
+                    testDic.Add(1, "There");
+                });
+
+                Assert.AreEqual(testDic.Get(0).FirstOrDefault(), "Hi");
+                Assert.AreEqual(testDic.Get(1).FirstOrDefault(), "There");
+            }
         }
 
-        [TestMethod, ScheduleTestMethod]
+        [TestMethod]
+        //[DataRaceTestMethod]
         public void ConcurrentAddSameKey()
         {
-            ConcurrentDictionaryOfCollections<int, string> testDic =
+            for (int i = 0; i < 100; i++)
+            {
+                ConcurrentDictionaryOfCollections<int, string> testDic =
                 new ConcurrentDictionaryOfCollections<int, string>();
 
-            Parallel.Invoke(() =>
-            {
-                testDic.Add(0, "Hi");
-                Debug.WriteLine("Wrote Hi");
-            }, () => {
-                testDic.Add(0, "There");
-                Debug.WriteLine("Wrote There");
-            });
+                Parallel.Invoke(() =>
+                {
+                    testDic.Add(0, "Hi");
+                }, () => {
+                    testDic.Add(0, "There");
+                });
 
-            List<string> finalValues = testDic.Get(0).ToList();
+                List<string> finalValues = testDic.Get(0).ToList();
 
-            Assert.AreEqual(finalValues[0], "Hi");
-            Assert.AreEqual(finalValues[1], "There");
+                Assert.IsTrue(finalValues.Contains("Hi"));
+                Assert.IsTrue(finalValues.Contains("There"));
+            }
         }
     }
 }
