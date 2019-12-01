@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Common.Concurrency;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,6 +37,25 @@ namespace Testing
             testDic.Add(0, "World");
 
             string[] finalValues = testDic.Get(0).ToArray();
+
+            Assert.AreEqual(finalValues[0], "Hi");
+            Assert.AreEqual(finalValues[1], "There");
+            Assert.AreEqual(finalValues[2], "Hello");
+            Assert.AreEqual(finalValues[3], "World");
+        }
+
+        [TestMethod]
+        public void GetAll()
+        {
+            ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+            testDic.Add(0, "Hi");
+            testDic.Add(0, "There");
+            testDic.Add(1, "Hello");
+            testDic.Add(1, "World");
+
+            List<string> finalValues = testDic.GetAll();
 
             Assert.AreEqual(finalValues[0], "Hi");
             Assert.AreEqual(finalValues[1], "There");
