@@ -93,6 +93,9 @@
     <None Include="wwwroot/.gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <TypeScriptCompile Include="Scripts\addServiceWorker.ts" />
     <TypeScriptCompile Include="Scripts\captureErrors.ts" />
     <TypeScriptCompile Include="Scripts\definitions\definitions.d.ts" />

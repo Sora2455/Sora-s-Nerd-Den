@@ -100,10 +100,12 @@
             var descriptor = services.Single(s => s.ServiceType == typeof(RazorProjectFileSystem));
             services.AddSingleton<RazorProjectFileSystem>(s =>
             {
-                var existingFileSystem = (RazorProjectFileSystem)ActivatorUtilities.GetServiceOrCreateInstance(s, descriptor.ImplementationType);
+                var existingFileSystem = (RazorProjectFileSystem)ActivatorUtilities.GetServiceOrCreateInstance(s,
+                    descriptor.ImplementationType);
                 // Minify HTML at compile time
                 return new MinifyRazorProjectFileSystem(existingFileSystem);
             });
+            services.AddSingleton<IEventSourceService, EventSourceService>();
 
             // Add your own custom services here e.g.
 

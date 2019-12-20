@@ -5,29 +5,25 @@
     using Microsoft.Extensions.Options;
     using SorasNerdDen.Constants;
     using SorasNerdDen.Models;
+    using SorasNerdDen.Services;
     using SorasNerdDen.Services.CancellationTokens;
     using SorasNerdDen.Settings;
     using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text.Json;
-    using System.Threading;
     using System.Threading.Tasks;
     using WebPush;
 
     public class PushController : Controller
     {
+        // Use server-sent events when Pushing is not supported or disabled
+        private readonly IEventSourceService eventSourceService;
         private readonly IOptionsSnapshot<VapidSettings> vapidSettings;
 
         private static readonly WebPushClient webPushClient = new WebPushClient();
-        // Use server-sent events when Pushing is not supported or disabled
-        private static readonly ConcurrentDictionary<Guid, ConcurrentCollection<HttpResponse>>
-            ServerSentEventResponses =
-            new ConcurrentDictionary<Guid, ConcurrentCollection<HttpResponse>>();
 
-        public PushController(IOptionsSnapshot<VapidSettings> vapidSettings)
+        public PushController(IEventSourceService eventSourceService,
+            IOptionsSnapshot<VapidSettings> vapidSettings)
         {
+            this.eventSourceService = eventSourceService;
             this.vapidSettings = vapidSettings;
         }
 
@@ -109,84 +105,17 @@
                 Response.ContentType = "text/event-stream";
                 await Response.Body.FlushAsync();
 
-                Guid clientGuid = Guid.NewGuid();//TODO
+                Guid clientGuid = Guid.Empty;//TODO
 
-                ConcurrentCollection<HttpResponse> listOfClientConections =
-                    new ConcurrentCollection<HttpResponse>
-                    {
-                        Response
-                    };
-                ServerSentEventResponses.AddOrUpdate(clientGuid, listOfClientConections,
-                    (key, oldValue) => {
-                    oldValue.Add(Response);
-                    return oldValue;
-                });
+                eventSourceService.KeepConnectionAlive(clientGuid, Response);
 
                 await HttpContext.RequestAborted.WaitAsync();
 
                 // Remove the now-closed response
-                if (ServerSentEventResponses.TryGetValue(clientGuid,
-                    out ConcurrentCollection<HttpResponse> clientResponses))
-                {
-                    try
-                    {
-                        clientResponses._lock.EnterWriteLock();
-                        clientResponses.Remove(Response);
-                        if (clientResponses.Count == 0)
-                        {
-                            //TODO unit test the interleaving
-                            ServerSentEventResponses.TryRemove(clientGuid, out clientResponses);
-                        }
-                    }
-                    finally
-                    {
-                        clientResponses._lock.ExitWriteLock();
-                    }
-                }
+                eventSourceService.LetConnectionDie(clientGuid, Response);
             }
 
             return new EmptyResult();
-        }
-
-        private static async Task WriteEventSourceEventAsync(Guid clientGuid, PushPayload payload)
-        {
-            string payloadString = await SerializeToJsonAsync(payload);
-
-            if (ServerSentEventResponses.TryGetValue(clientGuid,
-                out ConcurrentCollection<HttpResponse> responses))
-            {
-                foreach (HttpResponse response in responses)
-                {
-                    await WriteEventSourceDataAsync("data", payloadString, response);
-                }
-            }
-        }
-
-        private static async Task WriteEventSourceDataAsync(string dataType, string data,
-            HttpResponse response)
-        {
-            await response.WriteAsync($"{dataType}: {data}\n\n");
-            await response.Body.FlushAsync();
-        }
-
-        //TODO call when?
-        private static async Task WriteEventSourceHeartbeatAsync(CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                foreach(KeyValuePair<Guid, ConcurrentCollection<HttpResponse>> pair
-                    in ServerSentEventResponses)
-                {
-                    // It doesn't really matter what we write, as long as we write something
-                    // to keep the connection alive
-                    foreach (HttpResponse response in pair.Value)
-                    {
-                        await WriteEventSourceDataAsync(null, null, response);
-                    }
-                }
-
-                await Task.Delay(1000 * 15);// Repeat every 15 seconds
-            }
         }
 
         /// <summary>
@@ -201,7 +130,7 @@
                 subscriptionModel.keys?.p256dh, subscriptionModel.keys?.auth);
             VapidDetails vapidDetails = new VapidDetails("mailto:example@example.com",
                 vapidSettings.Value.PublicKey, vapidSettings.Value.PrivateKey);
-            string payloadString = await SerializeToJsonAsync(payload);
+            string payloadString = await SerializationHelper.SerializeToJsonAsync(payload);
             try
             {
                 await webPushClient.SendNotificationAsync(subscription, payloadString, vapidDetails);
@@ -229,26 +158,6 @@
                         Console.WriteLine("Http STATUS code" + exception.StatusCode);
                         break;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Serialize an object with the DataContract attribute to JSON
-        /// </summary>
-        /// <typeparam name="T">A class decorated with the DataContract attribute</typeparam>
-        /// <param name="obj">The instance to serialize</param>
-        /// <returns>A JSON string</returns>
-        private static async Task<string> SerializeToJsonAsync<T>(T obj) where T : class
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            using (StreamReader reader = new StreamReader(memoryStream))
-            {
-                JsonSerializerOptions options = new JsonSerializerOptions {
-                    IgnoreNullValues = true
-                };
-                await JsonSerializer.SerializeAsync(memoryStream, obj, options);
-                memoryStream.Position = 0;
-                return await reader.ReadToEndAsync();
             }
         }
     }
