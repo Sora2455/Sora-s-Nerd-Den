@@ -136,5 +136,80 @@ namespace Testing
                 Assert.IsTrue(finalValues.Contains("There"));
             }
         }
+
+        [TestMethod]
+        //[DataRaceTestMethod]
+        public void ConcurrentAddAndRemoveSameKey()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+                testDic.Add(0, "Hi");
+
+                Parallel.Invoke(() =>
+                {
+                    testDic.Add(0, "There");
+                }, () => {
+                    testDic.Remove(0, "Hi");
+                });
+
+                List<string> finalValues = testDic.Get(0).ToList();
+
+                Assert.IsFalse(finalValues.Contains("Hi"));
+                Assert.IsTrue(finalValues.Contains("There"));
+            }
+        }
+
+        [TestMethod]
+        //[DataRaceTestMethod]
+        public void ConcurrentAddAndRemoveDiffKey()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+                testDic.Add(0, "Hi");
+
+                Parallel.Invoke(() =>
+                {
+                    testDic.Add(1, "There");
+                }, () => {
+                    testDic.Remove(0, "Hi");
+                });
+
+                List<string> finalValues = testDic.Get(1).ToList();
+                Assert.IsTrue(finalValues.Contains("There"));
+                Assert.IsTrue(testDic.Get(0) is string[] arr && arr.Length == 0);
+            }
+        }
+
+        [TestMethod]
+        //[DataRaceTestMethod]
+        public void ConcurrentReadAndRemove()
+        {
+            bool readBeforeDeleteAtLeastOnce = false;
+            for (int i = 0; i < 100; i++)
+            {
+                ConcurrentDictionaryOfCollections<int, string> testDic =
+                new ConcurrentDictionaryOfCollections<int, string>();
+
+                testDic.Add(0, "Hi");
+
+                Parallel.Invoke(() =>
+                {
+                    string[] values = testDic.Get(0).ToArray();
+                    readBeforeDeleteAtLeastOnce = readBeforeDeleteAtLeastOnce ||
+                            values.Length == 1 && values[0] == "Hi";
+                }, () => {
+                    testDic.Remove(0, "Hi");
+                });
+
+                Assert.IsTrue(testDic.Get(0) is string[] arr && arr.Length == 0);
+            }
+            Assert.IsTrue(readBeforeDeleteAtLeastOnce);
+        }
     }
 }
