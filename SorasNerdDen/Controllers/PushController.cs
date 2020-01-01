@@ -97,7 +97,7 @@
             return new EmptyResult();
         }
 
-        [HttpPost("push/eventsource", Name = PushControllerRoute.EventSource)]
+        [HttpGet("push/eventsource", Name = PushControllerRoute.EventSource)]
         public async Task<IActionResult> EventSource()
         {
             if (Request.Headers["Accept"] == "text/event-stream")
@@ -109,7 +109,7 @@
 
                 eventSourceService.KeepConnectionAlive(clientGuid, Response);
 
-                await HttpContext.RequestAborted.WaitAsync();
+                await HttpContext.RequestAborted.WaitAsync();//TODO this isn't getting hit
 
                 // Remove the now-closed response
                 eventSourceService.LetConnectionDie(clientGuid, Response);
