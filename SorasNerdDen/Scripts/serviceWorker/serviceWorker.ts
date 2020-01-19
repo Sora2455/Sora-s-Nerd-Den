@@ -174,20 +174,22 @@ function fetchHandler(e: FetchEvent): void {
         e.respondWith(fetch(request));
         return;
     }
-    // If its the Atom feed, don't cache
-    if (request.url.includes("/feed/")) {
+    const requestUrl = request.url.toLowerCase();
+    // If its the Atom feed or the EventSource, don't cache
+    if (requestUrl.includes("/feed/") &&
+        requestUrl.includes("/eventsource")) {
         e.respondWith(fetch(request));
         return;
     }
     // If it's a 'main' page, use the loading page instead
-    if (request.url.endsWith("/")) {
+    if (requestUrl.endsWith("/")) {
         e.respondWith(cacheFirst(new Request('/loading/'), false));
         return;
     }
     // TODO filter requests
 
     // If the URL ends with v=m, this is one of our 'minimal views'
-    if (request.url.endsWith("v=m")) { return cacheUpdateRefresh(e, false); }
+    if (requestUrl.endsWith("v=m")) { return cacheUpdateRefresh(e, false); }
 
     return cacheUpdateRefresh(e, true);
 }
