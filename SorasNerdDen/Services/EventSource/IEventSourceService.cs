@@ -3,7 +3,6 @@
     using Microsoft.AspNetCore.Http;
     using SorasNerdDen.Models;
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -30,11 +29,5 @@
         /// <param name="payload">The payload to send</param>
         /// <returns>A task that resolves once the data write is complete</returns>
         Task WriteEventSourceEventAsync(Guid clientGuid, PushPayload payload);
-        /// <summary>
-        /// Begin writing 'heartbeat' messages to our connections to keep them alive.
-        /// </summary>
-        /// <param name="token">A cancellation token that will close all connections when triggered.</param>
-        /// <returns>A task that will continue until cancelled</returns>
-        Task StartHeartbeat(CancellationToken token);
     }
 }

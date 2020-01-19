@@ -17,6 +17,7 @@
     using Microsoft.Extensions.Logging;
     using SorasNerdDen.Settings;
     using Newtonsoft.Json.Serialization;
+    using SorasNerdDen.Services;
 
     /// <summary>
     /// The main start-up class for the application.
@@ -148,6 +149,8 @@
                 .AddSingleton<IActionContextAccessor, ActionContextAccessor>()
                 // Add useful interface for accessing the HttpContext outside a controller.
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                // Add the heartbeat service for eventsource connections
+                .AddSingleton<Microsoft.Extensions.Hosting.IHostedService, EventSourceService>()
                 // Add useful interface for accessing the IUrlHelper outside a controller.
                 .AddScoped(x => x
                     .GetRequiredService<IUrlHelperFactory>()

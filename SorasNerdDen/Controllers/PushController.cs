@@ -109,7 +109,7 @@
 
                 await eventSourceService.KeepConnectionAlive(clientGuid, Response);
 
-                await HttpContext.RequestAborted.WaitAsync();//TODO this isn't getting hit
+                await HttpContext.RequestAborted.WaitAsync();
 
                 // Remove the now-closed response
                 eventSourceService.LetConnectionDie(clientGuid, Response);

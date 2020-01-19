@@ -6,14 +6,15 @@
     using System.Threading.Tasks;
     using Common.Concurrency;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Hosting;
     using SorasNerdDen.Models;
 
     /// <summary>
     /// Collects the EventSource connections to this server, keeps them alive, and writes data to them.
     /// </summary>
-    public class EventSourceService : IEventSourceService
+    public class EventSourceService : BackgroundService, IEventSourceService
     {
-        private readonly ConcurrentDictionaryOfCollections<Guid, HttpResponse>
+        private static readonly ConcurrentDictionaryOfCollections<Guid, HttpResponse>
             ServerSentEventResponses =
             new ConcurrentDictionaryOfCollections<Guid, HttpResponse>();
 
@@ -56,12 +57,22 @@
             }
         }
 
+        /*public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+
+        }*/
+
         /// <summary>
         /// Begin writing 'heartbeat' messages to our connections to keep them alive.
         /// </summary>
         /// <param name="token">A cancellation token that will close all connections when triggered.</param>
         /// <returns>A task that will continue until cancelled</returns>
-        public async Task StartHeartbeat(CancellationToken token)
+        protected override async Task ExecuteAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -72,7 +83,7 @@
                     await WriteEventSourceDataAsync(null, null, response);
                 }
 
-                await Task.Delay(1000 * 15);// Repeat every 15 seconds
+                await Task.Delay(1000 * 15, token);// Repeat every 15 seconds
             }
         }
 
