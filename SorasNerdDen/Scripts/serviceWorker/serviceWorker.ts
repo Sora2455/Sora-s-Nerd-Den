@@ -176,7 +176,7 @@ function fetchHandler(e: FetchEvent): void {
     }
     const requestUrl = request.url.toLowerCase();
     // If its the Atom feed or the EventSource, don't cache
-    if (requestUrl.includes("/feed/") &&
+    if (requestUrl.includes("/feed/") ||
         requestUrl.includes("/eventsource")) {
         e.respondWith(fetch(request));
         return;
