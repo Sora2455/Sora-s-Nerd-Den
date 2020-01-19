@@ -82,6 +82,8 @@ function checkLiveUpdateStatus() {
 // TODO - don't run if push notifications are up
 function setUpLiveUpdates() {
     eventEmitter = new EventSource(null);
+    // TODO reconnect if no new messages in 1 minute or on error
+    // TODO record last sent event ID so we can ask for things we missed
 }
 
 function tearDownLiveUpdates() {
