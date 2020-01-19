@@ -114,5 +114,20 @@
             await connection.WriteAsync($"event: {eventType}\ndata: {data}\n\n");
             await connection.Body.FlushAsync();
         }
+
+        /// <summary>
+        /// Write a message to the EventSource connection
+        /// </summary>
+        /// <param name="id">The id of the event to send</param>
+        /// <param name="eventType">The type of event to raise on the client-side</param>
+        /// <param name="data">The JSON data to write to the response</param>
+        /// <param name="connection">The connection to write to</param>
+        /// <returns>A task that returns once the write is complete</returns>
+        private static async Task WriteEventSourceEventAsync(string id, string eventType,
+            string data, HttpResponse connection)
+        {
+            await connection.WriteAsync($"id: {id}\nevent: {eventType}\ndata: {data}\n\n");
+            await connection.Body.FlushAsync();
+        }
     }
 }
