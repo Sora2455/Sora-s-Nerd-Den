@@ -96,7 +96,7 @@ if (navigator.connection) {
     navigator.connection.addEventListener("change", checkLiveUpdateStatus, { capture: true });
 }
 self.addEventListener("resume", checkLiveUpdateStatus, { capture: true });
-self.addEventListener("online", tearDownLiveUpdates, { capture: true });
+self.addEventListener("online", checkLiveUpdateStatus, { capture: true });
 // If the following events fire, we know we have to stop live updates
 self.addEventListener("freeze", tearDownLiveUpdates, { capture: true });
 self.addEventListener("offline", tearDownLiveUpdates, { capture: true });
