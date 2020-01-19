@@ -63,10 +63,6 @@ function getLiveUpdateUnusableReason(): string {
         return "Live updates are suspended while the page is not shown.";
     }
 
-    if (!document.hasFocus()) {
-        return "Live updates are suspended while the page is not focused.";
-    }
-
     return null;
 }
 
@@ -95,8 +91,6 @@ function tearDownLiveUpdates() {
     }
 }
 
-self.addEventListener("blur", checkLiveUpdateStatus, { capture: true });
-self.addEventListener("focus", checkLiveUpdateStatus, { capture: true });
 self.addEventListener("visibilitychange", checkLiveUpdateStatus, { capture: true });
 if (navigator.connection) {
     navigator.connection.addEventListener("change", checkLiveUpdateStatus, { capture: true });
