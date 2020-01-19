@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="clientGuid">The GUID of the client connected to us</param>
         /// <param name="connection">The connection to keep alive</param>
-        void KeepConnectionAlive(Guid clientGuid, HttpResponse connection);
+        Task KeepConnectionAlive(Guid clientGuid, HttpResponse connection);
         /// <summary>
         /// Removes a connection from the list that we are keeping alive
         /// </summary>

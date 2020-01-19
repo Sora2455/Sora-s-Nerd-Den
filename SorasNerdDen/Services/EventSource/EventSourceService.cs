@@ -22,8 +22,10 @@
         /// </summary>
         /// <param name="clientGuid">The GUID of the client connected to us</param>
         /// <param name="connection">The connection to keep alive</param>
-        public void KeepConnectionAlive(Guid clientGuid, HttpResponse connection)
+        public async Task KeepConnectionAlive(Guid clientGuid, HttpResponse connection)
         {
+            // Tell the client-side to retry after 10 seconds if the connection drops
+            await WriteEventSourceDataAsync("retry", "10000", connection);
             ServerSentEventResponses.Add(clientGuid, connection);
         }
 

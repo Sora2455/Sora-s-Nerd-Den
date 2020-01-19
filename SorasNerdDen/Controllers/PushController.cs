@@ -107,7 +107,7 @@
 
                 Guid clientGuid = Guid.Empty;//TODO
 
-                eventSourceService.KeepConnectionAlive(clientGuid, Response);
+                await eventSourceService.KeepConnectionAlive(clientGuid, Response);
 
                 await HttpContext.RequestAborted.WaitAsync();//TODO this isn't getting hit
 
