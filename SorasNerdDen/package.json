@@ -35,7 +35,7 @@
     "gulp-uglify": "2.1.0",
     "jshint": "^2.10.3",
     "merge-stream": "1.0.1",
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "psi": "^4.0.1",
     "rimraf": "2.6.1",
     "sinon": "2.0.0",
